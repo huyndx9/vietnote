@@ -11,3 +11,7 @@ Original photographers are not identified in that repository; it provides no
 explicit image license. Source attribution is recorded here, and does not grant
 additional rights. Preserve this record when replacing photos with owned or
 explicitly licensed high-resolution originals.
+
+- Hà Nội, Long Biên bridge at sunset: portfolio-7.jpg, image bears Zing.vn credit.
+- Hà Nội, Hoàn Kiếm lake and Turtle Tower: portfolio-5.jpg, original signature retained.
+Both are copied unmodified from the same source repository above.
