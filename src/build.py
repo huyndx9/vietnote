@@ -1,4 +1,4 @@
-import json,re,html
+import json,re,html,hashlib
 from pathlib import Path
 root=Path(__file__).resolve().parent.parent
 out=root/'dist'
@@ -83,3 +83,11 @@ for x in data:
 (out/'index.html').write_text(h)
 (out/'404.html').write_text(head+'<body>'+header+'<main class="page-wrap empty-state"><h1 class="serif">A little detour.</h1><p>찾으시는 페이지가 없습니다.</p><a class="action-button" href="/">홈으로 돌아가기</a></main>'+footer+common+'</body></html>')
 print('Built',len(data),'detail pages and 8 main pages')
+
+# Content hashes refresh browser caches after an asset update.
+for page in out.rglob('*.html'):
+ text=page.read_text()
+ for asset in ('pages.js','pages.css','content.js'):
+  digest=hashlib.sha256((out/'assets'/asset).read_bytes()).hexdigest()[:12]
+  text=text.replace('/assets/'+asset+'"', '/assets/'+asset+'?v='+digest+'"')
+ page.write_text(text)

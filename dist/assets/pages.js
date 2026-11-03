@@ -25,7 +25,7 @@ function setupHeroSlideshow(){
  if(slides.length<2)return;
  const dotsHost=document.querySelector('.hero-dots'),pause=document.querySelector('.hero-pause');
  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
- let current=0,timer=null,paused=reduce.matches;
+ let current=0,timer=null,paused=false;
  const dots=slides.map((slide,i)=>{
   const button=document.createElement('button');button.type='button';button.className='hero-dot';
   button.setAttribute('aria-label',slide.dataset.place);button.setAttribute('aria-pressed',String(i===0));
@@ -44,7 +44,7 @@ function setupHeroSlideshow(){
  function sync(){pause.textContent=paused?'▶':'Ⅱ';pause.setAttribute('aria-label',paused?'자동 재생 시작':'자동 재생 일시 정지');schedule()}
  pause.onclick=()=>{paused=!paused;sync()};
  document.addEventListener('visibilitychange',schedule);
- reduce.addEventListener('change',()=>{paused=reduce.matches;sync()});
+ // Reduced motion removes the CSS transition; the requested 3-second rotation remains active.
  sync();
 }
 setupHeroSlideshow();
