@@ -87,7 +87,10 @@ print('Built',len(data),'detail pages and 8 main pages')
 # Content hashes refresh browser caches after an asset update.
 for page in out.rglob('*.html'):
  text=page.read_text()
- for asset in ('pages.js','pages.css','content.js'):
+ text=re.sub(r'<link[^>]+href="/assets/typography.css[^"]*"[^>]*>', '', text)
+ text=re.sub(r'<link[^>]+(?:href="https://fonts\.(?:googleapis|gstatic)\.com[^"]*")[^>]*>', '', text)
+ text=text.replace('</head>', '<link rel="stylesheet" href="/assets/typography.css"></head>')
+ for asset in ('pages.js','pages.css','content.js','typography.css'):
   digest=hashlib.sha256((out/'assets'/asset).read_bytes()).hexdigest()[:12]
   text=text.replace('/assets/'+asset+'"', '/assets/'+asset+'?v='+digest+'"')
  page.write_text(text)
