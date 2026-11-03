@@ -19,3 +19,32 @@ function renderFeedback(){const host=document.getElementById('savedFeedback');if
 const feedback=document.getElementById('feedbackForm');if(feedback){const id=new URLSearchParams(location.search).get('article');const x=content.find(v=>v.id===id);if(x)feedback.elements.article.value=x.title;feedback.onsubmit=e=>{e.preventDefault();let notes=readStore('vietnote.feedback',[]);if(!Array.isArray(notes))notes=[];notes.unshift({article:feedback.elements.article.value.trim(),message:feedback.elements.message.value.trim()});if(saveStore('vietnote.feedback',notes)){document.getElementById('feedbackStatus').textContent='이 브라우저에 저장했습니다. 운영자에게 전송되지는 않았습니다.';feedback.reset()}}}
 function setupAI(){const host=document.createElement('div');host.innerHTML='<button class="ai-launcher" aria-expanded="false" aria-controls="aiPanel"><span>✦</span> AI에게 물어보기</button><section class="ai-panel" id="aiPanel" aria-label="베트남 여행 도우미" hidden><div class="ai-header"><div><strong>베트남 여행 도우미</strong><small>VIETNOTE · DEEPSEEK</small></div><button aria-label="도우미 닫기">×</button></div><div class="ai-body"><p class="ai-greeting">어떤 베트남 여행을 꿈꾸세요?<br>먼저 여행 노트에서 아이디어를 찾아보세요.</p><div class="connection-note"><strong>AI 연결 준비 중</strong><br>DeepSeek API가 아직 연결되지 않아 AI 답변을 생성할 수 없습니다. 아래 항목은 편집된 여행 콘텐츠로 이동합니다.</div><div class="ai-suggestions"><a href="/articles/danang-4days/">부모님과 다낭 3박 4일 ↗</a><a href="/food/">베트남 음식과 커피 알아보기 ↗</a><a href="/articles/language/">여행 베트남어 표현 보기 ↗</a></div><div class="ai-compose"><input disabled aria-label="AI 연결 후 질문 가능" placeholder="API 연결 후 질문할 수 있어요"><button disabled>전송</button></div></div></section>';document.body.append(host);const launcher=host.querySelector('.ai-launcher'),panel=host.querySelector('.ai-panel');function show(open){panel.hidden=!open;launcher.setAttribute('aria-expanded',String(open));if(open)panel.querySelector('button').focus();else launcher.focus()}launcher.onclick=()=>show(panel.hidden);host.querySelector('.ai-header button').onclick=()=>show(false);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)show(false)})}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();toggleMenu(false)}});window.addEventListener('storage',()=>{saved=readStore('vietnote.saved',[]);syncSave();renderNotebook()});syncSave();setupFilters();renderNotebook();setupAI();
+
+function setupHeroSlideshow(){
+ const slides=[...document.querySelectorAll('.hero-slide')];
+ if(slides.length<2)return;
+ const dotsHost=document.querySelector('.hero-dots'),pause=document.querySelector('.hero-pause');
+ const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+ let current=0,timer=null,paused=reduce.matches;
+ const dots=slides.map((slide,i)=>{
+  const button=document.createElement('button');button.type='button';button.className='hero-dot';
+  button.setAttribute('aria-label',slide.dataset.place);button.setAttribute('aria-pressed',String(i===0));
+  button.onclick=()=>{show(i);schedule()};dotsHost.append(button);return button;
+ });
+ function ready(i){return slides[i].complete&&slides[i].naturalWidth>0}
+ function show(next){
+  if(next===current||!ready(next))return;
+  slides.forEach((s,i)=>{s.classList.toggle('is-leaving',i===current);s.classList.toggle('is-active',i===next);s.setAttribute('aria-hidden',String(i!==next))});
+  current=next;document.getElementById('heroPlace').textContent=slides[current].dataset.place;
+  dots.forEach((dot,i)=>dot.setAttribute('aria-pressed',String(i===current)));
+ }
+ function schedule(){clearInterval(timer);if(!paused&&!document.hidden)timer=setInterval(()=>{
+  for(let step=1;step<slides.length;step++){const next=(current+step)%slides.length;if(ready(next)){show(next);break}}
+ },3000)}
+ function sync(){pause.textContent=paused?'▶':'Ⅱ';pause.setAttribute('aria-label',paused?'자동 재생 시작':'자동 재생 일시 정지');schedule()}
+ pause.onclick=()=>{paused=!paused;sync()};
+ document.addEventListener('visibilitychange',schedule);
+ reduce.addEventListener('change',()=>{paused=reduce.matches;sync()});
+ sync();
+}
+setupHeroSlideshow();
