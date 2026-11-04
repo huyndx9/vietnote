@@ -18,6 +18,7 @@ from datetime import date
 from pathlib import Path
 from string import Template
 from urllib.parse import quote
+from place_guides import sections as guide_sections, REGIONS
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'src'
@@ -93,14 +94,23 @@ class Site:
     def write_data_scripts(self):
         """Browser copies of the content used by search, notebook and atlas."""
         keys = ('id', 'title', 'category', 'desc', 'photo', 'region', 'city', 'keywords', 'days', 'url')
+        self.destinations = load_json('map-destinations.json')
+        self.guide_notes = load_json('place-guides.json')
+        if set(self.guide_notes) != {p['id'] for p in self.destinations}:
+            raise ValueError('Every atlas destination must have a complete guide')
+        self.place_articles=[]
+        for p in self.destinations:
+            p['url']=self.url(f"places/{p['id']}/")
+            sections=guide_sections(p,self.guide_notes[p['id']])
+            self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=None,region=REGIONS[p['region']],city=p['title'],keywords=p['vi'],url=p['url'],sections=sections))
         public = []
-        for x in self.items:
+        for x in self.items + self.place_articles:
             entry = {k: x[k] for k in keys if k in x}
-            entry['sections'] = [[s['title'], s['body']] for s in x['sections']]
+            searchable = x['sections'][:1] if x['id'].startswith('place-') else x['sections']
+            entry['sections'] = [[s['title'], s['body']] for s in searchable]
             public.append(entry)
         self.write('assets/content.js',
                    'window.VIETNOTE_CONTENT=' + json.dumps(public, ensure_ascii=False) + ';\n')
-        self.destinations = load_json('map-destinations.json')
         self.write('assets/map-destinations.js', 'window.VIETNOTE_DESTINATIONS=' +
                    json.dumps(self.destinations, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
@@ -192,6 +202,22 @@ class Site:
             folder = 'destinations' if x['category'] == 'destinations' else 'articles'
             self.page(f'{folder}/{x["id"]}/index.html', x['title'], main, x['desc'])
 
+    def build_place_guides(self):
+        for p,article in zip(self.destinations,self.place_articles):
+            g=self.guide_notes[p['id']]
+            toc=''.join(f'<a href="#{section["id"]}">{h(section["title"])}</a>' for section in article['sections'])
+            blocks=[]
+            for section in article['sections']:
+                body=''.join(f'<p>{h(text)}</p>' for text in section['body'].split('\n\n'))
+                if section['id']=='phrases':
+                    phrases=[('이 주소로 가 주세요','Cho tôi đến địa chỉ này.'),('고수를 빼 주세요','Không cho rau mùi.'),('맵지 않게 해 주세요','Không cay.'),('얼마인가요?','Bao nhiêu tiền?'),('도와주세요','Làm ơn giúp tôi.'),('감사합니다','Cảm ơn.')]
+                    body+='<div class="phrase-cards">'+''.join(f'<button class="phrase" data-copy="{h(vi)}"><span>{h(ko)}</span><strong>{h(vi)}</strong><small>눌러서 복사하기</small></button>' for ko,vi in phrases)+'</div>'
+                blocks.append(f'<section id="{section["id"]}"><h2>{h(section["title"])}</h2>{body}</section>')
+            neighbors=sorted((r for r in self.destinations if r['id']!=p['id']),key=lambda r:(r['region']!=p['region'],(r['lat']-p['lat'])**2+(r['lon']-p['lon'])**2))[:3]
+            related=''.join(f'<a href="{r["url"]}"><small>{h(r["vi"])}</small><strong>{h(r["title"])}</strong><p>{h(r["teaser"])}</p><span>여행 가이드 읽기 ↗</span></a>' for r in neighbors)
+            main=self.render('place-guide',name_vi=h(p['vi']),title=h(p['title']),teaser=h(p['teaser']),region=h(REGIONS[p['region']]),duration=h(g['duration']),gateway=h(g['gateway']),save_id=h(article['id']),maps_url='https://www.google.com/maps/search/?api=1&amp;query='+quote(p['vi']+' Vietnam'),toc=toc,sections=''.join(blocks),related=related)
+            self.page(f'places/{p["id"]}/index.html',p['title']+' 여행 가이드',main,p['teaser'])
+
     def build_static_pages(self):
         self.page('notebook/index.html', '내 여행 노트', self.render('notebook'))
         self.page('about/index.html', 'VIETNOTE 소개', self.render('about'))
@@ -224,11 +250,12 @@ class Site:
         self.write_data_scripts()
         self.build_listings()
         self.build_articles()
+        self.build_place_guides()
         self.build_static_pages()
         self.build_home()
         self.check_font_coverage()
         print(f'Built {self.out.relative_to(ROOT)}/ with base path {self.base}: '
-              f'{len(self.items)} detail pages, {len(self.categories)} listings, '
+              f'{len(self.items)} detail pages, {len(self.place_articles)} place guides, {len(self.categories)} listings, '
               f'home, map, notebook, about and 404.')
 
 

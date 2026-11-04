@@ -7,7 +7,7 @@ Bản công khai: https://huyndx9.github.io/vietnote/
 
 - Trang chủ Magazine Style với ảnh thật vịnh Hạ Long và bản đồ du lịch ngay sau ảnh hero.
 - Các trang chính: điểm đến, lịch trình, ăn uống, góc người địa phương, hướng dẫn,
-  bản đồ, giới thiệu, sổ tay; 17 trang chi tiết có đường dẫn riêng.
+  bản đồ, giới thiệu, sổ tay; 17 bài hiện có và 42 cẩm nang địa điểm có đường dẫn riêng.
 - Bản đồ Leaflet với 42 điểm đến, lọc theo miền và sở thích, tìm kiếm không dấu.
 - Tìm kiếm tiếng Hàn/Anh, lọc miền/thành phố, lưu yêu thích, chia sẻ,
   liên kết Google Maps, sao chép câu tiếng Việt.
@@ -113,3 +113,16 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
 ## Dùng với Codex
 
 Dán nội dung trong `CODEX-PROMPT.md` để bắt đầu.
+
+## Cẩm nang địa điểm trên bản đồ
+
+Mỗi thẻ bản đồ dẫn tới `places/<id>/`. Trang được dựng từ
+`src/content/map-destinations.json` (lời dẫn) và `src/content/place-guides.json`
+(đường đi, chỗ ở, món ăn, thời lượng và gợi ý lịch trình riêng). Nội dung chung
+cho khách Hàn nằm trong `src/place_guides.py`, giao diện trong
+`src/templates/place-guide.html`. Build kiểm tra mỗi địa điểm đều có cẩm nang.
+
+Các bài có 13 phần, mục lục, lưu sổ tay, chia sẻ, câu tiếng Việt để sao chép,
+liên kết Google Maps và địa điểm liên quan. Nội dung là hướng dẫn biên tập;
+không khẳng định đã trực tiếp đến thăm hoặc cung cấp giá/giờ mở cửa trực tiếp.
+Khi bổ sung địa điểm, cập nhật cả hai file JSON và kiểm tra nguồn thông tin.

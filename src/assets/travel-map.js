@@ -211,10 +211,10 @@
   });
   resizeObserver.observe(mapElement);
   // One reusable, hoverable preview for pins and list rows. Selection stays unchanged.
-  const preview = document.createElement("div");
+  const preview = document.createElement("a");
   preview.id = "mapHoverPreview";
   preview.className = "map-hover-preview";
-  preview.setAttribute("role", "tooltip");
+  preview.setAttribute("aria-label", "여행 가이드 읽기");
   preview.hidden = true;
   document.body.append(preview);
   let previewAnchor = null,
@@ -235,6 +235,8 @@
       previewAnchor.removeAttribute("aria-describedby");
     previewAnchor = anchor;
     anchor.setAttribute("aria-describedby", preview.id);
+    preview.href = p.url;
+    preview.setAttribute("aria-label", p.title + " 여행 가이드 읽기");
     preview.replaceChildren();
     const photo = document.createElement("div");
     photo.className = "map-preview-photo " + p.region;
@@ -263,8 +265,8 @@
     const hint = document.createElement("span");
     hint.className = "map-preview-hint";
     hint.textContent = photos[p.id]
-      ? "눌러서 자세히 보기 ↗"
-      : "사진 준비 중 · 눌러서 자세히 보기 ↗";
+      ? "여행 가이드 읽기 ↗"
+      : "여행 가이드 읽기 ↗";
     body.append(label, title, description, hint);
     preview.append(photo, body);
     preview.hidden = false;
@@ -294,8 +296,9 @@
     el.addEventListener("focus", () => {
       if (matchMedia("(hover: hover)").matches || el.matches(":focus-visible")) showPreview(p, el);
     });
-    el.addEventListener("blur", hidePreview);
+    el.addEventListener("blur", (e) => {if(e.relatedTarget !== preview) hidePreview()});
   }
+  preview.addEventListener("blur", hidePreview);
   preview.addEventListener("pointerenter", () => clearTimeout(hideTimer));
   preview.addEventListener("pointerleave", deferHide);
   document.addEventListener("keydown", (e) => {
@@ -333,7 +336,7 @@
     eyebrow.className = "section-no";
     eyebrow.textContent = regionNames[p.region] + " / " + p.vi;
     const title = document.createElement("h2");
-    title.textContent = p.title;
+    const titleLink=document.createElement("a");titleLink.href=p.url;titleLink.textContent=p.title;title.append(titleLink);
     const desc = document.createElement("p");
     desc.textContent = p.teaser;
     const coords = document.createElement("small");
@@ -345,7 +348,9 @@
       "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.vi + " Vietnam");
     maps.target = "_blank";
     maps.rel = "noopener noreferrer";
-    const cover = document.createElement("div");
+    const cover = document.createElement("a");
+    cover.href=p.url;
+    cover.setAttribute("aria-label",p.title+" 여행 가이드 읽기");
     cover.className = "map-detail-cover " + p.region;
     if (photos[p.id]) {
       const img = document.createElement("img");
@@ -395,8 +400,8 @@
     host.dataset.selectedRegion = p.region;
     if (p.url) {
       const article = document.createElement("a");
-      article.className = "action-button";
-      article.textContent = "VIETNOTE 여행지 읽기 ↗";
+      article.className = "action-button map-read-guide";
+      article.textContent = "전체 여행 가이드 읽기 ↗";
       article.href = p.url;
       detail.querySelector(".map-detail-body").append(article);
     }
@@ -404,8 +409,8 @@
       .querySelectorAll("[data-place]")
       .forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.place === p.id)));
     list
-      .querySelectorAll("button")
-      .forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.place === p.id)));
+      .querySelectorAll("[data-place]")
+      .forEach((el) => el.setAttribute("aria-current", String(el.dataset.place === p.id)));
     if (focus)
       detail.scrollIntoView({
         behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
@@ -458,8 +463,9 @@
         };
       });
       markerLayer.addLayer(marker);
-      const button = document.createElement("button");
-      button.type = "button";
+      const button = document.createElement("a");
+      button.className="map-place-link";
+      button.href=p.url;
       button.dataset.place = p.id;
       button.dataset.region = p.region;
       const name = document.createElement("strong");
@@ -471,11 +477,6 @@
       arrow.textContent = "↗";
       button.append(name, sub, arrow);
       bindPreview(button, p);
-      button.onclick = () => {
-        show(p);
-        map.stop();
-        map.setView([p.lat, p.lon], Math.max(map.getZoom(), 9), { animate: false });
-      };
       list.append(button);
     }
     document.getElementById("mapCount").textContent = visible.length + "개의 여행지";

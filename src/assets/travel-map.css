@@ -388,7 +388,7 @@
   border-top: 1px solid var(--line);
   padding-right: 5px;
 }
-.map-places button {
+.map-places :is(button,a.map-place-link) {
   position: relative;
   display: block;
   width: 100%;
@@ -398,7 +398,7 @@
   border-radius: 0;
   color: var(--ink);
 }
-.map-places button:before {
+.map-places :is(button,a.map-place-link):before {
   content: "";
   position: absolute;
   width: 6px;
@@ -408,19 +408,19 @@
   top: 23px;
   background: var(--north);
 }
-.map-places button[data-region="central"]:before {
+.map-places :is(button,a.map-place-link)[data-region="central"]:before {
   background: var(--central);
 }
-.map-places button[data-region="south"]:before {
+.map-places :is(button,a.map-place-link)[data-region="south"]:before {
   background: var(--south);
 }
-.map-places button strong {
+.map-places :is(button,a.map-place-link) strong {
   font-size: 13px;
   font-weight: 500;
   display: block;
   line-height: 1.7;
 }
-.map-places button small {
+.map-places :is(button,a.map-place-link) small {
   font-size: 11px;
   display: block;
   color: #8b9386;
@@ -432,10 +432,10 @@
   top: 23px;
   color: #81907c;
 }
-.map-places button:hover {
+.map-places :is(button,a.map-place-link):hover {
   background: #eef1e8;
 }
-.map-places button[aria-pressed="true"] {
+.map-places :is(button,a.map-place-link)[aria-pressed="true"] {
   border-left: 2px solid #294a38;
   background: #eaf0e4;
 }
@@ -667,12 +667,12 @@ body:has(.map-page:not(.home-map)) .ai-launcher {
   font-size: 10px;
   color: #6f826b;
 }
-.map-places button {
+.map-places :is(button,a.map-place-link) {
   transition:
     background 0.18s,
     padding-left 0.18s;
 }
-.map-places button:hover {
+.map-places :is(button,a.map-place-link):hover {
   padding-left: 32px;
 }
 #mapPins g:hover .pin-marker {
@@ -1191,10 +1191,10 @@ body:has(.map-page:not(.home-map)) .ai-launcher {
   .map-travel-tip p {
     font-size: clamp(12px, 0.8vw, 16px);
   }
-  .map-places button strong {
+  .map-places :is(button,a.map-place-link) strong {
     font-size: clamp(15px, 1vw, 20px);
   }
-  .map-places button small,
+  .map-places :is(button,a.map-place-link) small,
   .map-list-header .list-count {
     font-size: clamp(12px, 0.8vw, 16px);
   }
@@ -1219,3 +1219,5 @@ body:has(.map-page:not(.home-map)) .ai-launcher {
     margin-left: -70px !important;
   }
 }
+
+.map-hover-preview{text-decoration:none;cursor:pointer}.map-hover-preview:focus-visible{outline:3px solid #375b40;outline-offset:3px}.map-detail a.map-detail-cover{display:flex;margin:0;padding:0;border-radius:0;font-size:inherit}.map-detail h2 a{font:inherit;margin:0;padding:0;display:inline;color:inherit;text-decoration:none}.map-detail h2 a:hover{text-decoration:underline;text-underline-offset:5px}.map-detail .map-read-guide{background:#e9efe2;border-color:#a4b79a}.map-places a.map-place-link{text-decoration:none}.map-places [aria-current=true]{background:#eaf0e4;border-left-color:#294a38}
