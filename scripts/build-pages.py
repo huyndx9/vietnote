@@ -19,7 +19,7 @@ if output.exists():
     shutil.rmtree(output)
 shutil.copytree(root / 'dist', output)
 for path in output.rglob('*'):
-    if path.suffix in {'.html', '.js', '.css'}:
+    if path.suffix in {'.html', '.js', '.css'} and 'vendor' not in path.relative_to(output).parts:
         text = path.read_text(encoding='utf-8')
         # Later candidates in srcset lists follow a comma, not a quote.
         text = re.sub(r'((?:image)?srcset=")([^"]*)', lambda m: m[1] + re.sub(
