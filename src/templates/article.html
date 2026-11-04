@@ -1,0 +1,33 @@
+<main class="page-wrap">
+  <nav class="breadcrumb"><a href="$base">홈</a> / <a href="$category_url">$label</a></nav>
+  <header class="article-heading">
+    <div class="section-no">VIETNOTE / $label</div>
+    <h1>$title</h1>
+    <p>$desc</p>
+    <div class="article-actions">
+      <button class="action-button" data-save="$id">♡ 여행 노트에 저장</button>
+      <button class="action-button" data-share>링크 공유 ↗</button>
+      $map_link
+    </div>
+    <small>편집일 <time datetime="$date_iso">$date</time> · $disclaimer</small>
+  </header>
+  $cover
+  <div class="article-layout">
+    <aside class="article-toc"><strong>이 글의 순서</strong>$toc</aside>
+    <div class="article-body">
+$sections
+      $extras
+      <div class="article-end">
+        <p>내 여행에 맞게 천천히 골라 보세요.</p>
+        <a href="${base}about/?article=$id#feedback">정보 수정 제안 ↗</a>
+      </div>
+    </div>
+  </div>
+  <section class="related">
+    <div class="section-no">KEEP EXPLORING</div>
+    <h2 class="serif">Your next discovery.</h2>
+    <div class="browse-grid">
+$related
+    </div>
+  </section>
+</main>

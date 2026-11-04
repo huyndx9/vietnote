@@ -1,0 +1,837 @@
+/* Local OFL fonts, subset by scripts/subset-fonts.py. Licenses are included under assets/fonts/. */
+@font-face {
+  font-family: "Pretendard";
+  src: url("fonts/Pretendard-subset.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Playfair Display";
+  src: url("fonts/Playfair-Display-subset.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+:root {
+  --font-body: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-display: "Playfair Display", "Pretendard", serif;
+  --muted: #65695f;
+}
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.8;
+  letter-spacing: -0.015em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+}
+h1,
+h2,
+h3 {
+  font-synthesis: none;
+  text-wrap: balance;
+  letter-spacing: -0.035em;
+}
+p {
+  text-wrap: pretty;
+}
+.serif {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+.logo {
+  font-family: var(--font-body);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+.nav {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.5;
+  gap: 24px;
+}
+.nav a {
+  padding: 10px 0;
+}
+.eyebrow,
+.section-no,
+.meta {
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.6;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+.section-no {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.meta {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(88px, 16vw, 240px);
+  line-height: 1.1;
+  letter-spacing: -0.06em;
+}
+.hero-korean {
+  font-size: clamp(15px, 1.6vw, 20px);
+  line-height: 1.8;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+.hero-bottom {
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+}
+.section-title {
+  font-size: clamp(40px, 4.7vw, 68px);
+  line-height: 1.15;
+  font-weight: 400;
+  margin: 16px 0;
+}
+.section-sub,
+.destination p,
+.editorial p,
+.journey p {
+  font-size: 15px;
+  line-height: 1.9;
+  letter-spacing: -0.015em;
+}
+.textlink {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  line-height: 1.7;
+}
+.intro h2 {
+  font-size: clamp(32px, 4.1vw, 58px);
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  margin: 26px auto;
+}
+.intro p {
+  font-size: 16px;
+  line-height: 1.95;
+  letter-spacing: -0.02em;
+}
+.destination h3 {
+  font-size: 30px;
+  line-height: 1.35;
+  font-weight: 400;
+  margin: 10px 0;
+}
+.editorial h3 {
+  font-family: var(--font-body);
+  font-size: clamp(28px, 3vw, 42px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.045em;
+}
+.story h3,
+.story:first-child h3,
+.browse-card h2 {
+  font-family: var(--font-body);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.03em;
+}
+.story:first-child h3 {
+  font-size: 27px;
+}
+.browse-card p {
+  font-size: 15px;
+  line-height: 1.9;
+}
+.guide strong {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+.guide small {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.page-intro h1 {
+  font-size: clamp(42px, 6vw, 80px);
+  line-height: 1.18;
+  letter-spacing: -0.045em;
+}
+.page-intro p,
+.article-heading > p {
+  font-size: 17px;
+  line-height: 1.85;
+}
+.article-heading h1 {
+  font-family: var(--font-body);
+  font-size: clamp(30px, 3.7vw, 48px);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.045em;
+}
+.article-body {
+  max-width: 680px;
+}
+.article-body h2,
+.feedback-panel h2,
+.feedback-list h2 {
+  font-family: var(--font-body);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.035em;
+}
+.article-body p {
+  font-size: 17px;
+  line-height: 1.95;
+  letter-spacing: -0.015em;
+  color: #454b43;
+}
+.article-toc {
+  font-size: 13px;
+  line-height: 1.8;
+}
+.article-heading > small {
+  font-size: 12px;
+  line-height: 1.9;
+}
+.action-button,
+.filter-chip {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.browse-search input,
+.searchbox input,
+.global-search input,
+form input,
+form textarea {
+  font-size: 16px;
+}
+.search-result strong {
+  font-size: 18px;
+  line-height: 1.6;
+}
+.search-result p {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.mobilemenu a {
+  font-family: var(--font-body);
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: -0.03em;
+}
+.footer .section-sub {
+  font-size: 14px;
+  line-height: 1.9;
+}
+.footer-links {
+  font-size: 12px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+.footer-bottom {
+  font-size: 11px;
+  line-height: 1.8;
+  letter-spacing: 0;
+  gap: 24px;
+}
+.section.wrap {
+  padding: 90px 5.5%;
+}
+@media (max-width: 1100px) {
+  .nav {
+    font-size: 13px;
+    gap: 13px;
+  }
+}
+@media (max-width: 650px) {
+  body {
+    font-size: 15px;
+  }
+  .logo {
+    font-size: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(78px, 22vw, 140px);
+  }
+  .hero .eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+  .hero-bottom {
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+  .section.wrap {
+    padding: 60px 6%;
+  }
+  .section-title {
+    font-size: 38px;
+  }
+  .section-sub,
+  .intro p,
+  .editorial p,
+  .journey p {
+    font-size: 15px;
+  }
+  .intro h2 {
+    font-size: 32px;
+  }
+  .destination h3 {
+    font-size: 26px;
+  }
+  .destination p {
+    font-size: 13px;
+  }
+  .editorial h3 {
+    font-size: 29px;
+    line-height: 1.6;
+  }
+  .story h3,
+  .browse-card h2 {
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .story:first-child h3 {
+    font-size: 23px;
+  }
+  .browse-card p {
+    font-size: 14px;
+    line-height: 1.85;
+  }
+  .page-intro h1 {
+    font-size: 42px;
+  }
+  .page-intro p,
+  .article-heading > p {
+    font-size: 16px;
+  }
+  .article-heading h1 {
+    font-size: 30px;
+    line-height: 1.5;
+  }
+  .article-body h2 {
+    font-size: 23px;
+  }
+  .article-body p {
+    font-size: 16px;
+    line-height: 1.95;
+  }
+  .textlink {
+    font-size: 10px;
+    letter-spacing: 0.03em;
+  }
+  .filter-chip {
+    font-size: 13px;
+  }
+  .action-button {
+    font-size: 12px;
+  }
+  .mobilemenu a {
+    font-size: 25px;
+  }
+}
+
+/* VIETNOTE travel journal — spacious editorial layout. */
+:root {
+  --bg: #faf8f3;
+  --ink: #203b32;
+  --muted: #697168;
+  --accent: #9d4d34;
+  --line: #dcded4;
+}
+.topbar {
+  height: 94px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 18px;
+}
+.logo {
+  font-size: 30px;
+  letter-spacing: -0.065em;
+}
+.nav a {
+  position: relative;
+}
+.nav a:after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+.nav a:hover:after {
+  width: 100%;
+}
+.hero {
+  margin: 0 24px;
+  height: calc(100svh - 140px);
+  min-height: 590px;
+  max-height: 900px;
+}
+.hero:before {
+  background: linear-gradient(180deg, #10251b18 20%, #10251b08 40%, #10251b80 100%);
+}
+.hero-content {
+  align-items: flex-start;
+  justify-content: flex-end;
+  text-align: left;
+  padding: 0 6% 160px;
+}
+.hero h1 {
+  font-size: clamp(110px, 16vw, 238px);
+  margin: 12px 0 20px;
+  letter-spacing: -0.065em;
+}
+.hero .eyebrow {
+  border-top: 1px solid #ffffff90;
+  padding-top: 18px;
+  letter-spacing: 0.2em;
+}
+.hero-korean {
+  font-size: 18px;
+  letter-spacing: 0.04em;
+}
+.hero-bottom {
+  left: 6%;
+  right: 6%;
+  bottom: 32px;
+  border-top: 1px solid #ffffff60;
+  padding-top: 22px;
+}
+.hero-controls {
+  left: auto;
+  right: 5%;
+  transform: none;
+  bottom: 98px;
+}
+.intro {
+  padding: 110px 24px 95px;
+  max-width: 1000px;
+  margin: auto;
+}
+.intro .small {
+  letter-spacing: 0.22em;
+}
+.intro h2 {
+  font-size: clamp(36px, 4.6vw, 64px);
+  line-height: 1.2;
+}
+.intro p {
+  max-width: 620px;
+  margin: 26px auto 0;
+}
+.section.wrap {
+  padding: 84px 5.5%;
+  border-top: 1px solid var(--line);
+}
+.section-head {
+  margin-bottom: 40px;
+}
+.section-title {
+  font-size: clamp(44px, 5.3vw, 76px);
+}
+.section-no {
+  letter-spacing: 0.13em;
+  font-size: 10px;
+}
+.textlink {
+  border: 1px solid var(--line);
+  padding: 13px 18px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.textlink:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+.destinations {
+  gap: 24px;
+}
+.destination .photo {
+  height: 390px;
+}
+.destination:nth-child(2) .photo,
+.destination:nth-child(3) .photo,
+.destination:nth-child(4) .photo {
+  height: 390px;
+  margin-top: 0;
+}
+.destination:nth-child(even) {
+  padding-top: 52px;
+}
+.destination h3 {
+  font-size: 32px;
+}
+.photo,
+.card-image {
+  background: #e6e8df;
+}
+.editorial {
+  grid-template-columns: 1.25fr 1fr;
+  gap: 8%;
+}
+.editorial .photo {
+  height: 610px;
+}
+.editorial h3 {
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1.5;
+}
+.editorial .textlink {
+  display: inline-block;
+  margin-top: 18px;
+}
+.notebook {
+  background: #e9ede5;
+  padding: 90px 0;
+}
+.guide {
+  background: #faf8f3;
+  border: 0;
+  border-top: 1px solid #c6cec0;
+  padding: 27px;
+  min-height: 160px;
+}
+.guide:hover {
+  background: white;
+}
+.guide .symbol {
+  color: var(--accent);
+}
+.searchbox {
+  border-bottom: 1px solid var(--ink);
+}
+.stories {
+  gap: 32px;
+}
+.story .photo {
+  height: 320px;
+}
+.story:first-child .photo {
+  height: 440px;
+}
+.story h3 {
+  margin-top: 15px;
+}
+.journey {
+  margin: 60px 24px 0;
+  background: #203b32;
+  min-height: 460px;
+}
+.journey h2 {
+  font-size: clamp(54px, 6vw, 88px);
+}
+.footer {
+  padding-top: 70px;
+  padding-bottom: 25px;
+}
+.footer-top {
+  padding-bottom: 45px;
+}
+.footer h2 {
+  font-size: 38px;
+}
+.footer-bottom {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+.page-intro {
+  padding: 65px 0 55px;
+}
+.page-intro h1 {
+  font-size: clamp(46px, 6.5vw, 88px);
+}
+.browse-grid {
+  gap: 52px 30px;
+}
+.card-image {
+  height: 300px;
+}
+.browse-card h2 {
+  font-size: 23px;
+}
+.browse-card p {
+  max-width: 38em;
+}
+.filter-chip {
+  border-radius: 0;
+}
+.browse-toolbar {
+  padding: 23px 0;
+}
+.article-heading {
+  max-width: 850px;
+  margin: 65px auto 48px;
+}
+.article-heading h1 {
+  font-size: clamp(32px, 4vw, 52px);
+}
+.article-cover {
+  height: 520px;
+}
+.article-body section {
+  margin-bottom: 54px;
+}
+.article-body p {
+  line-height: 2;
+}
+.related {
+  padding-top: 48px;
+}
+.action-button {
+  transition: background 0.2s;
+}
+.action-button:hover {
+  background: #e9ede5;
+}
+.feedback-panel {
+  background: #e9ede5;
+}
+@media (max-width: 900px) {
+  .destinations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .destination:nth-child(even) {
+    padding-top: 30px;
+  }
+  .destination .photo,
+  .destination:nth-child(n) .photo {
+    height: 340px;
+  }
+  .editorial .photo {
+    height: 480px;
+  }
+  .card-image {
+    height: 250px;
+  }
+}
+@media (max-width: 650px) {
+  .topbar {
+    height: 74px;
+    margin-bottom: 10px;
+  }
+  .logo {
+    font-size: 25px;
+  }
+  .hero {
+    margin: 0 10px;
+    min-height: 560px;
+    height: calc(100svh - 110px);
+  }
+  .hero-content {
+    padding: 0 6% 165px;
+  }
+  .hero h1 {
+    font-size: clamp(76px, 22vw, 135px);
+    margin-bottom: 20px;
+  }
+  .hero-korean {
+    font-size: 15px;
+    max-width: 250px;
+    line-height: 1.8;
+  }
+  .hero .eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+  .hero-controls {
+    bottom: 104px;
+    left: 6%;
+    right: auto;
+  }
+  .hero-dot {
+    padding: 10px;
+  }
+  .hero-bottom {
+    left: 6%;
+    right: 6%;
+    bottom: 22px;
+    font-size: 8px;
+  }
+  .intro {
+    padding: 72px 6% 64px;
+  }
+  .intro h2 {
+    font-size: 34px;
+  }
+  .intro p {
+    font-size: 14px;
+  }
+  .section.wrap {
+    padding: 56px 6%;
+  }
+  .section-title {
+    font-size: 40px;
+  }
+  .section-head {
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .textlink {
+    padding: 10px;
+    font-size: 9px;
+  }
+  .destinations {
+    gap: 18px;
+  }
+  .destination .photo,
+  .destination:nth-child(n) .photo {
+    height: 235px;
+  }
+  .destination:nth-child(even) {
+    padding-top: 26px;
+  }
+  .destination h3 {
+    font-size: 26px;
+  }
+  .editorial {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .editorial .photo {
+    height: 370px;
+  }
+  .editorial h3 {
+    font-size: 29px;
+  }
+  .notebook {
+    padding: 60px 0;
+  }
+  .guide {
+    padding: 21px;
+    min-height: 145px;
+  }
+  .stories {
+    gap: 28px;
+  }
+  .story .photo,
+  .story:first-child .photo {
+    height: 280px;
+  }
+  .journey {
+    margin: 30px 10px 0;
+  }
+  .journey h2 {
+    font-size: 55px;
+  }
+  .footer {
+    padding-top: 48px;
+  }
+  .page-intro {
+    padding: 35px 0;
+  }
+  .page-intro h1 {
+    font-size: 44px;
+  }
+  .browse-grid {
+    gap: 32px 16px;
+  }
+  .card-image {
+    height: 190px;
+  }
+  .browse-card h2 {
+    font-size: 17px;
+  }
+  .article-heading {
+    margin: 35px auto;
+  }
+  .article-heading h1 {
+    font-size: 30px;
+  }
+  .article-cover {
+    height: 270px;
+  }
+  .article-body p {
+    font-size: 16px;
+  }
+  .footer h2 {
+    font-size: 32px;
+  }
+}
+/* Grid children may shrink below the min-content width of their longest word. */
+.notebook-layout > * {
+  min-width: 0;
+}
+.guide-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Fluid desktop canvas: keep reading columns comfortable without boxing the site. */
+:root {
+  --page-gutter: clamp(24px, 4vw, 96px);
+}
+@media (min-width: 1101px) {
+  .wrap,
+  .topbar,
+  .page-wrap,
+  .page-wrap.map-page {
+    width: 100%;
+    max-width: none;
+    padding-inline: var(--page-gutter);
+  }
+  .section.wrap {
+    padding-inline: var(--page-gutter);
+  }
+  .topbar {
+    gap: 32px;
+  }
+  .nav {
+    font-size: clamp(14px, 0.9vw, 18px);
+    gap: clamp(20px, 1.6vw, 40px);
+  }
+  .page-intro {
+    max-width: 1100px;
+  }
+  .article-layout {
+    grid-template-columns: 220px minmax(0, 760px);
+  }
+  .destination .photo,
+  .destination:nth-child(n) .photo {
+    height: clamp(390px, 23vw, 640px);
+  }
+  .editorial .photo {
+    height: clamp(550px, 32vw, 820px);
+  }
+  .card-image {
+    height: clamp(280px, 20vw, 500px);
+  }
+  .section-title {
+    font-size: clamp(52px, 4vw, 88px);
+  }
+  .section-sub,
+  .editorial p,
+  .destination p,
+  .browse-card p {
+    font-size: clamp(15px, 1vw, 20px);
+  }
+  .destination h3 {
+    font-size: clamp(30px, 2vw, 44px);
+  }
+  .browse-card h2 {
+    font-size: clamp(23px, 1.4vw, 30px);
+  }
+}

@@ -1,55 +1,115 @@
-# VIETNOTE — Bản mới nhất để phát triển bằng Codex
+# VIETNOTE
 
-Bản xuất ngày 04/11/2026, dựa trên phiên bản Sites số 6.
-Source commit: f2af727b1f8317c39a4497829a3c62933641723d
+Tạp chí du lịch Việt Nam bằng tiếng Hàn, dạng website tĩnh.
+Bản công khai: https://huyndx9.github.io/vietnote/
 
-## Đã có
-- Trang chủ Magazine Style, ảnh chụp thật Hạ Long và typography đã chỉnh.
-- 8 trang chính: trang chủ, điểm đến, lịch trình, ăn uống, góc người địa phương, hướng dẫn, giới thiệu, sổ tay.
-- 17 trang chi tiết có đường dẫn riêng.
-- Tìm kiếm tiếng Hàn/Anh, lọc miền/thành phố, lưu yêu thích, chia sẻ, liên kết Google Maps, sao chép câu tiếng Việt.
-- Sổ tay và ghi chú sửa thông tin lưu trên trình duyệt.
+## Có gì trong website
 
-## Chạy trên máy
-1. Giải nén toàn bộ file ZIP.
-2. Mở thư mục `vietnote` trong Codex.
-3. Nếu máy đã có Python 3, chạy:
-   `python -m http.server 8000 --directory dist`
-4. Mở http://localhost:8000
+- Trang chủ Magazine Style với ảnh thật vịnh Hạ Long và bản đồ du lịch ngay sau ảnh hero.
+- Các trang chính: điểm đến, lịch trình, ăn uống, góc người địa phương, hướng dẫn,
+  bản đồ, giới thiệu, sổ tay; 17 trang chi tiết có đường dẫn riêng.
+- Bản đồ Leaflet với 42 điểm đến, lọc theo miền và sở thích, tìm kiếm không dấu.
+- Tìm kiếm tiếng Hàn/Anh, lọc miền/thành phố, lưu yêu thích, chia sẻ,
+  liên kết Google Maps, sao chép câu tiếng Việt.
 
-Windows có thể dùng `py` thay `python`, hoặc chạy START-WINDOWS.bat.
-Không mở trực tiếp index.html bằng file:// vì website dùng đường dẫn tuyệt đối.
+## Cấu trúc thư mục
+
+```
+src/
+  build.py              Script build (chỉ dùng thư viện chuẩn Python 3)
+  content/              Nội dung: site.json, destinations.json, articles.json,
+                        guides.json, itineraries.json, map-destinations.json
+  templates/            HTML theo cú pháp string.Template ($ten hoặc ${ten})
+  assets/               CSS/JS viết tay (bản dễ đọc), font, ảnh, thư viện vendor
+  photos/               Ảnh gốc lớn (không triển khai)
+  font-hangul.txt       Danh sách âm tiết Hangul có trong font subset
+scripts/
+  build-pages.py        Build bản GitHub Pages vào _site/
+  subset-fonts.py       Tạo lại font subset
+  optimize-images.py    Tạo các cỡ ảnh WebP cho srcset
+dist/, _site/           Kết quả build — tự sinh, không commit
+```
+
+## Build và chạy trên máy
+
+Cần Python 3, không cần cài thêm thư viện.
+
+```bash
+python3 src/build.py
+```
+
+```bash
+python3 -m http.server 8000 --directory dist
+```
+
+Mở http://localhost:8000. Trên Windows có thể chạy `START-WINDOWS.bat` (tự build rồi
+mở server). Không mở trực tiếp `index.html` bằng `file://`.
+
+Bước build xóa và tạo lại `dist/`: chép `src/assets/` sang `dist/assets/`, sinh
+`content.js` và `map-destinations.js` từ `src/content/`, rồi dựng mọi trang từ
+template. Không sửa trực tiếp file trong `dist/` hay `_site/`.
 
 ## Chỉnh sửa
-- `src/home.html`: nguồn trang chủ.
-- `src/build.py`: nội dung và mẫu các trang mới.
-- `dist/assets/pages.js`: chức năng dùng chung.
-- `dist/assets/pages.css`: giao diện các trang mới.
-- `dist/assets/typography.css`: kiểu chữ toàn website.
-- Chạy `python src/build.py` sau khi sửa nội dung/mẫu trang.
-- Các file trong `dist/` là website đã dựng, có thể triển khai ngay trên static hosting.
+
+- **Nội dung bài viết**: sửa file JSON trong `src/content/`. Mỗi bài có trường
+  `date` (dạng `YYYY-MM-DD`) hiển thị thành “편집일” trên trang chi tiết.
+  Tiêu đề danh mục, phụ đề và ghi chú miễn trừ nằm trong `site.json`.
+- **Điểm đến trên bản đồ**: `src/content/map-destinations.json` (teaser, `paragraphs`,
+  `experiences`, `tip`). Số điểm đến hiển thị được tính từ file này.
+- **HTML**: `src/templates/`. `layout.html` là khung chung (head, header, footer, script);
+  `home.html` là phần thân trang chủ; `atlas.html` dùng chung cho trang bản đồ và trang chủ.
+  Ký tự `$` trong template phải viết thành `$$`.
+- **Giao diện và chức năng**: `src/assets/base.css`, `pages.css`, `typography.css`,
+  `travel-map.css`, `pages.js`, `travel-map.js`. Giữ bản dễ đọc; trang tự gắn
+  `?v=<hash>` vào CSS/JS khi build nên trình duyệt luôn tải bản mới.
+
+## Đường dẫn và GitHub Pages
+
+Mọi đường dẫn nội bộ được tạo với `BASE_PATH` ngay khi build, không thay chuỗi sau đó.
+
+```bash
+python3 scripts/build-pages.py --base-path /vietnote/
+```
+
+Lệnh trên tương đương `python3 src/build.py --base-path /vietnote/ --out _site`
+và thêm `.nojekyll`. Trong HTML/template dùng `${base}`; trong Python dùng
+`site.url('...')`; JS đọc base từ `<meta name="vietnote-base">`; CSS dùng đường dẫn
+tương đối (ví dụ `url("fonts/...")`).
+
+Workflow `Publish GitHub Pages` build và triển khai mỗi khi push lên `main`.
+Trong Settings → Pages của repository, chọn **GitHub Actions**. Sau khi workflow
+chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote/ .
 
 ## Font và ảnh
-- Chữ thân bài dùng Pretendard (OFL), font ưu tiên tiếng Hàn, có đủ dấu tiếng Việt;
-  tiêu đề lớn dùng Playfair Display. Cả hai đã được cắt gọn (subset) và lưu trong
-  `dist/assets/fonts/`.
+
+- Chữ thân bài dùng Pretendard (OFL-1.1), font ưu tiên tiếng Hàn và có đủ dấu tiếng
+  Việt; tiêu đề lớn dùng Playfair Display (OFL-1.1). Cả hai đã được cắt gọn trong
+  `src/assets/fonts/*-subset.woff2`.
 - Pretendard giữ 2.350 âm tiết Hangul thông dụng (KS X 1001) và mọi âm tiết đang dùng.
-  Nếu `python src/build.py` báo `WARNING: Pretendard subset lacks …`, chạy
-  `pip install fonttools brotli` rồi `python scripts/subset-fonts.py`.
-- Ảnh gốc lớn đặt ở `src/photos/` (không triển khai). Sau khi thay ảnh, chạy
-  `pip install pillow` rồi `python scripts/optimize-images.py` để tạo các cỡ WebP
-  dùng cho `srcset`.
+  Nếu build báo `WARNING: Pretendard subset lacks …`, chạy
+  `pip install fonttools brotli` rồi `python3 scripts/subset-fonts.py`.
+- Ảnh gốc lớn đặt ở `src/photos/`. Sau khi thay ảnh, chạy `pip install pillow` rồi
+  `python3 scripts/optimize-images.py` để tạo các cỡ WebP trong `src/assets/`.
+- Chỉ trang chủ preload ảnh hero.
+- Ảnh hero: Haneul Trac / Pexels (ảnh 36551013), có ghi nguồn ở chân trang. Nguồn và
+  giấy phép từng ảnh ghi trong `src/assets/PHOTO-SOURCES.md`; nguồn dữ liệu bản đồ
+  trong `src/MAP-SOURCE.md`.
+
+## Hành vi và giới hạn hiện tại
+
+- Tìm kiếm và lọc chạy hoàn toàn trên trình duyệt.
+- Sổ tay và ghi chú sửa thông tin lưu trong localStorage, không đồng bộ giữa các thiết bị
+  và không gửi đến quản trị viên.
+- Chia sẻ dùng native share nếu có, nếu không thì sao chép liên kết.
+- Nút bản đồ mở Google Maps; bản đồ Leaflet không cần API key hay tile bên ngoài.
+- Trợ lý DeepSeek mới có giao diện và hiển thị rõ trạng thái chưa kết nối; không gọi AI,
+  không nhận API key phía trình duyệt. Muốn dùng thật cần route phía máy chủ và secret
+  `DEEPSEEK_API_KEY` chỉ nằm ở máy chủ.
+- Lịch trình là gợi ý biên tập, không phải sản phẩm đặt chỗ. Thông tin nhập cảnh, giá,
+  giờ mở cửa, thời tiết cần kiểm tra lại với nguồn chính thức.
+- Một số ảnh phụ còn tải từ Unsplash, chỉ mang tính minh họa.
+- Chưa có tài khoản hay cơ sở dữ liệu.
 
 ## Dùng với Codex
-Dán nội dung trong CODEX-PROMPT.md để bắt đầu. Giữ thư mục này làm nguồn chính;
-website đang có trên Sites không tự đồng bộ với thay đổi trong thư mục này.
 
-## Chưa kết nối
-- DeepSeek chỉ có giao diện và trạng thái chưa kết nối. Không có API key trong gói.
-- Ghi chú sửa thông tin chưa gửi đến quản trị viên.
-- Chưa có tài khoản, cơ sở dữ liệu hay đồng bộ sổ tay giữa thiết bị.
-- Một số ảnh phụ còn tải từ Unsplash; font và ảnh hero đã lưu trong dự án.
-- Nội dung là bản biên tập khởi đầu, cần bổ sung trước khi dùng làm cẩm nang đầy đủ.
-
-Ảnh hero thật: Haneul Trac / Pexels, đã ghi nguồn ở chân trang.
-Không kèm Git history, thông tin xác thực hay cấu hình định danh Sites.
+Dán nội dung trong `CODEX-PROMPT.md` để bắt đầu.

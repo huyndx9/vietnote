@@ -1,0 +1,15 @@
+<header class="wrap topbar">
+  <a href="$base" class="logo">VIETNOTE<span>.</span></a>
+  <nav class="nav">$nav</nav>
+  <div class="navright">
+    <a class="notebook-link" href="${base}notebook/" aria-label="내 여행 노트">♡ <span>내 노트</span></a>
+    <button class="iconbtn" aria-label="전체 검색" onclick="openSearch()">⌕</button>
+    <button class="iconbtn menu-btn" aria-label="메뉴" onclick="toggleMenu(true)">☰</button>
+  </div>
+</header>
+<div class="mobilemenu" id="mobilemenu">
+  <button aria-label="메뉴 닫기" onclick="toggleMenu(false)">×</button>
+  $nav
+  <a href="${base}notebook/">내 여행 노트</a>
+  <a href="${base}about/">VIETNOTE 소개</a>
+</div>
