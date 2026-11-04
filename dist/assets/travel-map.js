@@ -1,7 +1,8 @@
 (()=>{
 const host=document.getElementById('travelMap');if(!host)return;
 const places=window.VIETNOTE_DESTINATIONS;
-const photos={hanoi:['/assets/hanoi-the-huc-bridge.jpg','테훅 다리와 호안끼엠 호수'],halong:['/assets/halong-haneul-trac.webp','하롱베이의 석회암 섬'],hoian:['/assets/hoian-covered-bridge.jpg','호이안의 내원교'],bangioc:['/assets/ban-gioc-waterfall.jpg','반족 폭포']};
+// Only locally licensed photographs; other destinations show their name.
+const photos={halong:['/assets/halong-haneul-trac-640.webp','하롱베이의 석회암 섬']};
 const regionNames={north:'북부',central:'중부',south:'남부'};
 const list=document.getElementById('mapPlaces'),detail=document.getElementById('mapDetail');
 let region='all',category='all',query='',selected='hanoi';

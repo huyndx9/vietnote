@@ -21,6 +21,9 @@ shutil.copytree(root / 'dist', output)
 for path in output.rglob('*'):
     if path.suffix in {'.html', '.js', '.css'} and 'vendor' not in path.relative_to(output).parts:
         text = path.read_text(encoding='utf-8')
+        # Later candidates in srcset lists follow a comma, not a quote.
+        text = re.sub(r'((?:image)?srcset=")([^"]*)', lambda m: m[1] + re.sub(
+            r'(,\s*)/(?!/)', lambda n: n[1] + base, m[2]), text)
         text = re.sub(r'''(["'])/(?!/)''', lambda m: m[1] + base, text)
         path.write_text(text, encoding='utf-8')
 (output / '.nojekyll').touch()
