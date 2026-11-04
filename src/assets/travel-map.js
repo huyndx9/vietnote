@@ -9,8 +9,13 @@
     }),
   );
   const places = window.VIETNOTE_DESTINATIONS;
-  // Only locally licensed photographs; other destinations show their name.
-  const photos = { halong: [BASE + "assets/halong-haneul-trac-640.webp", "하롱베이의 석회암 섬"] };
+  // Only locally stored, licensed photographs (src/content/photos.json); other destinations show their name.
+  const photos = {
+    halong: [BASE + "assets/halong-haneul-trac-640.webp", "하롱베이의 석회암 섬"],
+    hanoi: [BASE + "assets/hanoi-turtle-tower-dusk-640.webp", "해 질 녘 호안끼엠 호수의 거북탑"],
+    hoian: [BASE + "assets/hoian-chua-cau-night-640.webp", "보름달 아래 호이안 내원교"],
+    bangioc: [BASE + "assets/ban-gioc-waterfall-640.webp", "반족 폭포"],
+  };
   const regionNames = { north: "북부", central: "중부", south: "남부" };
   const list = document.getElementById("mapPlaces"),
     detail = document.getElementById("mapDetail");

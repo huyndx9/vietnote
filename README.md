@@ -91,9 +91,11 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
 - Ảnh gốc lớn đặt ở `src/photos/`. Sau khi thay ảnh, chạy `pip install pillow` rồi
   `python3 scripts/optimize-images.py` để tạo các cỡ WebP trong `src/assets/`.
 - Chỉ trang chủ preload ảnh hero.
-- Ảnh hero: Haneul Trac / Pexels (ảnh 36551013), có ghi nguồn ở chân trang. Nguồn và
-  giấy phép từng ảnh ghi trong `src/assets/PHOTO-SOURCES.md`; nguồn dữ liệu bản đồ
-  trong `src/MAP-SOURCE.md`.
+- Slideshow trang chủ gồm 6 ảnh: Hạ Long (Pexels) và 5 ảnh Wikimedia Commons
+  (CC0, Public domain, CC BY 2.0). Danh sách ảnh, tác giả và giấy phép nằm trong
+  `src/content/photos.json`; từ file này build tạo slide (kèm dòng ghi nguồn đổi theo
+  từng ảnh) và mục "사진 출처" ở trang giới thiệu. Chi tiết thêm ở
+  `src/assets/PHOTO-SOURCES.md`; nguồn dữ liệu bản đồ trong `src/MAP-SOURCE.md`.
 
 ## Hành vi và giới hạn hiện tại
 

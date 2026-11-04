@@ -956,3 +956,18 @@ textarea:focus-visible {
     font-size: 24px;
   }
 }
+
+/* Hero caption with per-photo credit */
+.hero-caption{display:flex;flex-direction:column;gap:4px}
+.hero-credit{font-size:9px;letter-spacing:.04em;text-transform:none;opacity:.78}
+.hero-credit:hover{opacity:1;text-decoration:underline}
+@media(max-width:650px){.hero-caption{max-width:50%}.hero-credit{line-height:1.5}}
+
+/* About page: photo credits */
+.photo-credits{max-width:860px;margin:96px auto 0;padding-top:48px;border-top:1px solid var(--line)}
+.photo-credits h2{margin:10px 0 12px}
+.photo-credits p{color:var(--muted)}
+.photo-credits ul{list-style:none;padding:0;margin:28px 0 0}
+.photo-credits li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 24px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px}
+.photo-credits li span{color:var(--muted)}
+.photo-credits a{text-decoration:underline;text-underline-offset:3px}

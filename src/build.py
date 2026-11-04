@@ -50,6 +50,7 @@ class Site:
         self.hashes = {}
         self.config = load_json('site.json')
         self.categories = {c['id']: c for c in self.config['categories']}
+        self.photos = load_json('photos.json')['photos']
 
     # ---- helpers -------------------------------------------------------
     def render(self, name, **values):
@@ -57,6 +58,36 @@ class Site:
             text = (TEMPLATES / f'{name}.html').read_text(encoding='utf-8')
             self.templates[name] = Template(text)
         return self.templates[name].substitute(base=self.base, **values)
+
+    def hero_slides(self):
+        """Hero slideshow images from photos.json; each carries its own credit."""
+        slides = []
+        for i, p in enumerate(self.photos):
+            srcset = ','.join(f'{self.url("assets/" + p["stem"] + "-" + str(w) + ".webp")} {w}w' for w in p['widths'])
+            first = i == 0
+            src = self.url(f'assets/{p["stem"]}-{1440 if first else 960}.webp')
+            credit = f'Photo: {p["author"]} / {p["source"]} · {p["license"]}'
+            style = f' style="object-position:{p["position"]}"' if p.get('position') else ''
+            extra = ' fetchpriority="high"' if first else ' aria-hidden="true" decoding="async" fetchpriority="low"'
+            slides.append(
+                f'<img class="hero-slide{" is-active" if first else ""}" src="{src}" srcset="{srcset}" sizes="96vw" '
+                f'width="{p["width"]}" height="{p["height"]}" alt="{h(p["alt"])}" data-place="{h(p["place"])}" '
+                f'data-credit="{h(credit)}" data-credit-url="{h(p["url"])}"{extra}{style}>')
+        return '\n'.join(slides)
+
+    def hero_credit(self):
+        p = self.photos[0]
+        return (f'<span id="heroPlace">{h(p["place"])}</span><a class="hero-credit" id="heroCredit" href="{h(p["url"])}" '
+                f'target="_blank" rel="noopener noreferrer">Photo: {h(p["author"])} / {h(p["source"])} · {h(p["license"])}</a>')
+
+    def photo_credits(self):
+        items = ''.join(
+            f'<li><strong>{h(p["title"])}</strong><span>Photo: <a href="{h(p["url"])}" target="_blank" rel="noopener">'
+            f'{h(p["author"])} / {h(p["source"])}</a> · <a href="{h(p["license_url"])}" target="_blank" rel="noopener">{h(p["license"])}</a></span></li>'
+            for p in self.photos)
+        return ('<section id="photo-credits" class="photo-credits"><div class="section-no">PHOTO CREDITS</div><h2>사진 출처</h2>'
+                '<p>VIETNOTE에 직접 저장해 사용하는 사진과 저작자, 라이선스입니다. 사진은 화면 크기에 맞게 크기만 조정했습니다. '
+                '일부 카드 이미지는 Unsplash에서 불러옵니다.</p><ul>' + items + '</ul></section>')
 
     def url(self, path=''):
         """Site URL for a root-relative path such as 'food/'."""
@@ -194,14 +225,14 @@ class Site:
 
     def build_static_pages(self):
         self.page('notebook/index.html', '내 여행 노트', self.render('notebook'))
-        self.page('about/index.html', 'VIETNOTE 소개', self.render('about'))
+        self.page('about/index.html', 'VIETNOTE 소개', self.render('about', photo_credits=self.photo_credits()))
         self.page('map/index.html', '베트남 여행 지도', self.render('map', atlas=self.atlas('h1')), atlas=True)
         self.page('404.html', '페이지를 찾을 수 없습니다', self.render('not-found'))
 
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
-        main = self.render('home', atlas=atlas)
+        main = self.render('home', atlas=atlas, hero_slides=self.hero_slides(), hero_credit=self.hero_credit())
         self.page('index.html', '베트남을 발견하는 새로운 시선', main,
                   '베트남의 여행지, 문화, 음식과 현지 이야기를 기록하는 여행 매거진 VIETNOTE.',
                   home=True, atlas=True)
