@@ -1,5 +1,6 @@
 (()=>{
 const host=document.getElementById('travelMap');if(!host)return;
+document.querySelectorAll('a[href="#travel-map"]').forEach(link=>link.addEventListener('click',()=>{document.getElementById('mobilemenu')?.classList.remove('open');document.body.style.overflow=''}));
 const places=window.VIETNOTE_DESTINATIONS;
 // Only locally licensed photographs; other destinations show their name.
 const photos={halong:['/vietnote/assets/halong-haneul-trac-640.webp','하롱베이의 석회암 섬']};
