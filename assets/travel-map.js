@@ -38,7 +38,7 @@ L.control.scale({position:'bottomleft',imperial:false,maxWidth:90}).addTo(map);
 map.attributionControl.setPrefix('<a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>');map.attributionControl.addAttribution('<a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>');
 map.on('movestart zoomstart',()=>hidePreview());
 map.on('zoomend',()=>{mapElement.dataset.detailed=String(map.getZoom()>=7)});
-const resizeObserver=new ResizeObserver(()=>{map.invalidateSize({pan:false});});resizeObserver.observe(mapElement);
+let resizeFrame;const resizeObserver=new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{map.invalidateSize({pan:false});resetBounds()})});resizeObserver.observe(mapElement);
 // One reusable, hoverable preview for pins and list rows. Selection stays unchanged.
 const preview=document.createElement('div');preview.id='mapHoverPreview';preview.className='map-hover-preview';preview.setAttribute('role','tooltip');preview.hidden=true;document.body.append(preview);
 let previewAnchor=null,hideTimer=null;
