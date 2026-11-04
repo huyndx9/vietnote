@@ -91,13 +91,26 @@ map_destinations=json.loads((root/'src/map-destinations.json').read_text())
 (out/'assets/map-destinations.js').write_text('window.VIETNOTE_DESTINATIONS='+json.dumps(map_destinations,ensure_ascii=False,separators=(',',':'))+';')
 write('/map/','베트남 여행 지도','''<main class="page-wrap map-page"><header class="map-intro"><div><div class="section-no">THE VIETNOTE ATLAS · 01</div><h1 class="serif">A place to begin.</h1><p>산과 바다, 오래된 골목 사이.<br>지도 위에서 나만의 베트남을 발견하세요.</p></div><div class="map-intro-note"><span id="mapTotal">'''+str(len(map_destinations))+'''</span><div>개의 여행지<br><small>끝없이 새로운 발견</small></div></div></header><section id="travelMap" aria-label="베트남 여행 지도"><div class="map-toolbar"><div class="filter-list" aria-label="지역 선택"><button class="filter-chip" data-map-region="all" aria-pressed="true">베트남 전체</button><button class="filter-chip" data-map-region="north" aria-pressed="false"><i class="region-dot north"></i>북부</button><button class="filter-chip" data-map-region="central" aria-pressed="false"><i class="region-dot central"></i>중부</button><button class="filter-chip" data-map-region="south" aria-pressed="false"><i class="region-dot south"></i>남부</button></div><label class="map-search"><span aria-hidden="true">⌕</span><input id="mapSearch" type="search" aria-label="여행지 검색" placeholder="어디로 떠나고 싶으세요?"></label></div><div class="map-interest-bar" aria-label="여행 취향 선택"><span>어떤 여행을 좋아하세요?</span><div class="map-interest-chips"><button data-map-category="all" aria-pressed="true">모두 보기</button><button data-map-category="nature" aria-pressed="false">산과 자연</button><button data-map-category="culture" aria-pressed="false">문화와 역사</button><button data-map-category="beach" aria-pressed="false">해변과 섬</button><button data-map-category="city" aria-pressed="false">도시 산책</button></div></div><div class="travel-map-layout"><div class="travel-map-canvas"><div class="map-canvas-heading"><span>VIETNAM</span><small>드래그로 이동 · + / − 확대·축소</small></div><div id="vietnamMap" class="interactive-map" role="region" aria-label="베트남 여행 지도. 확대, 축소와 드래그를 사용할 수 있습니다."></div><div class="map-selection" id="mapSelection" aria-hidden="true"></div><div class="map-legend"><span><i class="region-dot north"></i>북부</span><span><i class="region-dot central"></i>중부</span><span><i class="region-dot south"></i>남부</span></div><p class="map-caption">여행지 탐색용 개략도 · 호앙사·쯔엉사 군도는 대표 섬의 위치로 표시하며 해양 경계를 나타내지 않습니다. 정확한 위치와 길찾기는 Google Maps에서 확인하세요.</p></div><div class="travel-map-sidebar"><div id="mapDetail" class="map-detail" aria-live="polite"></div><div class="map-list-header"><h2 class="map-list-heading">다음 발견</h2><span id="mapCount" class="list-count" role="status"></span></div><div id="mapPlaces" class="map-places" aria-label="여행지 목록"></div><p id="mapEmpty" class="empty-state" hidden>검색 결과가 없습니다. 다른 지역이나 이름을 찾아보세요.</p></div></div></section><p class="map-source">Leaflet · Natural Earth 1:10m · 여행의 속도는 당신이 정합니다.</p></main><script src="/assets/vendor/leaflet/leaflet.js"></script><script src="/assets/vendor/markercluster/leaflet.markercluster.js"></script><script src="/assets/map-geography.js"></script><script src="/assets/map-destinations.js"></script><script src="/assets/travel-map.js"></script>''')
 
+# Share the atlas markup between its dedicated page and the homepage.
+map_html=(out/'map/index.html').read_text()
+atlas=re.search(r'<main class="page-wrap map-page">(.*?)</main>',map_html,re.S).group(1)
+atlas=atlas.replace('<h1 class="serif">','<h2 class="serif">').replace('</h1>','</h2>')
+map_section='<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'+atlas+'</section>'
+map_scripts=''.join(re.findall(r'<script src="/assets/(?:vendor/leaflet/leaflet|vendor/markercluster/leaflet.markercluster|map-geography|map-destinations|travel-map)\.js"></script>',map_html))
+home_html=(out/'index.html').read_text()
+hero_end=re.search(r'<section class="hero">.*?</section>',home_html,re.S).end()
+home_html=home_html[:hero_end]+map_section+home_html[hero_end:]
+home_html=home_html.replace('href="/map/"','href="#travel-map"').replace('href="#intro" aria-label="아래로 이동"','href="#travel-map" aria-label="아래로 이동"')
+home_html=home_html.replace('</body>',map_scripts+'</body>')
+(out/'index.html').write_text(home_html)
+
 # Content hashes refresh browser caches after an asset update.
 for page in out.rglob('*.html'):
  text=page.read_text()
  text=re.sub(r'<link[^>]+href="/assets/typography.css[^"]*"[^>]*>', '', text)
  text=re.sub(r'<link[^>]+(?:href="https://fonts\.(?:googleapis|gstatic)\.com[^"]*")[^>]*>', '', text)
  text=text.replace('</head>', '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/Pretendard-subset.woff2" crossorigin><link rel="stylesheet" href="/assets/typography.css"></head>')
- if page==out/'map/index.html':
+ if page in (out/'map/index.html',out/'index.html'):
   text=text.replace('</head>', '<link rel="stylesheet" href="/assets/vendor/leaflet/leaflet.css"><link rel="stylesheet" href="/assets/vendor/markercluster/MarkerCluster.css"><link rel="stylesheet" href="/assets/travel-map.css"></head>')
  for asset in ('pages.js','pages.css','content.js','typography.css','travel-map.js','travel-map.css','map-geography.js','map-destinations.js'):
   digest=hashlib.sha256((out/'assets'/asset).read_bytes()).hexdigest()[:12]
