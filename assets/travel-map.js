@@ -20,7 +20,8 @@ const places=[
 ['phuquoc','푸꾸옥','Phú Quốc','south',10.227,103.967,'해변과 섬에서 여유로운 휴식을 즐기는 여행지.','/vietnote/destinations/phuquoc/'],
 ['condao','꼰다오','Côn Đảo','south',8.684,106.608,'남쪽 바다의 섬과 자연을 만나는 여행지.','']
 ].map(([id,title,vi,region,lat,lon,description,url])=>({id,title,vi,region,lat,lon,description,url}));
-const photos={hanoi:['/vietnote/assets/hanoi-the-huc-bridge.jpg','테훅 다리와 호안끼엠 호수'],halong:['/vietnote/assets/halong-haneul-trac.webp','하롱베이의 석회암 섬'],hoian:['/vietnote/assets/hoian-covered-bridge.jpg','호이안의 내원교'],bangioc:['/vietnote/assets/ban-gioc-waterfall.jpg','반족 폭포']};
+// Only photographs with a recorded licence (see assets/PHOTO-SOURCES.md); other places show their name.
+const photos={halong:['/vietnote/assets/halong-haneul-trac-640.webp','하롱베이의 석회암 섬']};
 const regionNames={north:'북부',central:'중부',south:'남부'};
 const list=document.getElementById('mapPlaces'),detail=document.getElementById('mapDetail');
 let region='all',query='',selected='hanoi';
