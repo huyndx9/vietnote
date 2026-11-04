@@ -91,11 +91,16 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
 - Ảnh gốc lớn đặt ở `src/photos/`. Sau khi thay ảnh, chạy `pip install pillow` rồi
   `python3 scripts/optimize-images.py` để tạo các cỡ WebP trong `src/assets/`.
 - Chỉ trang chủ preload ảnh hero.
-- Slideshow trang chủ gồm 6 ảnh: Hạ Long (Pexels) và 5 ảnh Wikimedia Commons
-  (CC0, Public domain, CC BY 2.0). Danh sách ảnh, tác giả và giấy phép nằm trong
-  `src/content/photos.json`; từ file này build tạo slide (kèm dòng ghi nguồn đổi theo
-  từng ảnh) và mục "사진 출처" ở trang giới thiệu. Chi tiết thêm ở
+- Mọi ảnh đều lưu trong dự án (Pexels và Wikimedia Commons: CC0, Public domain,
+  CC BY). `src/content/photos.json` là danh sách duy nhất: tác giả, giấy phép, ảnh nào
+  lên slideshow (`hero`), ảnh nào gắn với điểm đến trên bản đồ (`places`). Trong content
+  JSON, trường `photo` ghi tên ảnh (stem) thay vì URL. Build tạo `srcset`, dòng ghi
+  nguồn và mục "사진 출처". Thêm ảnh: bỏ file gốc vào `src/photos/`, thêm mục vào
+  photos.json, chạy `python3 scripts/optimize-images.py`. Chi tiết ở
   `src/assets/PHOTO-SOURCES.md`; nguồn dữ liệu bản đồ trong `src/MAP-SOURCE.md`.
+- Trang chủ có thêm dải 3 lịch trình mẫu và khối "언제 갈까요" theo miền
+  (`src/content/seasons.json`, chỉ là xu hướng chung, kèm lời nhắc xem dự báo).
+- Trang 여행지 liệt kê đủ 42 điểm đến của bản đồ (lọc Bắc/Trung/Nam, tìm kiếm).
 
 ## Hành vi và giới hạn hiện tại
 
@@ -109,7 +114,6 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
   `DEEPSEEK_API_KEY` chỉ nằm ở máy chủ.
 - Lịch trình là gợi ý biên tập, không phải sản phẩm đặt chỗ. Thông tin nhập cảnh, giá,
   giờ mở cửa, thời tiết cần kiểm tra lại với nguồn chính thức.
-- Một số ảnh phụ còn tải từ Unsplash, chỉ mang tính minh họa.
 - Chưa có tài khoản hay cơ sở dữ liệu.
 
 ## Dùng với Codex

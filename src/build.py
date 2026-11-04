@@ -63,7 +63,7 @@ class Site:
     def hero_slides(self):
         """Hero slideshow images from photos.json; each carries its own credit."""
         slides = []
-        for i, p in enumerate(self.photos):
+        for i, p in enumerate(x for x in self.photos if x.get('hero', True)):
             srcset = ','.join(f'{self.url("assets/" + p["stem"] + "-" + str(w) + ".webp")} {w}w' for w in p['widths'])
             first = i == 0
             src = self.url(f'assets/{p["stem"]}-{1440 if first else 960}.webp')
@@ -81,6 +81,96 @@ class Site:
         return (f'<span id="heroPlace">{h(p["place"])}</span><a class="hero-credit" id="heroCredit" href="{h(p["url"])}" '
                 f'target="_blank" rel="noopener noreferrer">Photo: {h(p["author"])} / {h(p["source"])} · {h(p["license"])}</a>')
 
+    def photo(self, stem):
+        return next((p for p in self.photos if p['stem'] == stem), None)
+
+    def img(self, ref, alt, sizes, lazy=True, cls=''):
+        """<img> for a photos.json stem (responsive WebP) or a plain URL."""
+        p = self.photo(ref) if ref and '/' not in ref else None
+        attrs = f' class="{cls}"' if cls else ''
+        attrs += ' loading="lazy" decoding="async"' if lazy else ''
+        if not p:
+            return f'<img src="{h(ref)}" alt="{h(alt)}"{attrs}>'
+        srcset = ','.join(f'{self.url("assets/" + p["stem"] + "-" + str(w) + ".webp")} {w}w' for w in p['widths'])
+        mid = 960 if 960 in p['widths'] else p['widths'][-1]
+        style = f' style="object-position:{p["position"]}"' if p.get('position') else ''
+        return (f'<img src="{self.url("assets/" + p["stem"] + "-" + str(mid) + ".webp")}" srcset="{srcset}" sizes="{sizes}" '
+                f'width="{p["width"]}" height="{p["height"]}" alt="{h(alt or p["alt"])}"{attrs}{style}>')
+
+    def photo_caption(self, ref):
+        """Author, source and licence line under a cover photo."""
+        p = self.photo(ref) if ref and '/' not in ref else None
+        if not p:
+            return ''
+        return (f'<p class="photo-caption">Photo: <a href="{h(p["url"])}" target="_blank" rel="noopener noreferrer">{h(p["author"])} / {h(p["source"])}</a>'
+                f' · <a href="{h(p["license_url"])}" target="_blank" rel="noopener noreferrer">{h(p["license"])}</a></p>')
+
+    def place_photo(self, place_id):
+        return next((p['stem'] for p in self.photos if place_id in p.get('places', [])), None)
+
+    def photo_url(self, ref, width=640):
+        """Single URL for browser-rendered cards (search, notebook)."""
+        p = self.photo(ref) if ref and '/' not in ref else None
+        if not p:
+            return ref
+        w = width if width in p['widths'] else p['widths'][0]
+        return self.url(f'assets/{p["stem"]}-{w}.webp')
+
+    def home_images(self):
+        """Homepage card photos (stems from photos.json)."""
+        card = '(max-width: 760px) 46vw, 23vw'
+        return dict(
+            img_hanoi=self.img('hanoi-turtle-tower-dusk', '하노이 호안끼엠 호수의 거북탑', card),
+            img_hoian=self.img('hoian-old-town-bicycle', '호이안 구시가지의 노란 집과 자전거', card),
+            img_danang=self.img('danang-dragon-bridge', '다낭 한강 위의 용다리', card),
+            img_phuquoc=self.img('phuquoc-beach', '푸꾸옥의 하얀 모래 해변', card),
+            img_story=self.img('hanoi-train-street', '하노이 기찻길 골목의 일상', '(max-width: 760px) 92vw, 48vw'),
+            img_pho=self.img('pho-bo-bowl', '허브와 숙주를 곁들인 소고기 쌀국수', '(max-width: 760px) 92vw, 38vw'),
+            img_coffee=self.img('vietnamese-phin-coffee', '핀 필터로 내리는 베트남 커피', '(max-width: 760px) 46vw, 27vw'),
+            img_lantern=self.img('hoian-lantern-shop', '호이안의 등불 가게', '(max-width: 760px) 46vw, 27vw'))
+
+    def home_routes(self):
+        """Homepage strip of the three sample itineraries."""
+        order = ['hanoi-3days', 'danang-4days', 'phuquoc-4days']
+        by_id = {x['id']: x for x in self.items if x['category'] == 'itineraries'}
+        cards = []
+        for i in order:
+            x = by_id[i]
+            nights = x['days'] - 1
+            days = ''.join(f'<li>{h(sec["title"])}</li>' for sec in x['sections'])
+            cards.append(
+                f'<article class="route-card"><a class="route-photo" href="{x["url"]}">{self.img(x["photo"], x["title"], "(max-width: 760px) 92vw, 31vw")}'
+                f'<span class="route-length">{nights}박 {x["days"]}일</span></a>'
+                f'<div class="route-body"><div class="meta">{h(x["city"])}</div><h3><a href="{x["url"]}">{h(x["title"])}</a></h3>'
+                f'<ol class="route-days">{days}</ol><a class="textlink" href="{x["url"]}">일정 자세히 보기 ↗</a></div></article>')
+        return ('<section class="section wrap home-routes" id="routes"><div class="section-head"><div>'
+                '<div class="section-no">02 / SUGGESTED ROUTES</div><h2 class="section-title serif">Ready-made journeys.</h2>'
+                '<div class="section-sub">처음이라면 이렇게 시작해 보세요. 쉬는 시간까지 넣어 둔 추천 일정이에요.</div></div>'
+                f'<a class="textlink" href="{self.url("itineraries/")}">ALL ROUTES ↗</a></div>'
+                '<div class="route-grid">' + ''.join(cards) + '</div></section>')
+
+    def home_seasons(self):
+        """Homepage 'when to go' block by region, month by month."""
+        data = load_json('seasons.json')
+        legend = data['legend']
+        cols = []
+        for r in data['regions']:
+            months = ''.join(f'<li class="m-{m}" title="{i + 1}월 · {h(legend[m])}"><span>{i + 1}</span></li>'
+                             for i, m in enumerate(r['months']))
+            cols.append(
+                f'<article class="season-card season-{r["id"]}"><div class="season-head"><h3>{h(r["label"])}</h3>'
+                f'<small>{h(r["places"])}</small></div>'
+                f'<p class="season-best"><span>추천 시기</span><strong>{h(r["best"])}</strong><em>{h(r["best_note"])}</em></p>'
+                f'<ol class="season-months" aria-label="{h(r["label"])} 월별 날씨">{months}</ol>'
+                f'<p class="season-summary">{h(r["summary"])}</p><p class="season-pack"><span>짐 준비</span>{h(r["pack"])}</p></article>')
+        keys = ''.join(f'<li class="m-{k}"><i></i>{h(v)}</li>' for k, v in legend.items())
+        return ('<section class="section wrap home-seasons" id="when-to-go"><div class="section-head"><div>'
+                '<div class="section-no">03 / WHEN TO GO</div><h2 class="section-title serif">When to go.</h2>'
+                '<div class="section-sub">베트남은 남북으로 길어서 같은 달에도 지역마다 날씨가 달라요. 가고 싶은 곳의 계절부터 확인해 보세요.</div></div></div>'
+                '<div class="season-grid">' + ''.join(cols) + '</div>'
+                f'<ul class="season-legend">{keys}</ul>'
+                '<p class="season-note">일반적인 경향이에요. 해마다 날씨가 다르니 출발 전 현지 예보와 태풍 정보를 꼭 확인하세요.</p></section>')
+
     def photo_credits(self):
         items = ''.join(
             f'<li><strong>{h(p["title"])}</strong><span>Photo: <a href="{h(p["url"])}" target="_blank" rel="noopener">'
@@ -88,7 +178,7 @@ class Site:
             for p in self.photos)
         return ('<section id="photo-credits" class="photo-credits"><div class="section-no">PHOTO CREDITS</div><h2>사진 출처</h2>'
                 '<p>VIETNOTE에 직접 저장해 사용하는 사진과 저작자, 라이선스입니다. 사진은 화면 크기에 맞게 크기만 조정했습니다. '
-                '일부 카드 이미지는 Unsplash에서 불러옵니다.</p><ul>' + items + '</ul></section>')
+                '외부 사이트에서 불러오는 이미지는 없습니다.</p><ul>' + items + '</ul></section>')
 
     def url(self, path=''):
         """Site URL for a root-relative path such as 'food/'."""
@@ -133,15 +223,21 @@ class Site:
         for p in self.destinations:
             p['url']=self.url(f"places/{p['id']}/")
             sections=guide_sections(p,self.guide_notes[p['id']])
-            self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=None,region=REGIONS[p['region']],city=p['title'],keywords=p['vi'],url=p['url'],sections=sections))
+            self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=self.place_photo(p['id']),vi=p['vi'],region=REGIONS[p['region']],city=p['title'],keywords=p['vi'],url=p['url'],sections=sections))
         public = []
         for x in self.items + self.place_articles:
             entry = {k: x[k] for k in keys if k in x}
+            if entry.get('photo'):
+                entry['photo'] = self.photo_url(entry['photo'])
             searchable = x['sections'][:1] if x['id'].startswith('place-') else x['sections']
             entry['sections'] = [[s['title'], s['body']] for s in searchable]
             public.append(entry)
         self.write('assets/content.js',
                    'window.VIETNOTE_CONTENT=' + json.dumps(public, ensure_ascii=False) + ';\n')
+        for p in self.destinations:  # atlas previews read photos from photos.json
+            stem = self.place_photo(p['id'])
+            if stem:
+                p['photo'], p['photo_alt'] = self.photo_url(stem), self.photo(stem)['alt']
         self.write('assets/map-destinations.js', 'window.VIETNOTE_DESTINATIONS=' +
                    json.dumps(self.destinations, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
@@ -173,7 +269,9 @@ class Site:
 
     def card(self, x):
         if x['photo']:
-            image = f'<img loading="lazy" src="{h(x["photo"])}" alt="{h(x["title"])} 관련 풍경">'
+            image = self.img(x['photo'], f'{x["title"]} 관련 풍경', '(max-width: 760px) 92vw, (max-width: 1100px) 46vw, 30vw')
+        elif x.get('vi'):
+            image = f'<div class="guide-art place-art"><span>{h(x["vi"])}</span></div>'
         else:
             image = f'<div class="guide-art">{h(x.get("icon", "✦"))}</div>'
         meta = self.categories[x['category']]['label'] + (f' · {x["region"]}' if 'region' in x else '')
@@ -187,6 +285,8 @@ class Site:
     def build_listings(self):
         for cat, info in self.categories.items():
             items = [x for x in self.items if x['category'] == cat]
+            if cat == 'destinations':
+                items = self.place_articles  # all atlas destinations, not only the four early city pages
             options = ['전체'] + info.get('filters', sorted({x['city'] for x in items if x.get('city')}))
             filters = ''.join(
                 f'<button class="filter-chip{" active" if i == 0 else ""}" data-filter="{h(v)}" '
@@ -219,7 +319,7 @@ class Site:
                             f'href="https://www.google.com/maps/search/?api=1&amp;query={query}">지도에서 위치 보기 ↗</a>')
             cover = ''
             if x['photo']:
-                cover = f'<div class="article-cover"><img src="{h(x["photo"])}" alt="{h(x["title"])} 관련 풍경"></div>'
+                cover = f'<div class="article-cover">{self.img(x["photo"], f"{x["title"]} 관련 풍경", "(max-width: 760px) 92vw, 80vw", lazy=False)}</div>' + self.photo_caption(x['photo'])
             related = [r for r in self.items if r['id'] != x['id'] and (
                 r['category'] == x['category'] or (r.get('city') and r.get('city') == x.get('city')))][:3]
             edited = date.fromisoformat(x['date'])
@@ -246,8 +346,7 @@ class Site:
                 blocks.append(f'<section id="{section["id"]}"><h2>{h(section["title"])}</h2>{body}</section>')
             neighbors=sorted((r for r in self.destinations if r['id']!=p['id']),key=lambda r:(r['region']!=p['region'],(r['lat']-p['lat'])**2+(r['lon']-p['lon'])**2))[:3]
             related=''.join(f'<a href="{r["url"]}"><small>{h(r["vi"])}</small><strong>{h(r["title"])}</strong><p>{h(r["teaser"])}</p><span>여행 가이드 읽기 ↗</span></a>' for r in neighbors)
-            stems={'hanoi':'hanoi-the-huc-bridge-flowers','halong':'halong-haneul-trac','hoian':'hoian-chua-cau-night','bangioc':'ban-gioc-waterfall'}
-            photograph=next((photo for photo in self.photos if photo['stem']==stems.get(p['id'])),None)
+            photograph=self.photo(self.place_photo(p['id'])) if self.place_photo(p['id']) else None
             cover=''
             if photograph:
                 image=photograph
@@ -266,7 +365,7 @@ class Site:
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
-        main = self.render('home', atlas=atlas, hero_slides=self.hero_slides(), hero_credit=self.hero_credit())
+        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), seasons=self.home_seasons())
         self.page('index.html', '베트남을 발견하는 새로운 시선', main,
                   '베트남의 여행지, 문화, 음식과 현지 이야기를 기록하는 여행 매거진 VIETNOTE.',
                   home=True, atlas=True)

@@ -835,3 +835,39 @@ form textarea {
     font-size: clamp(23px, 1.4vw, 30px);
   }
 }
+
+/* ---------------------------------------------------------------------
+   Readability pass (2026-11): labels and supporting text were 8–11px in a
+   light grey; many readers travel with parents. Minimum label size 12px,
+   darker muted colour (≈7:1 on the cream background) and larger Korean
+   lines under the English display headings.
+   --------------------------------------------------------------------- */
+:root { --muted: #4f574f; }
+.eyebrow, .section-no, .meta, .textlink, .browse-card .meta {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+.hero .eyebrow, .hero-content .eyebrow { font-size: 12px; font-weight: 600; }
+.hero-korean { font-size: clamp(16px, 1.6vw, 21px); font-weight: 500; }
+.hero-bottom { font-size: 11px; }
+/* Korean line that explains each English headline */
+.section-sub, .page-intro p, .map-intro p, .intro p {
+  font-size: clamp(16px, 1.3vw, 19px);
+  font-weight: 500;
+  line-height: 1.75;
+  color: #3f463f;
+}
+.footer .section-sub { font-size: 15px; font-weight: 400; color: var(--muted); }
+.destination p, .browse-card p { font-size: 16px; color: var(--muted); }
+.article-heading p { font-size: clamp(16px, 1.3vw, 18px); color: #3f463f; }
+.list-count, .breadcrumb, .guide small, .storage-note { font-size: 13px; color: var(--muted); }
+.filter-chip { font-size: 14px; font-weight: 500; }
+@media (max-width: 760px) {
+  .eyebrow, .section-no, .meta, .textlink, .browse-card .meta { font-size: 12px; }
+  .hero .eyebrow, .hero-content .eyebrow { font-size: 10px; }
+  .hero-korean { font-size: 16px; }
+  .hero-bottom { font-size: 10px; }
+  .section-sub, .page-intro p, .map-intro p, .intro p { font-size: 16px; }
+  .destination p, .browse-card p { font-size: 15px; }
+}

@@ -1,0 +1,81 @@
+{
+  "_note": "Typical seasonal patterns, not forecasts. Shown on the homepage 'when to go' block. Weather varies by year and place; the block tells readers to check the forecast before leaving.",
+  "regions": [
+    {
+      "id": "north",
+      "label": "북부",
+      "places": "하노이 · 하롱베이 · 사파 · 닌빈",
+      "best": "3–4월 · 10–11월",
+      "best_note": "선선하고 비가 적어 걷기 좋은 때",
+      "months": [
+        "cool",
+        "cool",
+        "good",
+        "good",
+        "hot",
+        "rain",
+        "rain",
+        "rain",
+        "rain",
+        "good",
+        "good",
+        "cool"
+      ],
+      "summary": "봄과 가을이 가장 쾌적해요. 5–9월은 덥고 비가 잦으며, 12–2월은 흐리고 쌀쌀해 산간 지역은 꽤 추워요.",
+      "pack": "겨울엔 얇은 패딩, 여름엔 우산과 통풍 잘 되는 옷"
+    },
+    {
+      "id": "central",
+      "label": "중부",
+      "places": "다낭 · 호이안 · 후에 · 나트랑",
+      "best": "2–5월",
+      "best_note": "건조하고 바다가 잔잔한 시기",
+      "months": [
+        "cool",
+        "good",
+        "good",
+        "good",
+        "good",
+        "hot",
+        "hot",
+        "hot",
+        "rain",
+        "storm",
+        "storm",
+        "rain"
+      ],
+      "summary": "봄이 여행하기 가장 편해요. 6–8월은 덥지만 해변 성수기이고, 9–12월은 비가 많아 10–11월에는 태풍·홍수 소식을 꼭 확인하세요.",
+      "pack": "여름엔 자외선 차단, 가을엔 방수 신발과 실내 대안 일정"
+    },
+    {
+      "id": "south",
+      "label": "남부",
+      "places": "호찌민시 · 푸꾸옥 · 메콩델타 · 무이네",
+      "best": "12–3월",
+      "best_note": "건기, 맑은 날이 많은 섬 여행 적기",
+      "months": [
+        "good",
+        "good",
+        "good",
+        "hot",
+        "rain",
+        "rain",
+        "rain",
+        "rain",
+        "rain",
+        "rain",
+        "rain",
+        "good"
+      ],
+      "summary": "일 년 내내 따뜻해요. 12–4월 건기에는 맑은 날이 많고 4월이 가장 더워요. 5–11월 우기에는 오후에 짧고 강한 소나기가 자주 내려요.",
+      "pack": "가벼운 여름옷, 실내 냉방용 얇은 겉옷, 휴대용 우비"
+    }
+  ],
+  "legend": {
+    "good": "여행하기 좋음",
+    "hot": "덥고 습함",
+    "cool": "서늘·쌀쌀",
+    "rain": "비가 잦음",
+    "storm": "폭우·태풍 주의"
+  }
+}

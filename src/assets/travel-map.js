@@ -9,13 +9,7 @@
     }),
   );
   const places = window.VIETNOTE_DESTINATIONS;
-  // Only locally stored, licensed photographs (src/content/photos.json); other destinations show their name.
-  const photos = {
-    halong: [BASE + "assets/halong-haneul-trac-640.webp", "하롱베이의 석회암 섬"],
-    hanoi: [BASE + "assets/hanoi-turtle-tower-dusk-640.webp", "해 질 녘 호안끼엠 호수의 거북탑"],
-    hoian: [BASE + "assets/hoian-chua-cau-night-640.webp", "보름달 아래 호이안 내원교"],
-    bangioc: [BASE + "assets/ban-gioc-waterfall-640.webp", "반족 폭포"],
-  };
+  // Preview photos come from src/content/photos.json ("places") via map-destinations.js.
   const regionNames = { north: "북부", central: "중부", south: "남부" };
   const list = document.getElementById("mapPlaces"),
     detail = document.getElementById("mapDetail");
@@ -245,10 +239,10 @@
     preview.replaceChildren();
     const photo = document.createElement("div");
     photo.className = "map-preview-photo " + p.region;
-    if (photos[p.id]) {
+    if (p.photo) {
       const image = document.createElement("img");
-      image.src = photos[p.id][0];
-      image.alt = photos[p.id][1];
+      image.src = p.photo;
+      image.alt = p.photo_alt;
       image.onerror = () => {
         image.remove();
         photo.classList.add("no-photo");
@@ -269,7 +263,7 @@
     description.textContent = p.teaser;
     const hint = document.createElement("span");
     hint.className = "map-preview-hint";
-    hint.textContent = photos[p.id]
+    hint.textContent = p.photo
       ? "여행 가이드 읽기 ↗"
       : "여행 가이드 읽기 ↗";
     body.append(label, title, description, hint);
@@ -357,10 +351,10 @@
     cover.href=p.url;
     cover.setAttribute("aria-label",p.title+" 여행 가이드 읽기");
     cover.className = "map-detail-cover " + p.region;
-    if (photos[p.id]) {
+    if (p.photo) {
       const img = document.createElement("img");
-      img.src = photos[p.id][0];
-      img.alt = photos[p.id][1];
+      img.src = p.photo;
+      img.alt = p.photo_alt;
       cover.append(img);
     } else {
       const word = document.createElement("span");

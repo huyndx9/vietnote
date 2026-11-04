@@ -5,7 +5,7 @@
     "name_en": "Hanoi",
     "region": "북부",
     "desc": "호수와 골목, 커피로 시작하는 여행",
-    "photo": "https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=1200&q=85",
+    "photo": "hanoi-turtle-tower-dusk",
     "date": "2026-11-04",
     "sections": [
       {
@@ -32,7 +32,7 @@
     "name_en": "Hoi An",
     "region": "중부",
     "desc": "노란 벽 사이로 천천히 걷는 오후",
-    "photo": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=1200&q=85",
+    "photo": "hoian-old-town-bicycle",
     "date": "2026-11-04",
     "sections": [
       {
@@ -59,7 +59,7 @@
     "name_en": "Da Nang",
     "region": "중부",
     "desc": "바다와 도시 사이, 편안한 첫 베트남 여행",
-    "photo": "https://images.unsplash.com/photo-1533676802871-eca1ae998cd5?w=1200&q=85",
+    "photo": "danang-dragon-bridge",
     "date": "2026-11-04",
     "sections": [
       {
@@ -86,7 +86,7 @@
     "name_en": "Phu Quoc",
     "region": "남부",
     "desc": "일정을 비우고 바다 곁에 머무는 시간",
-    "photo": "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=1200&q=85",
+    "photo": "phuquoc-beach",
     "date": "2026-11-04",
     "sections": [
       {

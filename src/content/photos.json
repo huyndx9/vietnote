@@ -1,29 +1,524 @@
 {
-  "_note": "Photographs stored in this project. Licences checked via the Wikimedia Commons API on 2026-11-04. Hero slides appear in this order; CC BY photos must keep author, source and licence visible.",
-  "photos": [
-    {"stem": "halong-haneul-trac", "widths": [640, 960, 1440, 1920, 2560], "width": 3200, "height": 2133,
-     "title": "하롱베이 · Hạ Long Bay", "place": "HẠ LONG BAY, VIETNAM", "alt": "하롱베이의 석회암 섬과 바다",
-     "author": "Haneul Trac", "source": "Pexels", "url": "https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/",
-     "license": "Pexels License", "license_url": "https://www.pexels.com/license/"},
-    {"stem": "hoian-chua-cau-night", "widths": [640, 960, 1440, 1920, 2560], "width": 2560, "height": 1565,
-     "title": "호이안 내원교 · Chùa Cầu, Hội An", "place": "HỘI AN · CHÙA CẦU", "alt": "보름달 아래 불을 밝힌 호이안 내원교와 노란 집들",
-     "author": "Nguyen Phu Duc", "source": "Wikimedia Commons", "url": "https://commons.wikimedia.org/wiki/File:Ch%C3%B9a_c%E1%BA%A7u_H%E1%BB%99i_An_%C4%91%C3%AAm_r%E1%BA%B1m_(36311686293).jpg",
-     "license": "CC0 1.0", "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"},
-    {"stem": "hanoi-the-huc-bridge-flowers", "widths": [640, 960, 1440, 1920, 2560], "width": 2560, "height": 1440, "position": "40% center",
-     "title": "호안끼엠 호수와 테훅 다리 · Hoàn Kiếm Lake", "place": "HÀ NỘI · THE HUC BRIDGE", "alt": "노란 꽃 너머로 보이는 호안끼엠 호수의 붉은 테훅 다리",
-     "author": "katiebordner", "source": "Wikimedia Commons", "url": "https://commons.wikimedia.org/wiki/File:Hoan_Kiem_Lake_in_Hanoi,_Vietnam_(26312972785).jpg",
-     "license": "CC BY 2.0", "license_url": "https://creativecommons.org/licenses/by/2.0/"},
-    {"stem": "ban-gioc-waterfall", "widths": [640, 960, 1440, 1920], "width": 2560, "height": 1707,
-     "title": "반족 폭포 · Thác Bản Giốc", "place": "CAO BẰNG · BẢN GIỐC WATERFALL", "alt": "숲 사이로 여러 갈래 떨어지는 까오방 반족 폭포",
-     "author": "Phương Huy", "source": "Wikimedia Commons", "url": "https://commons.wikimedia.org/wiki/File:Th%C3%A1c_B%E1%BA%A3n_Gi%E1%BB%91c_-_%C4%90%C3%B4ng_B%E1%BA%AFc_2012_(1).JPG",
-     "license": "Public domain", "license_url": "https://commons.wikimedia.org/wiki/File:Th%C3%A1c_B%E1%BA%A3n_Gi%E1%BB%91c_-_%C4%90%C3%B4ng_B%E1%BA%AFc_2012_(1).JPG"},
-    {"stem": "hanoi-long-bien-bridge", "widths": [640, 960, 1440, 1920], "width": 1920, "height": 1440, "position": "60% center",
-     "title": "롱비엔 다리 · Cầu Long Biên", "place": "HÀ NỘI · LONG BIÊN BRIDGE", "alt": "푸른 하늘 아래 녹슨 철골이 이어지는 하노이 롱비엔 다리",
-     "author": "Amenoc", "source": "Wikimedia Commons", "url": "https://commons.wikimedia.org/wiki/File:Long_Bien_bridge.jpg",
-     "license": "CC0 1.0", "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"},
-    {"stem": "hanoi-turtle-tower-dusk", "widths": [640, 960, 1440, 1920, 2560], "width": 2560, "height": 1734, "position": "36% center",
-     "title": "호안끼엠 호수의 거북탑 · Tháp Rùa", "place": "HÀ NỘI · HOÀN KIẾM LAKE", "alt": "해 질 녘 불을 밝힌 호안끼엠 호수의 거북탑",
-     "author": "cloud.shepherd", "source": "Wikimedia Commons", "url": "https://commons.wikimedia.org/wiki/File:Ho%C3%A0n_Ki%E1%BA%BFm_Lake.jpg",
-     "license": "CC BY 2.0", "license_url": "https://creativecommons.org/licenses/by/2.0/"}
-  ]
+ "_note": "Photographs stored in this project. Licences checked via the Wikimedia Commons API on 2026-11-04. Hero slides appear in this order; CC BY photos must keep author, source and licence visible.",
+ "photos": [
+  {
+   "stem": "halong-haneul-trac",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920,
+    2560
+   ],
+   "width": 3200,
+   "height": 2133,
+   "title": "하롱베이 · Hạ Long Bay",
+   "place": "HẠ LONG BAY, VIETNAM",
+   "alt": "하롱베이의 석회암 섬과 바다",
+   "author": "Haneul Trac",
+   "source": "Pexels",
+   "url": "https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "hero": true,
+   "places": [
+    "halong"
+   ]
+  },
+  {
+   "stem": "hoian-chua-cau-night",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920,
+    2560
+   ],
+   "width": 2560,
+   "height": 1565,
+   "title": "호이안 내원교 · Chùa Cầu, Hội An",
+   "place": "HỘI AN · CHÙA CẦU",
+   "alt": "보름달 아래 불을 밝힌 호이안 내원교와 노란 집들",
+   "author": "Nguyen Phu Duc",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ch%C3%B9a_c%E1%BA%A7u_H%E1%BB%99i_An_%C4%91%C3%AAm_r%E1%BA%B1m_(36311686293).jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "hero": true,
+   "places": [
+    "hoian"
+   ]
+  },
+  {
+   "stem": "hanoi-the-huc-bridge-flowers",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920,
+    2560
+   ],
+   "width": 2560,
+   "height": 1440,
+   "position": "40% center",
+   "title": "호안끼엠 호수와 테훅 다리 · Hoàn Kiếm Lake",
+   "place": "HÀ NỘI · THE HUC BRIDGE",
+   "alt": "노란 꽃 너머로 보이는 호안끼엠 호수의 붉은 테훅 다리",
+   "author": "katiebordner",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Hoan_Kiem_Lake_in_Hanoi,_Vietnam_(26312972785).jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0/",
+   "hero": true,
+   "places": []
+  },
+  {
+   "stem": "ban-gioc-waterfall",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 2560,
+   "height": 1707,
+   "title": "반족 폭포 · Thác Bản Giốc",
+   "place": "CAO BẰNG · BẢN GIỐC WATERFALL",
+   "alt": "숲 사이로 여러 갈래 떨어지는 까오방 반족 폭포",
+   "author": "Phương Huy",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Th%C3%A1c_B%E1%BA%A3n_Gi%E1%BB%91c_-_%C4%90%C3%B4ng_B%E1%BA%AFc_2012_(1).JPG",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Th%C3%A1c_B%E1%BA%A3n_Gi%E1%BB%91c_-_%C4%90%C3%B4ng_B%E1%BA%AFc_2012_(1).JPG",
+   "hero": true,
+   "places": [
+    "bangioc"
+   ]
+  },
+  {
+   "stem": "hanoi-long-bien-bridge",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1440,
+   "position": "60% center",
+   "title": "롱비엔 다리 · Cầu Long Biên",
+   "place": "HÀ NỘI · LONG BIÊN BRIDGE",
+   "alt": "푸른 하늘 아래 녹슨 철골이 이어지는 하노이 롱비엔 다리",
+   "author": "Amenoc",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Long_Bien_bridge.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "hero": true,
+   "places": []
+  },
+  {
+   "stem": "hanoi-turtle-tower-dusk",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920,
+    2560
+   ],
+   "width": 2560,
+   "height": 1734,
+   "position": "36% center",
+   "title": "호안끼엠 호수의 거북탑 · Tháp Rùa",
+   "place": "HÀ NỘI · HOÀN KIẾM LAKE",
+   "alt": "해 질 녘 불을 밝힌 호안끼엠 호수의 거북탑",
+   "author": "cloud.shepherd",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ho%C3%A0n_Ki%E1%BA%BFm_Lake.jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0/",
+   "hero": true,
+   "places": [
+    "hanoi"
+   ]
+  },
+  {
+   "stem": "hoian-old-town-bicycle",
+   "hero": false,
+   "places": [],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1200,
+   "title": "호이안 구시가지 · Hội An Ancient Town",
+   "place": "",
+   "alt": "호이안 구시가지의 노란 집과 자전거",
+   "author": "Thong Vo, Titi Wanderer",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ti%E1%BB%87m153%2Bxe%C4%90%E1%BA%A1p%26c%C3%A2y.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "hoian-lantern-shop",
+   "hero": false,
+   "places": [],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "호이안의 등불 · Hội An lanterns",
+   "place": "",
+   "alt": "밤을 밝히는 호이안의 등불 가게",
+   "author": "dronepicr",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Hoi_An_Laternen_und_Lampions_(39543426861).jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+   "stem": "danang-dragon-bridge",
+   "hero": false,
+   "places": [
+    "danang"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1824,
+   "height": 1190,
+   "title": "다낭 용다리 · Cầu Rồng, Đà Nẵng",
+   "place": "",
+   "alt": "다낭 한강 위의 용다리",
+   "author": "Gary Todd",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Han_River,_Da_Nang,_Vietnam.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "phuquoc-beach",
+   "hero": false,
+   "places": [
+    "phuquoc"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1281,
+   "title": "푸꾸옥 해변 · Phú Quốc",
+   "place": "",
+   "alt": "파라솔과 의자가 놓인 푸꾸옥의 하얀 모래 해변",
+   "author": "Quangpraha",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Phuquoc-3058734.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "hanoi-train-street",
+   "hero": false,
+   "places": [],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1080,
+   "title": "하노이 기찻길 골목 · Hanoi Train Street",
+   "place": "",
+   "alt": "하노이 기찻길 골목의 일상",
+   "author": "Radek Kucharski from Warsaw, Poland",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Hanoi_Train_Street_(51955804948).jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+   "stem": "pho-bo-bowl",
+   "hero": false,
+   "places": [],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "소고기 쌀국수 · Phở bò",
+   "place": "",
+   "alt": "허브와 숙주를 곁들인 소고기 쌀국수",
+   "author": "Hermann Luyken",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:2016.10.14.133502_Noodle_soup_beef_Pho_Bac_Vietnamese_restaurant_Seattle_Washington_USA.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "vietnamese-phin-coffee",
+   "hero": false,
+   "places": [],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "베트남 핀 커피 · Cà phê phin",
+   "place": "",
+   "alt": "핀 필터로 내리는 베트남 커피",
+   "author": "McKay Savage from London, UK",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Vietnam_08_-_132_-_Vietnamese_coffee_(3185747640).jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+   "stem": "hagiang-golden-terraces",
+   "hero": false,
+   "places": [],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1000,
+   "title": "하장의 계단식 논 · Hà Giang",
+   "place": "",
+   "alt": "황금빛으로 물든 하장의 계단식 논",
+   "author": "minhphuc_99kdd",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Rice_terraces_in_Ha_Giang,_Vietnam_-_2012_-_121_(10062070653).jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Rice_terraces_in_Ha_Giang,_Vietnam_-_2012_-_121_(10062070653).jpg"
+  },
+  {
+   "stem": "hagiang-rice-terraces",
+   "hero": false,
+   "places": [
+    "hagiang"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1276,
+   "title": "하장의 산과 논 · Hà Giang",
+   "place": "",
+   "alt": "산 사이로 펼쳐진 하장의 계단식 논과 마을",
+   "author": "minhphuc_99kdd",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Rice_terraces_in_Ha_Giang,_Vietnam_-_2012_-_128_(10061901123).jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Rice_terraces_in_Ha_Giang,_Vietnam_-_2012_-_128_(10061901123).jpg"
+  },
+  {
+   "stem": "nhatrang-beach",
+   "hero": false,
+   "places": [
+    "nhatrang"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "나트랑 해변 · Nha Trang",
+   "place": "",
+   "alt": "야자수가 늘어선 나트랑 해변",
+   "author": "Quangpraha",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Nha-trang-3039566.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "dalat-xuan-huong-lake",
+   "hero": false,
+   "places": [
+    "dalat"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "달랏 쑤언흐엉 호수 · Đà Lạt",
+   "place": "",
+   "alt": "소나무가 서 있는 달랏 쑤언흐엉 호수",
+   "author": "Diane Selwyn",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Xuan_Huong_Lake_05.jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Xuan_Huong_Lake_05.jpg"
+  },
+  {
+   "stem": "hue-imperial-city",
+   "hero": false,
+   "places": [
+    "hue"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1080,
+   "title": "후에 황성 · Hoàng thành Huế",
+   "place": "",
+   "alt": "해자 너머로 보이는 후에 황성",
+   "author": "SerChevalerie",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Hue_Imperial_City,_February_2025.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "sapa-rice-terraces",
+   "hero": false,
+   "places": [
+    "sapa"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "사파의 계단식 논 · Sa Pa",
+   "place": "",
+   "alt": "산비탈을 따라 이어진 사파의 계단식 논",
+   "author": "Eerin25",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Rice_terraces_in_Sapa,_Vietnam.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "ninhbinh-trang-an",
+   "hero": false,
+   "places": [
+    "ninhbinh"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1282,
+   "title": "닌빈 짱안 · Tràng An",
+   "place": "",
+   "alt": "석회암 봉우리 사이 강을 따라가는 짱안의 나룻배",
+   "author": "Jakub Hałun",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Trang_An_Landscape_Complex,_Ninh_Binh_Province,_Vietnam,_20240202_1340_5144.jpg",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "stem": "muine-red-dunes",
+   "hero": false,
+   "places": [
+    "muine"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1327,
+   "title": "무이네 붉은 모래 언덕 · Mũi Né",
+   "place": "",
+   "alt": "붉게 빛나는 무이네의 모래 언덕",
+   "author": "Benoît Prieur",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Sand_dune_Mui_N%C3%A9_2003.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "phongnha-cave-entrance",
+   "hero": false,
+   "places": [
+    "phongnha"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "퐁냐 동굴 입구 · Phong Nha",
+   "place": "",
+   "alt": "배가 드나드는 퐁냐 동굴의 입구",
+   "author": "Genghiskhanviet",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Phongnhakebang2.jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Phongnhakebang2.jpg"
+  },
+  {
+   "stem": "saigon-notre-dame",
+   "hero": false,
+   "places": [
+    "saigon"
+   ],
+   "widths": [
+    640,
+    960,
+    1440,
+    1920
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "호찌민시 노트르담 성당 · Saigon",
+   "place": "",
+   "alt": "하늘에서 본 호찌민시 노트르담 성당과 도심",
+   "author": "son do",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Saigon_Notre-Dame_Cathedral_(14242681624).jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0"
+  }
+ ]
 }
