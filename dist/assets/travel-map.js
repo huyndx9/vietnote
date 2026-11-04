@@ -25,15 +25,26 @@ const regionNames={north:'북부',central:'중부',south:'남부'};
 const list=document.getElementById('mapPlaces'),detail=document.getElementById('mapDetail');
 let region='all',query='',selected='hanoi';
 const mapElement=document.getElementById('vietnamMap');
-const map=L.map(mapElement,{zoomControl:false,scrollWheelZoom:false,minZoom:5,maxZoom:11,zoomSnap:.25,maxBounds:[[3,94],[29,120]],maxBoundsViscosity:.8}).setView([16,106],5);
+const map=L.map(mapElement,{zoomControl:false,scrollWheelZoom:false,minZoom:4,maxZoom:11,zoomSnap:.25,maxBounds:[[3,94],[29,120]],maxBoundsViscosity:.8}).setView([16,106],5);
 const pins=map.getPane('markerPane');pins.id='mapPins';
-map.createPane('countryLabels');map.getPane('countryLabels').style.zIndex=350;map.getPane('countryLabels').style.pointerEvents='none';
+map.createPane('countryLabels');map.getPane('countryLabels').style.zIndex=450;map.getPane('countryLabels').style.pointerEvents='none';
 L.geoJSON(window.VIETNOTE_GEOGRAPHY.countries,{interactive:false,smoothFactor:.35,style:f=>({color:f.properties.name==='Vietnam'?'#6f927f':'#bfc9b9',weight:f.properties.name==='Vietnam'?1.4:.8,fillColor:f.properties.name==='Vietnam'?'#d4e1c9':'#eceee3',fillOpacity:1})}).addTo(map);
 L.geoJSON(window.VIETNOTE_GEOGRAPHY.rivers,{interactive:false,style:{color:'#9fc7ca',weight:1.3,opacity:.9}}).addTo(map);
-const labels=[['VIỆT NAM',16.8,107.3,'country-vietnam'],['LÀO',18.4,103.4,''],['CAMPUCHIA',12.9,104.3,''],['THÁI LAN',16.4,100.8,''],['TRUNG QUỐC',24.5,106,''],['BIỂN ĐÔNG',15.6,112.6,'ocean-label']];
+const labels=[['VIỆT NAM',16.8,107.3,'country-vietnam'],['LÀO',18.4,103.4,''],['CAMPUCHIA',12.9,104.3,''],['THÁI LAN',16.4,100.8,''],['TRUNG QUỐC',24.5,106,''],['BIỂN ĐÔNG',14,114,'ocean-label']];
 for(const [name,lat,lon,extra] of labels)L.marker([lat,lon],{interactive:false,keyboard:false,pane:'countryLabels',icon:L.divIcon({className:'atlas-country-label '+extra,html:name,iconSize:[130,22],iconAnchor:[65,11]})}).addTo(map);
+// Geographic labels and representative island locations; no maritime boundaries.
+const archipelagos=[
+ {id:'hoang-sa',name:'QUẦN ĐẢO HOÀNG SA',english:'Paracel Islands',label:[17.7,112],islands:[[16.834,112.337],[16.534,111.603],[16.451,111.706],[15.783,111.2],[16.661,112.731]]},
+ {id:'truong-sa',name:'QUẦN ĐẢO TRƯỜNG SA',english:'Spratly Islands',label:[12.15,114.1],islands:[[8.643,111.92],[11.431,114.331],[9.883,114.333],[10.178,114.365],[10.377,114.482],[7.891,112.916],[8.816,112.585]]}
+];
+map.createPane('islandLabels');map.getPane('islandLabels').style.zIndex=455;map.getPane('islandLabels').style.pointerEvents='none';
+for(const group of archipelagos){
+ for(const location of group.islands)L.circleMarker(location,{pane:'islandLabels',radius:2.8,color:'#628d86',weight:1,fillColor:'#f8fcf6',fillOpacity:1,interactive:false}).addTo(map);
+ const label=L.marker(group.label,{interactive:false,keyboard:false,pane:'islandLabels',icon:L.divIcon({className:'atlas-archipelago-label',html:'<strong>'+group.name+'</strong><small>'+group.english+'</small>',iconSize:[180,38],iconAnchor:[90,19]})}).addTo(map);
+ label.getElement().dataset.archipelago=group.id;
+}
 const markerLayer=L.layerGroup().addTo(map);
-const resetBounds=()=>{const visible=places.filter(p=>(region==='all'||p.region===region)&&[p.title,p.vi].join(' ').toLocaleLowerCase().includes(query));if(!visible.length)return;const bounds=region==='all'&&!query?L.latLngBounds([[8.1,102],[23.7,110]]):L.latLngBounds(visible.map(p=>[p.lat,p.lon]));map.fitBounds(bounds,{padding:[35,38],maxZoom:8,animate:false})};
+const resetBounds=()=>{const visible=places.filter(p=>(region==='all'||p.region===region)&&[p.title,p.vi].join(' ').toLocaleLowerCase().includes(query));if(!visible.length)return;const bounds=region==='all'&&!query?L.latLngBounds([[6.8,101.7],[24.1,117.2]]):L.latLngBounds(visible.map(p=>[p.lat,p.lon]));map.fitBounds(bounds,{padding:[35,38],maxZoom:8,animate:false})};
 L.control.zoom({position:'topright',zoomInTitle:'확대',zoomOutTitle:'축소'}).addTo(map);
 const Reset=L.Control.extend({options:{position:'topright'},onAdd(){const box=L.DomUtil.create('div','leaflet-bar atlas-reset');const button=L.DomUtil.create('button','',box);button.type='button';button.title='선택 지역 전체 보기';button.setAttribute('aria-label','선택 지역 전체 보기');button.textContent='⌂';L.DomEvent.disableClickPropagation(box);L.DomEvent.on(button,'click',resetBounds);return box}});new Reset().addTo(map);
 L.control.scale({position:'bottomleft',imperial:false,maxWidth:90}).addTo(map);

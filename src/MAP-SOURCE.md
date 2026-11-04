@@ -23,3 +23,9 @@ Hội An's marker has a visible leader offset to keep it separate from Đà Nẵ
 
 Leaflet vendor files must remain byte-for-byte intact during deployment URL
 rewriting. The Pages build prefixes URLs only in first-party assets.
+
+Hoàng Sa (Paracel Islands) and Trường Sa (Spratly Islands) have bilingual
+geographic labels and symbolic points at representative island locations.
+These points are not island footprints or an exhaustive inventory, and do not
+depict maritime boundaries. The default overview includes both archipelagos.
+Regional search/filters continue to focus the matching travel destinations.

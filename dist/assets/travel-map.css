@@ -25,3 +25,6 @@ body:has(.map-page) .ai-launcher{font-size:0;gap:0;padding:13px;width:46px;heigh
 .interactive-map .leaflet-overlay-pane svg{width:auto;height:auto;max-height:none}
 
 .interactive-map .leaflet-top.leaflet-right{top:108px}
+.atlas-archipelago-label{font-family:var(--font-body);color:#527e78;text-align:center;white-space:nowrap;pointer-events:none!important;text-shadow:0 1px 3px #f6fcf9,1px 0 3px #f6fcf9,-1px 0 3px #f6fcf9}.atlas-archipelago-label strong{display:block;font-size:10px;letter-spacing:.08em;font-weight:600;line-height:1.6}.atlas-archipelago-label small{display:block;font-size:9px;line-height:1.5;font-style:italic;color:#799a93}
+@media(max-width:700px){.atlas-archipelago-label strong{font-size:8px;letter-spacing:.025em}.atlas-archipelago-label small{font-size:8px}}
+.interactive-map .leaflet-pane svg{width:auto;height:auto;max-height:none}
