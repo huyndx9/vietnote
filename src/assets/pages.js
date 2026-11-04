@@ -346,6 +346,12 @@ function setupHeroSlideshow() {
     });
     current = next;
     document.getElementById("heroPlace").textContent = slides[current].dataset.place;
+    // Each photo's author and licence travel with it (CC BY requires visible attribution).
+    const credit = document.getElementById("heroCredit");
+    if (credit && slides[current].dataset.credit) {
+      credit.textContent = slides[current].dataset.credit;
+      credit.href = slides[current].dataset.creditUrl;
+    }
     dots.forEach((dot, i) => dot.setAttribute("aria-pressed", String(i === current)));
   }
   function schedule() {

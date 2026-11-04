@@ -12,6 +12,12 @@ from PIL import Image
 root = Path(__file__).resolve().parent.parent
 PHOTOS = {
     'halong-haneul-trac.webp': (640, 960, 1440, 1920, 2560),
+    # Wikimedia Commons photos; credits live in src/content/photos.json.
+    'hoian-chua-cau-night.jpg': (640, 960, 1440, 1920, 2560),
+    'hanoi-the-huc-bridge-flowers.jpg': (640, 960, 1440, 1920, 2560),
+    'ban-gioc-waterfall.jpg': (640, 960, 1440, 1920),  # very detailed; 2560px would be 1.1 MB
+    'hanoi-long-bien-bridge.jpg': (640, 960, 1440, 1920),  # source is 1920px wide
+    'hanoi-turtle-tower-dusk.jpg': (640, 960, 1440, 1920, 2560),
 }
 
 for name, widths in PHOTOS.items():
