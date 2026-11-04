@@ -15,6 +15,20 @@ markup are defined in `src/build.py`. Styles and behavior are under
 `dist/assets/typography.css`, `pages.css`, and `pages.js`.
 Serve `dist/` with any static web server. This project deploys through Sites.
 
+## Fonts and photographs
+
+- Body text uses Pretendard (OFL-1.1), a Korean-first typeface that also covers
+  Vietnamese letters; display headings use Playfair Display (OFL-1.1).
+  Both are subset into `dist/assets/fonts/*-subset.woff2` by
+  `scripts/subset-fonts.py` (needs `pip install fonttools brotli`). The
+  Pretendard subset holds the 2,350 common KS X 1001 Hangul syllables plus all
+  syllables used on the site; `src/build.py` prints a warning when new text
+  needs a syllable outside `src/font-hangul.txt`.
+- Large source photographs live in `src/photos/` (not deployed).
+  `scripts/optimize-images.py` (needs `pip install pillow`) writes responsive
+  WebP sizes to `dist/assets/`; pages reference them with `srcset`.
+- Only the homepage preloads the hero photograph.
+
 ## Behavior and current limits
 
 - Search and regional/city filtering run locally, including Korean and English names.
