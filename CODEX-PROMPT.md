@@ -1,4 +1,4 @@
-Hãy đọc README.md, README-technical.md, src/build.py và các assets trước khi sửa.
+Hãy đọc README.md, src/build.py, src/content/, src/templates/ và src/assets/ trước khi sửa.
 Đây là bản VIETNOTE mới nhất, không phải file ZIP một trang cũ.
 
 Giữ giao diện Magazine Style, ảnh chụp thật Hạ Long, typography đã chỉnh và các trang hiện có.

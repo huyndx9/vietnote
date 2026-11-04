@@ -1,0 +1,44 @@
+{
+  "categories": [
+    {
+      "id": "destinations",
+      "label": "여행지",
+      "en": "Find your Vietnam.",
+      "subtitle": "어떤 베트남을 만나고 싶으세요? 도시마다 다른 여행을 골라 보세요.",
+      "filters": [
+        "북부",
+        "중부",
+        "남부"
+      ]
+    },
+    {
+      "id": "itineraries",
+      "label": "추천 일정",
+      "en": "Days well spent.",
+      "subtitle": "다녀야 할 곳보다, 머물고 싶은 순간을 먼저 생각합니다."
+    },
+    {
+      "id": "food",
+      "label": "음식과 카페",
+      "en": "A taste of everyday.",
+      "subtitle": "이름을 알고, 맛을 이해하고, 한 걸음 더 가까워지는 시간."
+    },
+    {
+      "id": "journal",
+      "label": "현지인의 노트",
+      "en": "From a local perspective.",
+      "subtitle": "관광 안내서 사이에 담기지 않은, 일상의 작은 이야기."
+    },
+    {
+      "id": "guides",
+      "label": "여행 준비",
+      "en": "Before you go.",
+      "subtitle": "처음 떠나는 여행도 조금 더 편안해지도록."
+    }
+  ],
+  "default_description": "베트남 여행의 작은 발견을 기록하는 VIETNOTE.",
+  "disclaimers": {
+    "itineraries": "여행 일정 예시입니다. 예약이나 실제 운영을 보장하지 않습니다.",
+    "default": "요금·운영 시간·입국 조건은 방문 전 공식 안내를 확인해 주세요."
+  }
+}

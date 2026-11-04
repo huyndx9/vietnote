@@ -1,4 +1,4 @@
-"""Create the compact web fonts in dist/assets/fonts/.
+"""Create the compact web fonts in src/assets/fonts/.
 
 Requires fontTools and brotli (pip install fonttools brotli). The normal site
 build does not need them; run this script only after changing fonts or adding
@@ -21,7 +21,7 @@ from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 
 root = Path(__file__).resolve().parent.parent
-fonts = root / 'dist' / 'assets' / 'fonts'
+fonts = root / 'src' / 'assets' / 'fonts'
 PRETENDARD = 'https://registry.npmjs.org/pretendard/-/pretendard-1.3.9.tgz'
 MEMBER = 'package/dist/web/variable/woff2/PretendardVariable.woff2'
 LICENSE = 'package/dist/LICENSE.txt'
@@ -40,11 +40,9 @@ def ks_x_1001_hangul():
 
 def site_text():
     parts = []
-    for path in (root / 'dist').rglob('*'):
-        if path.suffix in {'.html', '.js'}:
+    for path in (root / 'src').rglob('*'):
+        if path.suffix in {'.html', '.js', '.json', '.py'}:
             parts.append(path.read_text(encoding='utf-8'))
-    parts.append((root / 'src' / 'build.py').read_text(encoding='utf-8'))
-    parts.append((root / 'src' / 'home.html').read_text(encoding='utf-8'))
     return ''.join(parts)
 
 

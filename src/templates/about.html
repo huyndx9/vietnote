@@ -1,0 +1,38 @@
+<main class="page-wrap">
+  <div class="page-intro">
+    <div class="section-no">THE STORY BEHIND VIETNOTE</div>
+    <h1 class="serif">Between two homes.</h1>
+    <p>한국과 베트남, 그 사이에서 전하는 여행 이야기.</p>
+  </div>
+  <div class="about-layout">
+    <div class="about-image">
+      <img src="${base}assets/halong-haneul-trac-960.webp"
+        srcset="${base}assets/halong-haneul-trac-640.webp 640w,${base}assets/halong-haneul-trac-960.webp 960w,${base}assets/halong-haneul-trac-1440.webp 1440w"
+        sizes="(max-width: 760px) 90vw, 45vw" width="3200" height="2133" loading="lazy" alt="하롱베이의 푸른 하늘과 바다">
+    </div>
+    <div class="article-body">
+      <section>
+        <h2>안녕하세요, 베트남에서 온 Huy입니다.</h2>
+        <p>저는 베트남에서 태어나 2017년 한국에 왔습니다. 한국에서 공부하고 일하며 지내는 동안, 한국 친구들에게 제가 아는 베트남을 소개하고 싶었습니다.</p>
+        <p>VIETNOTE는 그 마음에서 시작한 여행 노트입니다. 유명한 여행지뿐 아니라 동네의 작은 식당, 커피 한 잔, 문화의 차이처럼 여행을 조금 더 깊게 만드는 이야기를 담고자 합니다.</p>
+      </section>
+      <section>
+        <h2>우리가 기록하고 싶은 것</h2>
+        <p>화려한 수식어보다 이해하기 쉬운 설명을, 빽빽한 일정표보다 자신에게 맞는 여행을 제안합니다. 베트남을 처음 찾는 분도 편하게 읽을 수 있는 한국어로 전합니다.</p>
+      </section>
+    </div>
+  </div>
+  <section id="feedback" class="feedback-panel">
+    <div>
+      <div class="section-no">HELP US KEEP IT USEFUL</div>
+      <h2>바뀐 정보를 발견하셨나요?</h2>
+      <p>현재는 수정 제안을 개인 메모로 저장할 수 있습니다. 운영자 전송 기능은 아직 연결되지 않았습니다.</p>
+    </div>
+    <form id="feedbackForm">
+      <label>관련 글 또는 장소<input name="article" maxlength="160" required placeholder="글 제목이나 장소 이름"></label>
+      <label>수정할 내용<textarea name="message" maxlength="2000" required placeholder="어떤 정보가 달라졌는지 적어 주세요."></textarea></label>
+      <button class="primary-button">내 브라우저에 메모 저장</button>
+      <p id="feedbackStatus" role="status"></p>
+    </form>
+  </section>
+</main>

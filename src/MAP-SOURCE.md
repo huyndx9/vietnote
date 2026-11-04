@@ -2,10 +2,10 @@
 
 The atlas uses Leaflet 1.9.4 (BSD-2-Clause) for geographic projection, vector
 rendering, dragging, keyboard navigation, zoom controls and a metric scale.
-The original distribution and license are retained in dist/assets/vendor/leaflet.
+The original distribution and license are retained in src/assets/vendor/leaflet.
 Reference implementation/documentation: https://leafletjs.com/examples/geojson/
 
-Local vector data in dist/assets/map-geography.js:
+Local vector data in src/assets/map-geography.js:
 - Natural Earth 1:10m admin-0 country polygons, Vietnam and regional context:
   https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_10m_admin_0_countries.geojson
 - Natural Earth 1:50m river centerlines, Mekong, Hong and Chao Phraya:
@@ -21,8 +21,9 @@ routing detail. Search links open Google Maps for the named destination.
 No external tiles, API key or tracking requests are needed to render the map.
 Hội An's marker has a visible leader offset to keep it separate from Đà Nẵng.
 
-Leaflet vendor files must remain byte-for-byte intact during deployment URL
-rewriting. The Pages build prefixes URLs only in first-party assets.
+Leaflet vendor files are copied byte-for-byte into the build output. The base
+path for GitHub Pages is applied when pages are generated, so no deployed file
+is rewritten afterwards.
 
 Hoàng Sa (Paracel Islands) and Trường Sa (Spratly Islands) have bilingual
 geographic labels and symbolic points at representative island locations.
@@ -30,7 +31,7 @@ These points are not island footprints or an exhaustive inventory, and do not
 depict maritime boundaries. The default overview includes both archipelagos.
 Regional search/filters continue to focus the matching travel destinations.
 
-Destination content is maintained in src/map-destinations.json. The standard
+Destination content is maintained in src/content/map-destinations.json. The standard
 build generates map-destinations.js and the total displayed on the page. Each
 profile has a Korean editorial teaser, two original introductory paragraphs,
 three suggested experiences, and a practical preparation tip. These are travel
