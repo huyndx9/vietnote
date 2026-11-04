@@ -29,3 +29,17 @@ geographic labels and symbolic points at representative island locations.
 These points are not island footprints or an exhaustive inventory, and do not
 depict maritime boundaries. The default overview includes both archipelagos.
 Regional search/filters continue to focus the matching travel destinations.
+
+Destination content is maintained in src/map-destinations.json. The standard
+build generates map-destinations.js and the total displayed on the page. Each
+profile has a Korean editorial teaser, two original introductory paragraphs,
+three suggested experiences, and a practical preparation tip. These are travel
+suggestions, not first-person reports or verified current operating conditions.
+Coordinates locate the named city/attraction approximately; routing uses the
+named Google Maps destination. Images are shown only where an existing local
+photo corresponds to the destination.
+
+Leaflet.markercluster 1.5.3 (MIT license retained in assets/vendor/markercluster)
+groups nearby destination markers. Island geography labels are separate from
+this layer and remain on the map when destination filters change. Interest
+filters combine with region filters. Search normalizes Vietnamese diacritics.

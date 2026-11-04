@@ -45,3 +45,12 @@ https://huyndx9.github.io/vietnote/ . GitHub Actions must be enabled.
 Alternatively, the prepared `gh-pages` branch can be published by choosing
 **Deploy from a branch**, **gh-pages**, **/ (root)**. That branch is a snapshot;
 subsequent automatic deployments use the workflow above.
+
+## Travel atlas editorial content
+
+The atlas has 42 destination profiles in `src/map-destinations.json`. Edit the
+Korean teaser, `paragraphs`, `experiences` and `tip` there, then rebuild with
+`python3 src/build.py`. The page count is derived from this file. The longer
+Korean introduction and tip appear in the expandable travel note on each card.
+Region, interest and accent-insensitive search filters can be combined. Nearby
+markers are grouped with the locally bundled Leaflet.markercluster plugin.
