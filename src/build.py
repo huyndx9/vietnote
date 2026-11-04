@@ -33,7 +33,7 @@ for x in data:x['url']=paths[x['id']]
 home=(root/'src/home.html').read_text()
 head=home.split('</head>')[0]+'</head>'
 head=head.replace('</head>','<link rel="stylesheet" href="/assets/pages.css"></head>')
-nav=''.join(f'<a href="/{k}/">{v}</a>' for k,v in labels.items())
+nav=''.join(f'<a href="/{k}/">{v}</a>' for k,v in labels.items())+'<a href="/map/">여행 지도</a>'
 header=f'<header class="wrap topbar"><a href="/" class="logo">VIETNOTE<span>.</span></a><nav class="nav">{nav}</nav><div class="navright"><a class="notebook-link" href="/notebook/" aria-label="내 여행 노트">♡ <span>내 노트</span></a><button class="iconbtn" aria-label="전체 검색" onclick="openSearch()">⌕</button><button class="iconbtn menu-btn" aria-label="메뉴" onclick="toggleMenu(true)">☰</button></div></header><div class="mobilemenu" id="mobilemenu"><button aria-label="메뉴 닫기" onclick="toggleMenu(false)">×</button>{nav}<a href="/notebook/">내 여행 노트</a><a href="/about/">VIETNOTE 소개</a></div>'
 footer='<footer class="footer wrap"><div class="footer-top"><div><a href="/"><h2>VIETNOTE<span>.</span></h2></a><p class="section-sub">베트남을 발견하는 새로운 시선.<br>Discover Vietnam, one story at a time.</p></div><div class="footer-links"><a href="/about/">소개</a><a href="/guides/">여행 준비</a><a href="/notebook/">내 여행 노트</a><a href="/about/#feedback">정보 수정 제안</a></div></div><div class="footer-bottom"><span>© 2026 VIETNOTE · 여행의 작은 발견을 기록합니다.</span><a href="https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/" target="_blank" rel="noopener">Hero photo · Haneul Trac / Pexels</a></div></footer>'
 common='<script src="/assets/content.js"></script><script src="/assets/pages.js"></script>'
@@ -84,13 +84,16 @@ for x in data:
 (out/'404.html').write_text(head+'<body>'+header+'<main class="page-wrap empty-state"><h1 class="serif">A little detour.</h1><p>찾으시는 페이지가 없습니다.</p><a class="action-button" href="/">홈으로 돌아가기</a></main>'+footer+common+'</body></html>')
 print('Built',len(data),'detail pages and 8 main pages')
 
+
+write('/map/','베트남 여행 지도','''<main class="page-wrap"><div class="page-intro"><div class="section-no">EXPLORE BY PLACE</div><h1 class="serif">A map of discoveries.</h1><p>북부의 산과 중부의 옛 도시, 남부의 바다까지. 지도에서 다음 여행지를 골라 보세요.</p></div><section id="travelMap" aria-label="베트남 여행 지도"><div class="browse-toolbar"><div class="filter-list" aria-label="지역 선택"><button class="filter-chip" data-map-region="all" aria-pressed="true">전체</button><button class="filter-chip" data-map-region="north" aria-pressed="false">북부</button><button class="filter-chip" data-map-region="central" aria-pressed="false">중부</button><button class="filter-chip" data-map-region="south" aria-pressed="false">남부</button></div><label class="browse-search">여행지 검색 <input id="mapSearch" type="search" placeholder="하노이, Hội An…"></label></div><p id="mapCount" class="list-count" role="status"></p><div class="travel-map-layout"><div class="travel-map-canvas"><svg id="vietnamMap" viewBox="0 0 600 700" role="group" aria-label="베트남 주요 여행지. 점을 선택하면 소개가 표시됩니다."><title>베트남 여행 지도</title><rect width="600" height="700" fill="#e6efed"/><text x="420" y="420" class="sea-label">동해</text><polygon id="mapLand" fill="#cbd7bd" stroke="#71856d" stroke-width="1.5"/><ellipse cx="172" cy="579" rx="6" ry="12" fill="#cbd7bd"/><g id="mapPins"></g><text x="30" y="45" class="map-north">N ↑</text></svg><p class="map-caption">여행지 위치를 살펴보는 개략도입니다. 국경·해안선·섬은 단순화되어 있으며 모든 영토와 섬을 표시하지 않습니다. 정확한 위치와 경로는 Google Maps에서 확인하세요.</p></div><div class="travel-map-sidebar"><div id="mapDetail" class="map-detail" aria-live="polite"></div><h2 class="map-list-heading">여행지 둘러보기</h2><div id="mapPlaces" class="map-places"></div><p id="mapEmpty" class="empty-state" hidden>검색 결과가 없습니다. 다른 지역이나 이름을 찾아보세요.</p></div></div></section></main><script src="/assets/travel-map.js"></script>''')
+
 # Content hashes refresh browser caches after an asset update.
 for page in out.rglob('*.html'):
  text=page.read_text()
  text=re.sub(r'<link[^>]+href="/assets/typography.css[^"]*"[^>]*>', '', text)
  text=re.sub(r'<link[^>]+(?:href="https://fonts\.(?:googleapis|gstatic)\.com[^"]*")[^>]*>', '', text)
  text=text.replace('</head>', '<link rel="stylesheet" href="/assets/typography.css"></head>')
- for asset in ('pages.js','pages.css','content.js','typography.css'):
+ for asset in ('pages.js','pages.css','content.js','typography.css','travel-map.js'):
   digest=hashlib.sha256((out/'assets'/asset).read_bytes()).hexdigest()[:12]
   text=text.replace('/assets/'+asset+'"', '/assets/'+asset+'?v='+digest+'"')
  page.write_text(text)
