@@ -32,3 +32,29 @@ body:has(.map-page:not(.home-map)) .ai-launcher{font-size:0;gap:0;padding:13px;w
 @media(max-width:700px){.map-interest-bar{gap:10px}.map-interest-bar>span{width:100%;font-size:10px}.map-interest-chips{gap:5px}.map-interest-chips button{padding:7px 10px;font-size:10px}.map-editorial p{font-size:14px;line-height:2}.map-travel-tip p{font-size:12px}}
 
 .home-map{scroll-margin-top:20px;margin:0 auto;padding-top:0;padding-bottom:42px}.home-map .map-intro h2{font-family:var(--font-display);font-size:clamp(45px,5.3vw,76px);font-weight:400;line-height:1.15;letter-spacing:-.045em;margin:18px 0}.home-map .map-intro{padding-top:62px}.home-map .map-source{margin-bottom:0}@media(max-width:700px){.home-map{padding-bottom:24px}.home-map .map-intro{padding-top:40px}.home-map .map-intro h2{font-size:44px;margin:14px 0}}
+/* Use the desktop viewport instead of a fixed 1,500px atlas column. */
+@media(min-width:1101px){
+ .page-wrap.map-page{max-width:none;padding-inline:var(--page-gutter)}
+ .travel-map-layout{grid-template-columns:minmax(0,1fr) clamp(350px,30vw,600px);gap:clamp(26px,2vw,56px)}
+ #vietnamMap.interactive-map{height:clamp(720px,72vh,1280px);max-height:none}
+ .map-intro h1,.home-map .map-intro h2{font-size:clamp(64px,4.8vw,104px)}
+ .map-intro p{font-size:clamp(16px,1vw,21px)}
+ .map-intro-note>span{font-size:clamp(78px,5vw,110px)}
+ .map-intro-note,.map-toolbar .filter-chip{font-size:clamp(14px,.9vw,18px)}
+ .map-search{width:clamp(270px,23vw,460px)}
+ .map-search input{font-size:clamp(14px,.9vw,18px);padding-block:14px}
+ .map-interest-bar>span,.map-interest-chips button{font-size:clamp(12px,.8vw,16px)}
+ .map-interest-chips button{padding:9px 15px}
+ .map-detail-cover{height:clamp(200px,13vw,300px)}
+ .map-detail-body{padding:clamp(24px,1.7vw,38px)}
+ .map-detail h2{font-size:clamp(28px,1.7vw,40px)}
+ .map-detail p,.map-editorial p{font-size:clamp(16px,1vw,20px)}
+ .map-detail .section-no,.map-detail small,.map-detail a,.map-experiences span,.map-editorial summary,.map-travel-tip strong,.map-travel-tip p{font-size:clamp(12px,.8vw,16px)}
+ .map-places button strong{font-size:clamp(15px,1vw,20px)}
+ .map-places button small,.map-list-header .list-count{font-size:clamp(12px,.8vw,16px)}
+ .map-list-heading{font-size:clamp(18px,1.2vw,24px)}
+ .map-places{max-height:clamp(320px,36vh,520px)}
+ .map-caption,.map-legend,.map-source{font-size:clamp(11px,.7vw,14px)}
+ .map-selection{font-size:clamp(12px,.8vw,16px)}
+}
+@media(max-width:360px){.atlas-archipelago-label{width:140px!important;margin-left:-70px!important}}
