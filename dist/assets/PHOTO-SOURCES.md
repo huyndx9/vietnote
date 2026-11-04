@@ -1,17 +1,28 @@
-# Slideshow photo sources
+# Photo sources
 
-- Hạ Long: Haneul Trac / Pexels, photo 36551013 (existing site asset).
-- Hội An covered bridge: portfolio-1.jpg.
-- Hà Nội, The Huc bridge: portfolio-6.jpg.
-- Bản Giốc waterfall: portfolio-4.jpg.
+Every photograph stored in this project must have a verifiable licence that
+allows use on a public website. Record the source page, author and licence of
+each new photo here before publishing it.
 
-The three additional images are reproduced unmodified from
-https://github.com/tiennh1995/vietnam_travel/tree/master/app/assets/images .
-Original photographers are not identified in that repository; it provides no
-explicit image license. Source attribution is recorded here, and does not grant
-additional rights. Preserve this record when replacing photos with owned or
-explicitly licensed high-resolution originals.
+## In use
 
-- Hà Nội, Long Biên bridge at sunset: portfolio-7.jpg, image bears Zing.vn credit.
-- Hà Nội, Hoàn Kiếm lake and Turtle Tower: portfolio-5.jpg, original signature retained.
-Both are copied unmodified from the same source repository above.
+- `src/photos/halong-haneul-trac.webp` and its responsive copies
+  `dist/assets/halong-haneul-trac-*.webp`: Hạ Long Bay by Haneul Trac,
+  https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/
+  (Pexels licence; credited in the site footer).
+
+## Removed on 2026-11-04
+
+Five slideshow photos (Hội An covered bridge, Thê Húc bridge, Bản Giốc
+waterfall, Long Biên bridge at sunset, Hoàn Kiếm lake) were copied from
+https://github.com/tiennh1995/vietnam_travel without an identified
+photographer or licence; one carried a Zing.vn credit. They were removed from
+the site and the repository. Do not restore them.
+
+## Replacement plan
+
+Use Wikimedia Commons images, preferring Public Domain or CC0. CC BY or CC BY-SA
+images are acceptable only with the author, licence and source link shown on
+the site. Add each replacement to `PHOTOS` in `scripts/optimize-images.py`, keep
+the original in `src/photos/`, and add a `hero-slide` image in `src/home.html`.
+The slideshow controls reappear automatically once there are two or more slides.

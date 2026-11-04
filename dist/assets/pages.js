@@ -22,7 +22,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();toggle
 
 function setupHeroSlideshow(){
  const slides=[...document.querySelectorAll('.hero-slide')];
- if(slides.length<2)return;
+ // With a single photograph there is nothing to rotate; hide the dots and pause button.
+ if(slides.length<2){document.querySelector('.hero-controls')?.remove();return}
  const dotsHost=document.querySelector('.hero-dots'),pause=document.querySelector('.hero-pause');
  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
  let current=0,timer=null,paused=false;
