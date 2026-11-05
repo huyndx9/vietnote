@@ -407,6 +407,7 @@ setupHeroSlideshow();
 (() => {
   const track = document.getElementById("historyTrack");
   if (!track) return;
+  const disclosure = track.closest("details");
   const cards = [...track.children];
   const marks = [...document.querySelectorAll("[data-history-index]")];
   const prev = document.getElementById("historyPrev");
@@ -422,7 +423,7 @@ setupHeroSlideshow();
     prev.disabled = i === 0;
     next.disabled = i === cards.length - 1;
     const m = marks[i];
-    if (m && timeline) {
+    if (m && timeline && (!disclosure || disclosure.open)) {
       // offsetLeft is relative to the <li>, so measure against the timeline instead.
       const t = timeline.getBoundingClientRect(), r = m.getBoundingClientRect();
       const left = timeline.scrollLeft + (r.left - t.left) - (t.width - r.width) / 2;
@@ -441,10 +442,12 @@ setupHeroSlideshow();
   }
   let ticking = false;
   track.addEventListener("scroll", () => {
+    if (disclosure && !disclosure.open) return;
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
       ticking = false;
+      if (disclosure && !disclosure.open) return;
       const x = track.scrollLeft;
       let best = 0;
       cards.forEach((c, k) => {
@@ -460,6 +463,12 @@ setupHeroSlideshow();
   track.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") { e.preventDefault(); go(active + 1); }
     if (e.key === "ArrowLeft") { e.preventDefault(); go(active - 1); }
+  });
+  disclosure?.addEventListener("toggle", () => {
+    // Measure the timeline once its native disclosure has become visible.
+    if (disclosure.open) requestAnimationFrame(() => {
+      if (disclosure.open) setActive(active);
+    });
   });
   setActive(0);
 })();
