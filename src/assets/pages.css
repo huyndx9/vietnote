@@ -1063,11 +1063,7 @@ textarea:focus-visible {
 .route-body .textlink{margin-top:auto;align-self:flex-start}
 @media(max-width:900px){.route-grid{grid-template-columns:1fr}}
 
-/* Homepage: when to go */
-.season-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,2.4vw,36px);margin-top:36px}
-.season-card{background:#fffdf8;border:1px solid var(--line);padding:26px 26px 24px;display:flex;flex-direction:column;gap:14px}
-.season-head h3{font-size:24px;font-weight:700;margin:0;letter-spacing:-.03em}
-.season-head small{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+/* When to go: shared month colors and seasonal typography for atlas cards. */
 .season-best{display:grid;gap:2px;margin:0;padding:14px 16px;background:#eef2ea;border-radius:4px}
 .season-best span,.season-pack span{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
 .season-best strong{font-size:22px;color:#203b32}
@@ -1086,7 +1082,6 @@ textarea:focus-visible {
 .season-legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
 .season-legend .m-good i{background:#3f7a5b}.season-legend .m-hot i{background:#e0a458}.season-legend .m-cool i{background:#c9d6df}.season-legend .m-rain i{background:#5f86a8}.season-legend .m-storm i{background:#9d4d34}
 .season-note{font-size:13px;color:var(--muted);margin:10px 0 0}
-@media(max-width:900px){.season-grid{grid-template-columns:1fr}}
 
 /* Atlas destinations without a stored photo: Vietnamese place name card */
 .place-art{font-family:'Playfair Display','Pretendard',serif;font-size:clamp(26px,2.4vw,36px);color:#203b32;text-align:center;padding:0 18px;line-height:1.25;background:linear-gradient(140deg,#eef0e6 0%,#dde5d8 100%)}

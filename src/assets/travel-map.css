@@ -992,6 +992,39 @@
   border-radius: 3px;
   padding: 5px 8px;
 }
+.map-season {
+  margin: 20px 0;
+  padding: 18px 0;
+  border-block: 1px solid #e1e7d9;
+}
+.map-season-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.map-season-heading h3 {
+  margin: 0;
+  font-family: 'Playfair Display', 'Pretendard', serif;
+  font-size: 25px;
+  font-weight: 400;
+  color: #203b32;
+}
+.map-season-heading > span { font-size: 11px; color: #718366; }
+.map-season .season-best { margin: 0 0 14px; padding: 12px 14px; }
+.map-season .season-best strong { font-size: 20px; line-height: 1.4; }
+.map-season .season-best em { font-size: 12px; line-height: 1.7; }
+.map-season .season-months li { height: 30px; font-size: 11px; }
+.map-season .season-legend { margin: 12px 0 0; gap: 6px 12px; font-size: 10px; line-height: 1.7; }
+.map-season .season-legend i { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+.map-season-notes { margin-top: 14px; }
+.map-season-notes summary { cursor: pointer; color: #34563e; font-size: 12px; line-height: 1.7; }
+.map-season-notes summary:hover { color: var(--accent); }
+.map-season-notes summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.map-season .season-summary { margin: 12px 0; font-size: 13px; line-height: 1.85; }
+.map-season .season-pack { font-size: 12px; line-height: 1.85; }
+.map-season .season-note { margin-top: 12px; font-size: 11px; line-height: 1.8; }
 .map-editorial {
   border-top: 1px solid #e1e7d9;
   border-bottom: 1px solid #e1e7d9;

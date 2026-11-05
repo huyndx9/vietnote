@@ -1,5 +1,5 @@
 {
-  "_note": "Typical seasonal patterns, not forecasts. Shown on the homepage 'when to go' block. Weather varies by year and place; the block tells readers to check the forecast before leaving.",
+  "_note": "Typical regional seasonal patterns, not destination-specific forecasts. Shown in each atlas destination card, labelled with its region. Weather varies by year, altitude and coast; readers should check the local forecast before leaving.",
   "regions": [
     {
       "id": "north",

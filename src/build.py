@@ -181,28 +181,6 @@ class Site:
                 f'<a class="textlink" href="{self.url("itineraries/")}">ALL ROUTES ↗</a></div>'
                 '<div class="route-grid">' + ''.join(cards) + '</div></section>')
 
-    def home_seasons(self):
-        """Homepage 'when to go' block by region, month by month."""
-        data = load_json('seasons.json')
-        legend = data['legend']
-        cols = []
-        for r in data['regions']:
-            months = ''.join(f'<li class="m-{m}" title="{i + 1}월 · {h(legend[m])}"><span>{i + 1}</span></li>'
-                             for i, m in enumerate(r['months']))
-            cols.append(
-                f'<article class="season-card season-{r["id"]}"><div class="season-head"><h3>{h(r["label"])}</h3>'
-                f'<small>{h(r["places"])}</small></div>'
-                f'<p class="season-best"><span>추천 시기</span><strong>{h(r["best"])}</strong><em>{h(r["best_note"])}</em></p>'
-                f'<ol class="season-months" aria-label="{h(r["label"])} 월별 날씨">{months}</ol>'
-                f'<p class="season-summary">{h(r["summary"])}</p><p class="season-pack"><span>짐 준비</span>{h(r["pack"])}</p></article>')
-        keys = ''.join(f'<li class="m-{k}"><i></i>{h(v)}</li>' for k, v in legend.items())
-        return ('<section class="section wrap home-seasons" id="when-to-go"><div class="section-head"><div>'
-                '<div class="section-no">03 / WHEN TO GO</div><h2 class="section-title serif">When to go.</h2>'
-                '<div class="section-sub">베트남은 남북으로 길어서 같은 달에도 지역마다 날씨가 달라요. 가고 싶은 곳의 계절부터 확인해 보세요.</div></div></div>'
-                '<div class="season-grid">' + ''.join(cols) + '</div>'
-                f'<ul class="season-legend">{keys}</ul>'
-                '<p class="season-note">일반적인 경향이에요. 해마다 날씨가 다르니 출발 전 현지 예보와 태풍 정보를 꼭 확인하세요.</p></section>')
-
     def photo_credits(self):
         items = ''.join(
             f'<li><strong>{h(p["title"])}</strong><span>Photo: <a href="{h(p["url"])}" target="_blank" rel="noopener">'
@@ -270,8 +248,16 @@ class Site:
             stem = self.place_photo(p['id'])
             if stem:
                 p['photo'], p['photo_alt'] = self.photo_url(stem), self.photo(stem)['alt']
+        seasons = load_json('seasons.json')
+        region_ids = {r['id'] for r in seasons['regions']}
+        if not {p['region'] for p in self.destinations} <= region_ids:
+            raise ValueError('Missing seasonal data for an atlas region')
+        for r in seasons['regions']:
+            if len(r['months']) != 12 or any(m not in seasons['legend'] for m in r['months']):
+                raise ValueError(f'Invalid monthly seasonal data: {r["id"]}')
         self.write('assets/map-destinations.js', 'window.VIETNOTE_DESTINATIONS=' +
-                   json.dumps(self.destinations, ensure_ascii=False, separators=(',', ':')) + ';\n')
+                   json.dumps(self.destinations, ensure_ascii=False, separators=(',', ':')) + ';\n' +
+                   'window.VIETNOTE_SEASONS=' + json.dumps(seasons, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
     # ---- page parts ----------------------------------------------------
     def page(self, path, title, main, description=None, home=False, atlas=False):
@@ -397,7 +383,7 @@ class Site:
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
-        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(), seasons=self.home_seasons())
+        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history())
         self.page('index.html', '베트남을 발견하는 새로운 시선', main,
                   '베트남의 여행지, 문화, 음식과 현지 이야기를 기록하는 여행 매거진 VIETNOTE.',
                   home=True, atlas=True)
