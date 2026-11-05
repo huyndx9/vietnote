@@ -52,7 +52,6 @@ class Site:
         self.config = load_json('site.json')
         self.categories = {c['id']: c for c in self.config['categories']}
         self.photos = load_json('photos.json')['photos']
-        self.history = load_json('history.json')
 
     # ---- helpers -------------------------------------------------------
     def render(self, name, **values):
@@ -233,7 +232,6 @@ class Site:
             searchable = x['sections'][:1] if x['id'].startswith('place-') else x['sections']
             entry['sections'] = [[s['title'], s['body']] for s in searchable]
             public.append(entry)
-        public.extend(dict(id='history-'+c['id'],title=c['title'],category='journal',desc=c['teaser'],photo=self.photo_url(c['photo']),url=self.url('history/'+c['id']+'/'),sections=[[c['period'],' '.join(c['paragraphs'])]]) for c in self.history)
         self.write('assets/content.js',
                    'window.VIETNOTE_CONTENT=' + json.dumps(public, ensure_ascii=False) + ';\n')
         for p in self.destinations:  # atlas previews read photos from photos.json
@@ -244,11 +242,11 @@ class Site:
                    json.dumps(self.destinations, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
     # ---- page parts ----------------------------------------------------
-    def page(self, path, title, main, description=None, home=False, atlas=False, history=False):
+    def page(self, path, title, main, description=None, home=False, atlas=False):
         nav = ''.join(f'<a href="{self.url(c + "/")}">{h(v["label"])}</a>' for c, v in self.categories.items())
         nav += f'<a href="{"#travel-map" if home else self.url("map/")}">여행 지도</a>'
-        styles = (MAP_STYLES if atlas else ()) + (('history.css',) if home or history else ())
-        scripts = COMMON_SCRIPTS + (MAP_SCRIPTS if atlas else ()) + (('history.js',) if home else ())
+        styles = MAP_STYLES if atlas else ()
+        scripts = COMMON_SCRIPTS + (MAP_SCRIPTS if atlas else ())
         preload = ''
         if home:
             srcset = ','.join(f'{self.url(f"assets/halong-haneul-trac-{w}.webp")} {w}w' for w in HERO_SIZES)
@@ -364,44 +362,10 @@ class Site:
         self.page('map/index.html', '베트남 여행 지도', self.render('map', atlas=self.atlas('h1')), atlas=True)
         self.page('404.html', '페이지를 찾을 수 없습니다', self.render('not-found'))
 
-    def history_credit(self, chapter):
-        photo=self.photo(chapter['photo'])
-        if not photo:
-            raise ValueError('Missing history photo: '+chapter['photo'])
-        return (f'<a href="{h(photo["url"])}" target="_blank" rel="noopener noreferrer">Photo: {h(photo["author"])} / {h(photo["source"])}</a>'
-                f' · <a href="{h(photo["license_url"])}" target="_blank" rel="noopener noreferrer">{h(photo["license"])}</a>')
-
-    def history_shelf(self):
-        timeline=[]
-        cards=[]
-        for i,c in enumerate(self.history):
-            url=self.url('history/'+c['id']+'/')
-            timeline.append(f'<button type="button" data-history-index="{i}" aria-controls="history-card-{c["id"]}" aria-current="{str(i==0).lower()}"><span>{i+1:02d}</span>{h(c["period"])}</button>')
-            image=self.img(c['photo'],self.photo(c['photo'])['alt'],'(max-width: 700px) 82vw, (min-width: 2400px) 620px, 28vw')
-            location=c['places'][0]
-            visit='https://www.google.com/maps/search/?api=1&query='+quote(location['query'])
-            period_class=' history-period--long' if len(c['period'])>13 else ''
-            cards.append(f'<article class="history-card" id="history-card-{c["id"]}" aria-label="{i+1} / {len(self.history)} · {h(c["title"])}">'
-                         f'<div class="history-media"><a class="history-image-link" href="{url}" aria-label="{h(c["title"])} 읽기">{image}</a><span class="history-image-label">오늘의 풍경</span><div class="history-credit">{self.history_credit(c)}</div></div>'
-                         f'<div class="history-card-body"><div class="history-period{period_class}">{h(c["period"])}</div><small>{h(c["kicker"])}</small><h3><a href="{url}">{h(c["title"])}</a></h3><p>{h(c["teaser"])}</p><div class="history-today"><span>지금 가볼 곳</span><a href="{h(visit)}" target="_blank" rel="noopener noreferrer">{h(location["name"])} ↗</a></div><a class="history-read" href="{url}">이 시대의 이야기 읽기 ↗</a></div></article>')
-        return self.render('history-shelf',timeline=''.join(timeline),cards=''.join(cards))
-
-    def build_history(self):
-        destinations={p['id']:p for p in self.destinations}
-        for i,c in enumerate(self.history):
-            visits=''.join(f'<a href="https://www.google.com/maps/search/?api=1&amp;query={quote(p["query"])}" target="_blank" rel="noopener noreferrer"><strong>{h(p["name"])}</strong><span>Google Maps에서 찾기 ↗</span></a>' for p in c['places'])
-            guides=''.join(f'<a href="{destinations[id]["url"]}"><strong>{h(destinations[id]["title"])}</strong><span>교통·숙소·음식과 여행 준비 ↗</span></a>' for id in c['guides'])
-            sources=''.join(f'<li><a href="{h(source["url"])}" target="_blank" rel="noopener noreferrer">{h(source["label"])} ↗</a></li>' for source in c['sources'])
-            previous=self.history[i-1] if i else None
-            following=self.history[i+1] if i+1<len(self.history) else None
-            chapter_nav=''.join(f'<a href="{self.url("history/"+chapter["id"]+"/")}"><small>{label}</small><strong>{h(chapter["title"])}</strong></a>' for chapter,label in [(previous,'← 이전 이야기'),(following,'다음 이야기 →')] if chapter)
-            main=self.render('history-article',id=c['id'],number=f'{i+1:02d}',period=h(c['period']),title=h(c['title']),teaser=h(c['teaser']),image=self.img(c['photo'],self.photo(c['photo'])['alt'],'92vw'),photo_context=h(c['photo_context']),credit=self.history_credit(c),paragraphs=''.join(f'<p>{h(p)}</p>' for p in c['paragraphs']),visits=visits,guides=guides,sources=sources,chapter_nav=chapter_nav)
-            self.page(f'history/{c["id"]}/index.html',c['title'],main,c['teaser'],history=True)
-
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
-        main = self.render('home', atlas=atlas, history=self.history_shelf(), **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), seasons=self.home_seasons())
+        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), seasons=self.home_seasons())
         self.page('index.html', '베트남을 발견하는 새로운 시선', main,
                   '베트남의 여행지, 문화, 음식과 현지 이야기를 기록하는 여행 매거진 VIETNOTE.',
                   home=True, atlas=True)
@@ -426,12 +390,11 @@ class Site:
         self.build_articles()
         self.build_place_guides()
         self.build_static_pages()
-        self.build_history()
         self.build_home()
         self.check_font_coverage()
         print(f'Built {self.out.relative_to(ROOT)}/ with base path {self.base}: '
               f'{len(self.items)} detail pages, {len(self.place_articles)} place guides, {len(self.categories)} listings, '
-              f'{len(self.history)} history chapters, home, map, notebook, about and 404.')
+              f'home, map, notebook, about and 404.')
 
 
 def normalise_base(value):

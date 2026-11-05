@@ -132,23 +132,3 @@ Các bài có 13 phần, mục lục, lưu sổ tay, chia sẻ, câu tiếng Vi�
 liên kết Google Maps và địa điểm liên quan. Nội dung là hướng dẫn biên tập;
 không khẳng định đã trực tiếp đến thăm hoặc cung cấp giá/giờ mở cửa trực tiếp.
 Khi bổ sung địa điểm, cập nhật cả hai file JSON và kiểm tra nguồn thông tin.
-
-## Dải lịch sử Việt Nam
-
-`src/content/history.json` chứa 13 chương, mốc thời gian, bài đọc tiếng Hàn,
-địa điểm hiện nay, ảnh và nguồn tham khảo. Dải nằm ngay sau phần giới thiệu
-trên trang chủ, điều khiển thủ công bằng timeline, nút mũi tên, bàn phím,
-kéo chuột hoặc vuốt. Không tự chạy. Mỗi chương có trang `history/<id>/` và
-liên kết tới Google Maps cùng cẩm nang địa điểm đã có.
-
-Ảnh hiện dùng lại các ảnh Commons có giấy phép trong `photos.json`. Một số
-chương dùng phong cảnh hiện tại làm bối cảnh, không phải ảnh đúng di tích;
-`photo_context` trên bài đọc ghi rõ địa điểm, vai trò và giới hạn của ảnh.
-Khi có ảnh hiện vật/di tích phù hợp hơn, thay trường `photo` bằng stem đã có
-trong `photos.json`, giữ nguồn và giấy phép. Không trình bày ảnh hiện đại hoặc
-ảnh tái dựng như chứng cứ trực tiếp của sự kiện trong quá khứ.
-
-Các mốc truyền thuyết được tách khỏi niên đại xác nhận; Champa và Phù Nam là
-các lịch sử khác nhau; năm 1975 được phân biệt với thống nhất nhà nước năm
-1976. Chương cuối có quan hệ ngoại giao Hàn–Việt năm 1992. Liên kết đọc thêm
-là tài liệu tham khảo, không xác nhận giờ mở cửa hay khả năng truy cập hiện tại.
