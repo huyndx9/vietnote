@@ -567,15 +567,6 @@
   stroke-width: 1;
   pointer-events: none;
 }
-body:has(.map-page:not(.home-map)) .ai-launcher {
-  font-size: 0;
-  gap: 0;
-  padding: 13px;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  justify-content: center;
-}
 @media (max-width: 700px) {
   .map-selection {
     top: auto;

@@ -435,32 +435,81 @@ form textarea {
   color: var(--muted);
   margin: 0;
 }
-.ai-launcher {
+.ai-mascot-dock {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
   z-index: 40;
-  border: 0;
-  border-radius: 30px;
-  background: #263e34;
-  color: white;
-  box-shadow: 0 5px 25px #0002;
-  padding: 14px 21px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
+  width: 128px;
+  height: 128px;
 }
-.ai-launcher > span {
-  font-size: 20px;
+.ai-launcher {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+  border-radius: 28px;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ai-mascot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url("chatbot-poses-v1.webp") 0 0 / 300% 200% no-repeat;
+  filter: drop-shadow(0 5px 5px #263e3422);
+  transform-origin: 50% 95%;
+  animation: mascot-poses 14s step-end infinite, mascot-breathe 3.5s ease-in-out infinite;
+}
+.ai-launcher:hover .ai-mascot {
+  filter: drop-shadow(0 7px 8px #263e3444);
+}
+.ai-motion-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #d7dfd3;
+  background: #fffef8;
+  color: #263e34;
+  box-shadow: 0 2px 8px #263e3414;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ai-mascot-dock:is(.is-paused, .is-away, .is-open) .ai-mascot {
+  animation-play-state: paused;
+}
+.ai-mascot-dock.is-open .ai-motion-toggle {
+  visibility: hidden;
+}
+/* Six aligned poses: hello, wonder, two scratch poses, read, discovery. */
+@keyframes mascot-poses {
+  0%, 14%, 100% { background-position: 0 0; }
+  18%, 30% { background-position: 50% 0; }
+  34%, 40%, 46% { background-position: 100% 0; }
+  37%, 43%, 49% { background-position: 0 100%; }
+  53%, 72% { background-position: 50% 100%; }
+  78%, 94% { background-position: 100% 100%; }
+}
+@keyframes mascot-breathe {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-mascot-dock.is-paused .ai-mascot { animation: none; }
 }
 .ai-panel {
   position: fixed;
   right: 24px;
-  bottom: 90px;
+  bottom: calc(160px + env(safe-area-inset-bottom));
   width: 370px;
   max-width: calc(100vw - 32px);
-  max-height: 75vh;
+  max-height: min(75vh, calc(100dvh - 184px - env(safe-area-inset-bottom)));
   overflow: auto;
   z-index: 60;
   background: var(--bg);
@@ -692,14 +741,16 @@ textarea:focus-visible {
   .phrase-cards {
     grid-template-columns: 1fr;
   }
-  .ai-launcher {
-    right: 16px;
-    bottom: 16px;
-    padding: 12px 17px;
+  .ai-mascot-dock {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: 104px;
+    height: 104px;
   }
   .ai-panel {
     right: 16px;
-    bottom: 78px;
+    bottom: calc(132px + env(safe-area-inset-bottom));
+    max-height: min(75vh, calc(100dvh - 156px - env(safe-area-inset-bottom)));
   }
   .mobilemenu a {
     font-size: 24px;

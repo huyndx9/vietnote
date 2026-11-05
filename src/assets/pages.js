@@ -260,7 +260,12 @@ if (feedback) {
 function setupAI() {
   const host = document.createElement("div");
   host.innerHTML = `
-    <button class="ai-launcher" aria-expanded="false" aria-controls="aiPanel"><span>✦</span> AI에게 물어보기</button>
+    <div class="ai-mascot-dock">
+      <button type="button" class="ai-launcher" aria-label="AI에게 물어보기" title="AI에게 물어보기" aria-expanded="false" aria-controls="aiPanel">
+        <span class="ai-mascot" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="ai-motion-toggle" aria-label="자동 재생 일시 정지" aria-pressed="false">Ⅱ</button>
+    </div>
     <section class="ai-panel" id="aiPanel" aria-label="베트남 여행 도우미" hidden>
       <div class="ai-header">
         <div><strong>베트남 여행 도우미</strong><small>VIETNOTE · DEEPSEEK</small></div>
@@ -280,8 +285,23 @@ function setupAI() {
   document.body.append(host);
   const launcher = host.querySelector(".ai-launcher"),
     panel = host.querySelector(".ai-panel");
+  const dock = host.querySelector(".ai-mascot-dock"),
+    motionToggle = host.querySelector(".ai-motion-toggle"),
+    reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let motionPaused = reducedMotion.matches;
+  function syncMotion() {
+    dock.classList.toggle("is-paused", motionPaused);
+    motionToggle.textContent = motionPaused ? "▶" : "Ⅱ";
+    motionToggle.setAttribute("aria-pressed", String(motionPaused));
+    motionToggle.setAttribute("aria-label", motionPaused ? "자동 재생 시작" : "자동 재생 일시 정지");
+  }
+  motionToggle.onclick = () => { motionPaused = !motionPaused; syncMotion(); };
+  reducedMotion.addEventListener("change", (event) => { motionPaused = event.matches; syncMotion(); });
+  document.addEventListener("visibilitychange", () => dock.classList.toggle("is-away", document.hidden));
+  syncMotion();
   function show(open) {
     panel.hidden = !open;
+    dock.classList.toggle("is-open", open);
     launcher.setAttribute("aria-expanded", String(open));
     if (open) panel.querySelector("button").focus();
     else launcher.focus();
