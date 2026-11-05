@@ -978,3 +978,47 @@ textarea:focus-visible {
 .photo-credits a{text-decoration:underline;text-underline-offset:3px}
 
 .guide-cover{margin:0 0 58px}.guide-cover img{width:100%;height:clamp(260px,36vw,600px);object-fit:cover}.guide-cover figcaption{font-size:11px;line-height:1.8;color:var(--muted);margin-top:10px}.guide-cover a{text-decoration:underline;text-underline-offset:3px}@media(max-width:650px){.guide-cover{margin-bottom:32px}.guide-cover img{height:250px}.guide-cover figcaption{font-size:10px}}
+
+/* Homepage: sample itineraries */
+.route-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,2.4vw,36px);margin-top:36px}
+.route-card{display:flex;flex-direction:column;background:#fffdf8;border:1px solid var(--line)}
+.route-photo{position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:#dfe5dc}
+.route-photo img{transition:transform .6s ease}
+.route-card:hover .route-photo img{transform:scale(1.03)}
+.route-length{position:absolute;left:16px;top:16px;background:#fffdf8;color:#203b32;font-size:14px;font-weight:700;padding:6px 12px;border-radius:999px}
+.route-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:10px;flex:1}
+.route-body h3{font-size:21px;font-weight:600;line-height:1.45;margin:0;letter-spacing:-.03em}
+.route-days{list-style:none;counter-reset:d;padding:0;margin:4px 0 8px;display:grid;gap:6px;font-size:15px;color:var(--muted)}
+.route-days li{padding-left:2px}
+.route-body .textlink{margin-top:auto;align-self:flex-start}
+@media(max-width:900px){.route-grid{grid-template-columns:1fr}}
+
+/* Homepage: when to go */
+.season-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,2.4vw,36px);margin-top:36px}
+.season-card{background:#fffdf8;border:1px solid var(--line);padding:26px 26px 24px;display:flex;flex-direction:column;gap:14px}
+.season-head h3{font-size:24px;font-weight:700;margin:0;letter-spacing:-.03em}
+.season-head small{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+.season-best{display:grid;gap:2px;margin:0;padding:14px 16px;background:#eef2ea;border-radius:4px}
+.season-best span,.season-pack span{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+.season-best strong{font-size:22px;color:#203b32}
+.season-best em{font-style:normal;font-size:15px;color:#3f463f}
+.season-months{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.season-months li{height:34px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;border-radius:3px}
+.season-summary{margin:0;font-size:15px;line-height:1.75;color:#3f463f}
+.season-pack{margin:0;font-size:14px;color:var(--muted);display:grid;gap:2px}
+.m-good{background:#3f7a5b;color:#fff}
+.m-hot{background:#e0a458;color:#2a1d0c}
+.m-cool{background:#c9d6df;color:#203b32}
+.m-rain{background:#5f86a8;color:#fff}
+.m-storm{background:#9d4d34;color:#fff}
+.season-legend{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted)}
+.season-legend li{display:flex;align-items:center;gap:7px;background:none;color:var(--muted)}
+.season-legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
+.season-legend .m-good i{background:#3f7a5b}.season-legend .m-hot i{background:#e0a458}.season-legend .m-cool i{background:#c9d6df}.season-legend .m-rain i{background:#5f86a8}.season-legend .m-storm i{background:#9d4d34}
+.season-note{font-size:13px;color:var(--muted);margin:10px 0 0}
+@media(max-width:900px){.season-grid{grid-template-columns:1fr}}
+
+/* Atlas destinations without a stored photo: Vietnamese place name card */
+.place-art{font-family:'Playfair Display','Pretendard',serif;font-size:clamp(26px,2.4vw,36px);color:#203b32;text-align:center;padding:0 18px;line-height:1.25;background:linear-gradient(140deg,#eef0e6 0%,#dde5d8 100%)}
+.place-art span{border-bottom:1px solid #9d4d3466;padding-bottom:6px}
+.photo-caption{max-width:1440px;margin:8px auto 0;font-size:12px;color:var(--muted);text-align:right}.photo-caption a{text-decoration:underline;text-underline-offset:2px}
