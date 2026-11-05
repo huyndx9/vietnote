@@ -9,6 +9,7 @@
     }),
   );
   const places = window.VIETNOTE_DESTINATIONS;
+  const seasons = window.VIETNOTE_SEASONS;
   // Preview photos come from src/content/photos.json ("places") via map-destinations.js.
   const regionNames = { north: "북부", central: "중부", south: "남부" };
   const list = document.getElementById("mapPlaces"),
@@ -327,6 +328,46 @@
     true,
   );
   window.addEventListener("resize", hidePreview);
+  function seasonCard(p) {
+    const climate = seasons.regions.find((r) => r.id === p.region);
+    const node = (tag, className, text) => {
+      const el = document.createElement(tag);
+      el.className = className;
+      if (text) el.textContent = text;
+      return el;
+    };
+    const section = node("section", "map-season");
+    section.setAttribute("aria-label", p.vi + " · When to go");
+    const heading = node("div", "map-season-heading");
+    heading.append(node("h3", "", "When to go."), node("span", "", climate.label + " 기준"));
+    const best = node("p", "season-best");
+    best.append(node("span", "", "추천 시기"), node("strong", "", climate.best), node("em", "", climate.best_note));
+    const months = node("ol", "season-months");
+    months.setAttribute("aria-label", climate.label + " 월별 날씨");
+    climate.months.forEach((condition, i) => {
+      const month = node("li", "m-" + condition, String(i + 1));
+      const label = `${i + 1}월 · ${seasons.legend[condition]}`;
+      month.title = label;
+      month.setAttribute("aria-label", label);
+      months.append(month);
+    });
+    const legend = node("ul", "season-legend");
+    for (const [condition, label] of Object.entries(seasons.legend)) {
+      const key = node("li", "m-" + condition);
+      const swatch = node("i", "");
+      swatch.setAttribute("aria-hidden", "true");
+      key.append(swatch, document.createTextNode(label));
+      legend.append(key);
+    }
+    const notes = node("details", "map-season-notes");
+    const pack = node("p", "season-pack");
+    pack.append(node("span", "", "짐 준비"), document.createTextNode(climate.pack));
+    notes.append(node("summary", "", "날씨와 짐 준비"),
+      node("p", "season-summary", climate.summary), pack,
+      node("p", "season-note", "지역의 일반적인 경향이에요. 고도와 해안에 따라 다르니 출발 전 현지 예보와 태풍 정보를 확인하세요."));
+    section.append(heading, best, months, legend, notes);
+    return section;
+  }
   function show(p, focus = false) {
     hidePreview();
     selected = p.id;
@@ -393,7 +434,7 @@
     tipText.textContent = p.tip;
     tip.append(tipTitle, tipText);
     story.append(tip);
-    body.append(experiences, story, coords, maps);
+    body.append(experiences, seasonCard(p), story, coords, maps);
     detail.append(cover, body);
     document.getElementById("mapSelection").textContent = p.vi;
     host.dataset.selectedRegion = p.region;
