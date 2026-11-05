@@ -260,7 +260,12 @@ if (feedback) {
 function setupAI() {
   const host = document.createElement("div");
   host.innerHTML = `
-    <button class="ai-launcher" aria-expanded="false" aria-controls="aiPanel"><span>✦</span> AI에게 물어보기</button>
+    <div class="ai-mascot-dock">
+      <button type="button" class="ai-launcher" aria-label="AI에게 물어보기" title="AI에게 물어보기" aria-expanded="false" aria-controls="aiPanel">
+        <span class="ai-mascot" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="ai-motion-toggle" aria-label="자동 재생 일시 정지" aria-pressed="false">Ⅱ</button>
+    </div>
     <section class="ai-panel" id="aiPanel" aria-label="베트남 여행 도우미" hidden>
       <div class="ai-header">
         <div><strong>베트남 여행 도우미</strong><small>VIETNOTE · DEEPSEEK</small></div>
@@ -280,8 +285,23 @@ function setupAI() {
   document.body.append(host);
   const launcher = host.querySelector(".ai-launcher"),
     panel = host.querySelector(".ai-panel");
+  const dock = host.querySelector(".ai-mascot-dock"),
+    motionToggle = host.querySelector(".ai-motion-toggle"),
+    reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let motionPaused = reducedMotion.matches;
+  function syncMotion() {
+    dock.classList.toggle("is-paused", motionPaused);
+    motionToggle.textContent = motionPaused ? "▶" : "Ⅱ";
+    motionToggle.setAttribute("aria-pressed", String(motionPaused));
+    motionToggle.setAttribute("aria-label", motionPaused ? "자동 재생 시작" : "자동 재생 일시 정지");
+  }
+  motionToggle.onclick = () => { motionPaused = !motionPaused; syncMotion(); };
+  reducedMotion.addEventListener("change", (event) => { motionPaused = event.matches; syncMotion(); });
+  document.addEventListener("visibilitychange", () => dock.classList.toggle("is-away", document.hidden));
+  syncMotion();
   function show(open) {
     panel.hidden = !open;
+    dock.classList.toggle("is-open", open);
     launcher.setAttribute("aria-expanded", String(open));
     if (open) panel.querySelector("button").focus();
     else launcher.focus();
@@ -381,3 +401,65 @@ function setupHeroSlideshow() {
   sync();
 }
 setupHeroSlideshow();
+
+// Homepage history roll: arrows, timeline chips and the counter follow the
+// card nearest the left edge. No autoplay; swipe, trackpad and keys scroll natively.
+(() => {
+  const track = document.getElementById("historyTrack");
+  if (!track) return;
+  const cards = [...track.children];
+  const marks = [...document.querySelectorAll("[data-history-index]")];
+  const prev = document.getElementById("historyPrev");
+  const next = document.getElementById("historyNext");
+  const status = document.getElementById("historyStatus");
+  const timeline = marks[0]?.closest(".history-timeline");
+  let active = 0, requested = null;
+  const pad = (n) => String(n).padStart(2, "0");
+  function setActive(i) {
+    active = i;
+    marks.forEach((m, k) => m.setAttribute("aria-current", String(k === i)));
+    status.textContent = `${pad(i + 1)} / ${pad(cards.length)}`;
+    prev.disabled = i === 0;
+    next.disabled = i === cards.length - 1;
+    const m = marks[i];
+    if (m && timeline) {
+      // offsetLeft is relative to the <li>, so measure against the timeline instead.
+      const t = timeline.getBoundingClientRect(), r = m.getBoundingClientRect();
+      const left = timeline.scrollLeft + (r.left - t.left) - (t.width - r.width) / 2;
+      timeline.scrollTo({ left, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }
+  }
+  function go(i) {
+    i = Math.max(0, Math.min(cards.length - 1, i));
+    requested = i;
+    const max = track.scrollWidth - track.clientWidth;
+    const target = Math.min(cards[i].offsetLeft - cards[0].offsetLeft, max);
+    // The last cards cannot reach the left edge: when the track is already
+    // where it needs to be, no scroll event fires, so update the state here.
+    if (Math.abs(target - track.scrollLeft) < 4) setActive(i);
+    else track.scrollTo({ left: target });
+  }
+  let ticking = false;
+  track.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const x = track.scrollLeft;
+      let best = 0;
+      cards.forEach((c, k) => {
+        if (Math.abs(c.offsetLeft - cards[0].offsetLeft - x) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - x)) best = k;
+      });
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 4) best = Math.max(best, requested ?? best);
+      setActive(best);
+    });
+  });
+  prev.addEventListener("click", () => go(active - 1));
+  next.addEventListener("click", () => go(active + 1));
+  marks.forEach((m, k) => m.addEventListener("click", () => go(k)));
+  track.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") { e.preventDefault(); go(active + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); go(active - 1); }
+  });
+  setActive(0);
+})();
