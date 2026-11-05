@@ -15,6 +15,7 @@ import json
 import re
 import shutil
 from datetime import date
+from xml.sax.saxutils import escape as xml_escape
 from pathlib import Path
 from string import Template
 from urllib.parse import quote
@@ -52,6 +53,9 @@ class Site:
         self.config = load_json('site.json')
         self.categories = {c['id']: c for c in self.config['categories']}
         self.photos = load_json('photos.json')['photos']
+        self.public_url = self.config['public_url'].rstrip('/') + '/'
+        self.sitemap = []  # (absolute URL, lastmod or None) for every indexable page
+        self.descriptions = {}  # meta description -> page, to catch duplicates
 
     # ---- helpers -------------------------------------------------------
     def render(self, name, **values):
@@ -242,7 +246,10 @@ class Site:
                    json.dumps(self.destinations, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
     # ---- page parts ----------------------------------------------------
-    def page(self, path, title, main, description=None, home=False, atlas=False):
+    def page(self, path, title, main, description, home=False, atlas=False,
+             og_type='website', image=None, schema=(), lastmod=None, index=True):
+        """Write one HTML page. `description` is the page's own meta description;
+        `image` a photos.json stem for link previews; `schema` JSON-LD objects."""
         nav = ''.join(f'<a href="{self.url(c + "/")}">{h(v["label"])}</a>' for c, v in self.categories.items())
         nav += f'<a href="{"#travel-map" if home else self.url("map/")}">여행 지도</a>'
         styles = MAP_STYLES if atlas else ()
@@ -255,7 +262,9 @@ class Site:
         self.write(path, self.render(
             'layout',
             title=h(f'VIETNOTE — {title}' if home else f'{title} — VIETNOTE'),
-            description=h(description or self.config['default_description']),
+            description=h(description),
+            seo_head=self.seo_head(path, title if not home else self.config['site_name'] + ' — ' + title,
+                                   description, og_type, image, schema, lastmod, index),
             preload=preload,
             base_css=self.asset('base.css'),
             pages_css=self.asset('pages.css'),
@@ -266,6 +275,77 @@ class Site:
             footer=self.render('footer'),
             scripts='\n'.join(f'<script src="{self.asset(s)}"></script>' for s in scripts),
         ))
+
+    # ---- search engines and link previews ------------------------------
+    def canonical(self, path):
+        """Public absolute URL of an output file such as 'food/index.html'."""
+        return self.public_url + re.sub(r'(^|/)index\.html$', r'\1', path)
+
+    def share_image(self, stem):
+        """Absolute URL of the 1200x630 JPEG made by scripts/optimize-images.py."""
+        stem = stem if stem and self.photo(stem) else self.config['default_image']
+        if not (ASSETS / 'og' / f'{stem}.jpg').exists():
+            raise FileNotFoundError(f'src/assets/og/{stem}.jpg missing - run scripts/optimize-images.py')
+        return self.public_url + f'assets/og/{stem}.jpg', self.photo(stem)['alt']
+
+    def seo_head(self, path, title, description, og_type, image, schema, lastmod, index):
+        if index and not 40 <= len(description) <= 160:
+            print(f'WARNING: {path}: meta description has {len(description)} characters (aim for 40-160)')
+        if index and description in self.descriptions:
+            print(f'WARNING: {path} repeats the meta description of {self.descriptions[description]}')
+        self.descriptions.setdefault(description, path)
+        if not index:
+            return '<meta name="robots" content="noindex">'
+        url = self.canonical(path)
+        self.sitemap.append((url, lastmod))
+        image_url, image_alt = self.share_image(image)
+        meta = [
+            ('property', 'og:type', og_type), ('property', 'og:site_name', self.config['site_name']),
+            ('property', 'og:locale', 'ko_KR'), ('property', 'og:title', title),
+            ('property', 'og:description', description), ('property', 'og:url', url),
+            ('property', 'og:image', image_url), ('property', 'og:image:width', '1200'),
+            ('property', 'og:image:height', '630'), ('property', 'og:image:alt', image_alt),
+            ('name', 'twitter:card', 'summary_large_image'), ('name', 'twitter:title', title),
+            ('name', 'twitter:description', description), ('name', 'twitter:image', image_url),
+            ('name', 'twitter:image:alt', image_alt)]
+        if og_type == 'article' and lastmod:
+            meta.append(('property', 'article:modified_time', lastmod))
+        lines = [f'<link rel="canonical" href="{h(url)}">']
+        lines += [f'<meta {kind}="{key}" content="{h(value)}">' for kind, key, value in meta]
+        for data in schema:
+            text = json.dumps(dict({'@context': 'https://schema.org'}, **data), ensure_ascii=False)
+            lines.append('<script type="application/ld+json">' + text.replace('</', '<\\/') + '</script>')
+        return '\n'.join(lines)
+
+    def publisher(self):
+        return {'@type': 'Organization', 'name': self.config['site_name'], 'url': self.public_url}
+
+    def breadcrumbs(self, *trail):
+        """BreadcrumbList from (name, output path) pairs, starting after the homepage."""
+        items = [('홈', 'index.html'), *trail]
+        return {'@type': 'BreadcrumbList', 'itemListElement': [
+            {'@type': 'ListItem', 'position': i + 1, 'name': name, 'item': self.canonical(path)}
+            for i, (name, path) in enumerate(items)]}
+
+    def article_schema(self, x, path, description):
+        data = {'@type': 'Article', 'headline': x['title'], 'description': description,
+                'inLanguage': 'ko', 'mainEntityOfPage': self.canonical(path),
+                'image': self.share_image(x.get('photo'))[0],
+                'datePublished': x['date'], 'dateModified': x['date'],
+                'author': {'@type': 'Person', 'name': self.config['author'], 'url': self.public_url + 'about/'},
+                'publisher': self.publisher()}
+        if x['category'] == 'destinations':
+            data['about'] = {'@type': 'TouristDestination', 'name': x['title'],
+                             'containedInPlace': {'@type': 'Country', 'name': 'Vietnam'}}
+        return data
+
+    def write_sitemap(self):
+        rows = ''.join(
+            f'  <url><loc>{xml_escape(url)}</loc>' + (f'<lastmod>{lastmod}</lastmod>' if lastmod else '') + '</url>\n'
+            for url, lastmod in sorted(self.sitemap))
+        self.write('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n'
+                   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + rows + '</urlset>\n')
+        self.write('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {self.public_url}sitemap.xml\n')
 
     def card(self, x):
         if x['photo']:
@@ -295,7 +375,15 @@ class Site:
             main = self.render('listing', label=h(info['label']), heading=h(info['en']),
                                subtitle=h(info['subtitle']), filters=filters,
                                cards='\n'.join(self.card(x) for x in items))
-            self.page(f'{cat}/index.html', info['label'], main)
+            path = f'{cat}/index.html'
+            listing = {'@type': 'CollectionPage', 'name': info['label'], 'description': info['description'],
+                       'url': self.canonical(path), 'inLanguage': 'ko', 'isPartOf': self.canonical('index.html'),
+                       'mainEntity': {'@type': 'ItemList', 'itemListElement': [
+                           {'@type': 'ListItem', 'position': i + 1, 'url': self.public_url + x['url'][len(self.base):],
+                            'name': x['title']} for i, x in enumerate(items)]}}
+            self.page(path, info['label'], main, info['description'],
+                      image=next((x['photo'] for x in items if x.get('photo')), None),
+                      schema=[listing, self.breadcrumbs((info['label'], path))])
 
     def build_articles(self):
         disclaimers = self.config['disclaimers']
@@ -331,7 +419,12 @@ class Site:
                 cover=cover, toc=toc, sections=sections, extras=extras,
                 related='\n'.join(self.card(r) for r in related))
             folder = 'destinations' if x['category'] == 'destinations' else 'articles'
-            self.page(f'{folder}/{x["id"]}/index.html', x['title'], main, x['desc'])
+            path = f'{folder}/{x["id"]}/index.html'
+            description = x['meta_description']
+            self.page(path, x['title'], main, description, og_type='article', image=x.get('photo'),
+                      lastmod=x['date'],
+                      schema=[self.article_schema(x, path, description),
+                              self.breadcrumbs((label, f'{x["category"]}/index.html'), (x['title'], path))])
 
     def build_place_guides(self):
         for p,article in zip(self.destinations,self.place_articles):
@@ -353,22 +446,47 @@ class Site:
                 srcset=','.join(f'{self.url("assets/"+image["stem"]+"-"+str(w)+".webp")} {w}w' for w in image['widths'])
                 cover=(f'<figure class="guide-cover"><img src="{self.url("assets/"+image["stem"]+"-1440.webp")}" srcset="{srcset}" sizes="92vw" width="{image["width"]}" height="{image["height"]}" alt="{h(image["alt"])}" loading="lazy">'
                        f'<figcaption>Photo: <a href="{h(image["url"])}" target="_blank" rel="noopener noreferrer">{h(image["author"])} / {h(image["source"])}</a> · <a href="{h(image["license_url"])}" target="_blank" rel="noopener noreferrer">{h(image["license"])}</a></figcaption></figure>')
-            main=self.render('place-guide',cover=cover,name_vi=h(p['vi']),title=h(p['title']),teaser=h(p['teaser']),region=h(REGIONS[p['region']]),duration=h(g['duration']),gateway=h(g['gateway']),save_id=h(article['id']),maps_url='https://www.google.com/maps/search/?api=1&amp;query='+quote(p['vi']+' Vietnam'),toc=toc,sections=''.join(blocks),related=related)
-            self.page(f'places/{p["id"]}/index.html',p['title']+' 여행 가이드',main,p['teaser'])
+            edited=date.fromisoformat(g['date'])
+            main=self.render('place-guide',date_iso=edited.isoformat(),date=edited.strftime('%Y.%m.%d'),cover=cover,name_vi=h(p['vi']),title=h(p['title']),teaser=h(p['teaser']),region=h(REGIONS[p['region']]),duration=h(g['duration']),gateway=h(g['gateway']),save_id=h(article['id']),maps_url='https://www.google.com/maps/search/?api=1&amp;query='+quote(p['vi']+' Vietnam'),toc=toc,sections=''.join(blocks),related=related)
+            path=f'places/{p["id"]}/index.html'
+            description=g.get('meta_description') or (
+                f'{p["title"]} 여행 가이드 · {p["teaser"]} 추천 체류 {g["duration"]}, 가는 법과 숙소·음식·예산·안전 정보까지 정리했어요.')
+            place={'@type':'TouristDestination','name':p['title'],'alternateName':p['vi'],'description':p['teaser'],
+                   'url':self.canonical(path),'inLanguage':'ko',
+                   'geo':{'@type':'GeoCoordinates','latitude':p['lat'],'longitude':p['lon']},
+                   'containedInPlace':{'@type':'Country','name':'Vietnam'}}
+            if photograph:
+                place['image']=self.share_image(photograph['stem'])[0]
+            self.page(path,p['title']+' 여행 가이드',main,description,og_type='article',image=self.place_photo(p['id']),
+                      lastmod=g['date'],schema=[place,self.breadcrumbs(('여행 지도','map/index.html'),(p['title'],path))])
 
     def build_static_pages(self):
-        self.page('notebook/index.html', '내 여행 노트', self.render('notebook'))
-        self.page('about/index.html', 'VIETNOTE 소개', self.render('about', photo_credits=self.photo_credits()))
-        self.page('map/index.html', '베트남 여행 지도', self.render('map', atlas=self.atlas('h1')), atlas=True)
-        self.page('404.html', '페이지를 찾을 수 없습니다', self.render('not-found'))
+        pages = self.config['pages']
+        self.page('notebook/index.html', pages['notebook']['title'], self.render('notebook'),
+                  pages['notebook']['description'], index=False)  # personal, browser-only content
+        about = pages['about']
+        self.page('about/index.html', about['title'], self.render('about', photo_credits=self.photo_credits()),
+                  about['description'],
+                  schema=[{'@type': 'AboutPage', 'name': about['title'], 'description': about['description'],
+                           'url': self.canonical('about/index.html'), 'inLanguage': 'ko',
+                           'mainEntity': {'@type': 'Person', 'name': self.config['author']}},
+                          self.breadcrumbs((about['title'], 'about/index.html'))])
+        atlas = pages['map']
+        self.page('map/index.html', atlas['title'], self.render('map', atlas=self.atlas('h1')),
+                  atlas['description'], atlas=True,
+                  schema=[self.breadcrumbs((atlas['title'], 'map/index.html'))])
+        self.page('404.html', pages['404']['title'], self.render('not-found'), pages['404']['description'],
+                  index=False)
 
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
         main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), seasons=self.home_seasons())
-        self.page('index.html', '베트남을 발견하는 새로운 시선', main,
-                  '베트남의 여행지, 문화, 음식과 현지 이야기를 기록하는 여행 매거진 VIETNOTE.',
-                  home=True, atlas=True)
+        home = self.config['pages']['home']
+        website = {'@type': 'WebSite', 'name': self.config['site_name'], 'url': self.public_url,
+                   'description': home['description'], 'inLanguage': 'ko', 'publisher': self.publisher()}
+        self.page('index.html', home['title'], main, home['description'], home=True, atlas=True,
+                  schema=[website, self.publisher()])
 
     # ---- checks --------------------------------------------------------
     def check_font_coverage(self):
@@ -391,6 +509,7 @@ class Site:
         self.build_place_guides()
         self.build_static_pages()
         self.build_home()
+        self.write_sitemap()
         self.check_font_coverage()
         print(f'Built {self.out.relative_to(ROOT)}/ with base path {self.base}: '
               f'{len(self.items)} detail pages, {len(self.place_articles)} place guides, {len(self.categories)} listings, '

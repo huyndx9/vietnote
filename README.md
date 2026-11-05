@@ -80,6 +80,29 @@ Workflow `Publish GitHub Pages` build và triển khai mỗi khi push lên `main
 Trong Settings → Pages của repository, chọn **GitHub Actions**. Sau khi workflow
 chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote/ .
 
+## SEO và xem trước liên kết
+
+Build tự sinh các phần sau, không cần sửa tay:
+
+- `sitemap.xml` (mọi trang được lập chỉ mục, kèm `lastmod` lấy từ trường `date`) và `robots.txt`.
+- `<link rel="canonical">`, Open Graph và Twitter card cho từng trang, dựa trên `public_url` trong `src/content/site.json`.
+- JSON-LD: `WebSite` (trang chủ), `Article` (bài viết, lịch trình, hướng dẫn), `TouristDestination`
+  (42 trang địa điểm), `CollectionPage` (trang danh mục), `AboutPage` và `BreadcrumbList`.
+- Trang `notebook/` và `404.html` có `noindex` và không nằm trong sitemap.
+
+Mỗi trang có meta description riêng: trường `meta_description` trong các file nội dung,
+`description` của danh mục và mục `pages` trong `site.json`. Trang địa điểm dùng
+`meta_description` trong `place-guides.json` nếu có, nếu không sẽ ghép từ teaser và thời gian
+lưu trú. Build cảnh báo khi mô tả ngoài khoảng 40–160 ký tự hoặc bị trùng.
+
+Ảnh xem trước là JPEG 1200×630 trong `src/assets/og/`, tạo bằng `scripts/optimize-images.py`
+(cắt theo `position` của ảnh). Khi thêm ảnh mới vào `photos.json`, chạy lại script này.
+
+GitHub Pages của dự án nằm ở `/vietnote/`, nên công cụ tìm kiếm không đọc `robots.txt` tại
+`/vietnote/robots.txt` (chỉ đọc ở gốc tên miền). Hãy gửi
+`https://huyndx9.github.io/vietnote/sitemap.xml` trong Google Search Console và Naver Search
+Advisor. `robots.txt` sẽ có hiệu lực nếu sau này dùng tên miền riêng.
+
 ## Font và ảnh
 
 - Chữ thân bài dùng Pretendard (OFL-1.1), font ưu tiên tiếng Hàn và có đủ dấu tiếng
