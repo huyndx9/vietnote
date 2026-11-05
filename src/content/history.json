@@ -1,0 +1,282 @@
+{
+ "_note": "Homepage history roll (src/build.py home_history). Text reused from the earlier history timeline. Legends are labelled as such. photo = stem in photos.json; guides = atlas place ids; places = Google Maps queries.",
+ "chapters": [
+  {
+   "id": "origins",
+   "mark": "전승",
+   "period": "건국 전승",
+   "kicker": "Origins",
+   "title": "훙왕과 반랑, 기원을 기억하는 이야기",
+   "teaser": "고대 국가의 기원은 기록과 전승이 만나는 자리에서 시작돼요. 훙왕 이야기를 따라 오늘의 푸토로 여행을 이어 보세요.",
+   "photo": "phutho-hung-temple-thuong",
+   "places": [
+    {
+     "name": "덴훙 · 푸토",
+     "query": "Đền Hùng, Phú Thọ"
+    }
+   ],
+   "guides": [
+    "hanoi"
+   ]
+  },
+  {
+   "id": "dong-son",
+   "mark": "BC 1천년기",
+   "period": "기원전 1천년기–기원후 초기",
+   "kicker": "Bronze & memory",
+   "title": "동선 문화, 청동북에 새겨진 세계",
+   "teaser": "동선 청동북의 새와 배, 사람 무늬에는 어떤 세계가 담겨 있을까요? 박물관에서 작은 장면을 읽는 여행이에요.",
+   "photo": "dong-son-bronze-drum",
+   "places": [
+    {
+     "name": "베트남 국립역사박물관 · 하노이",
+     "query": "Bảo tàng Lịch sử Quốc gia, Hà Nội"
+    }
+   ],
+   "guides": [
+    "hanoi"
+   ]
+  },
+  {
+   "id": "co-loa",
+   "mark": "BC 3세기",
+   "period": "기원전 3–2세기 무렵",
+   "kicker": "Earth & water",
+   "title": "어울락과 꼬로아, 땅과 물로 만든 성",
+   "teaser": "성벽과 해자를 상상하며 걷는 꼬로아. 남아 있는 유적과 안즈엉브엉 전승을 구분해 만나 보세요.",
+   "photo": "co-loa-an-duong-vuong-temple",
+   "places": [
+    {
+     "name": "꼬로아 유적 · 하노이",
+     "query": "Khu di tích Cổ Loa, Hà Nội"
+    }
+   ],
+   "guides": [
+    "hanoi"
+   ]
+  },
+  {
+   "id": "trung-sisters",
+   "mark": "40",
+   "period": "40년",
+   "kicker": "Voices of resistance",
+   "title": "하이바쯩, 두 자매의 이름이 남은 곳",
+   "teaser": "쯩짝과 쯩니가 이끈 봉기는 어떻게 기억될까요? 사당과 기념 공간에서 역사와 추모의 언어를 만나 보세요.",
+   "photo": "me-linh-hai-ba-trung-temple",
+   "places": [
+    {
+     "name": "하이바쯩 사당 · 멜린",
+     "query": "Đền Hai Bà Trưng, Mê Linh, Hà Nội"
+    }
+   ],
+   "guides": [
+    "hanoi"
+   ]
+  },
+  {
+   "id": "ancient-kingdoms",
+   "mark": "1세기~",
+   "period": "1세기경부터",
+   "kicker": "Many histories",
+   "title": "참파와 푸난, 하나의 선으로 그릴 수 없는 역사",
+   "teaser": "중부의 참파와 남부의 푸난은 서로 다른 역사와 문화권이에요. 미선과 포나가르, 옥에오를 따라 시야를 넓혀 보세요.",
+   "photo": "nhatrang-po-nagar-towers",
+   "places": [
+    {
+     "name": "미선 유적",
+     "query": "Thánh địa Mỹ Sơn"
+    },
+    {
+     "name": "포나가르 사원 · 나트랑",
+     "query": "Tháp Bà Ponagar, Nha Trang"
+    },
+    {
+     "name": "옥에오–바테 유적 · 안장",
+     "query": "Khu di tích Óc Eo Ba Thê, An Giang"
+    }
+   ],
+   "guides": [
+    "myson",
+    "nhatrang",
+    "chaudoc"
+   ]
+  },
+  {
+   "id": "bach-dang-938",
+   "mark": "938",
+   "period": "938",
+   "kicker": "A river, a turning point",
+   "title": "응오꾸옌과 바익당, 자립의 전환점",
+   "teaser": "938년 바익당 전투는 오랜 지배 관계에서 벗어나는 전환점으로 기억돼요. 강의 지형과 역사를 함께 읽어 보세요.",
+   "photo": "bach-dang-river-mouth",
+   "places": [
+    {
+     "name": "바익당장 유적 · 하이퐁",
+     "query": "Khu di tích Bạch Đằng Giang, Hải Phòng"
+    }
+   ],
+   "guides": [
+    "halong",
+    "catba"
+   ]
+  },
+  {
+   "id": "thang-long",
+   "mark": "1010",
+   "period": "1010–1076",
+   "kicker": "A capital of learning",
+   "title": "탕롱으로 옮긴 수도, 배움이 자라는 도시",
+   "teaser": "1010년의 천도, 1070년의 문묘, 1076년의 국자감. 하노이에서 수도와 배움의 층위를 걸어 보세요.",
+   "photo": "hanoi-temple-of-literature",
+   "places": [
+    {
+     "name": "탕롱 황성 · 하노이",
+     "query": "Hoàng thành Thăng Long, Hà Nội"
+    },
+    {
+     "name": "문묘–국자감 · 하노이",
+     "query": "Văn Miếu Quốc Tử Giám, Hà Nội"
+    }
+   ],
+   "guides": [
+    "hanoi"
+   ]
+  },
+  {
+   "id": "tran-1288",
+   "mark": "1288",
+   "period": "1288",
+   "kicker": "The river returns",
+   "title": "쩐 왕조와 바익당, 같은 강의 다른 기억",
+   "teaser": "938년과 1288년은 같은 사건이 아니에요. 쩐 왕조 시기의 침공과 바익당 전투를 별도의 이야기로 만나 보세요.",
+   "photo": "saigon-tran-hung-dao-temple",
+   "places": [
+    {
+     "name": "옌장 말뚝 유적 · 꽝옌",
+     "query": "Bãi cọc Yên Giang, Quảng Yên"
+    },
+    {
+     "name": "쩐 사당 · 남딘",
+     "query": "Đền Trần, Nam Định"
+    }
+   ],
+   "guides": [
+    "halong",
+    "hanoi"
+   ]
+  },
+  {
+   "id": "le-loi",
+   "mark": "1428",
+   "period": "1428",
+   "kicker": "A sword, a lake",
+   "title": "레 왕조의 시작과 호안끼엠의 전설",
+   "teaser": "레러이의 역사와 검을 돌려준 호수의 전설. 같은 풍경 안에 남은 서로 다른 이야기를 따라가 보세요.",
+   "photo": "hanoi-turtle-tower-dusk",
+   "places": [
+    {
+     "name": "호안끼엠 호수 · 하노이",
+     "query": "Hồ Hoàn Kiếm, Hà Nội"
+    }
+   ],
+   "guides": [
+    "hanoi"
+   ]
+  },
+  {
+   "id": "hoi-an-port",
+   "mark": "16–17C",
+   "period": "16–17세기",
+   "kicker": "A port between worlds",
+   "title": "호이안, 바다를 통해 이어진 사람들",
+   "teaser": "상인과 배, 서로 다른 언어가 오가던 항구. 호이안의 골목을 걸으며 국제 교역의 흔적을 찾아보세요.",
+   "photo": "hoian-old-town-bicycle",
+   "places": [
+    {
+     "name": "호이안 구시가지",
+     "query": "Phố cổ Hội An"
+    },
+    {
+     "name": "내원교",
+     "query": "Chùa Cầu, Hội An"
+    }
+   ],
+   "guides": [
+    "hoian",
+    "myson"
+   ]
+  },
+  {
+   "id": "nguyen-hue",
+   "mark": "1802",
+   "period": "1802–1945",
+   "kicker": "The imperial city",
+   "title": "후에, 왕조의 공간과 식민지기의 변화",
+   "teaser": "궁궐의 문과 왕릉의 정원 너머로. 응우옌 왕조와 근대의 변화를 후에에서 읽어 보세요.",
+   "photo": "hue-imperial-city",
+   "places": [
+    {
+     "name": "후에 황성",
+     "query": "Hoàng thành Huế"
+    },
+    {
+     "name": "민망릉",
+     "query": "Lăng Minh Mạng, Huế"
+    }
+   ],
+   "guides": [
+    "hue"
+   ]
+  },
+  {
+   "id": "independence-peace",
+   "mark": "1945",
+   "period": "1945–1976",
+   "kicker": "Independence & peace",
+   "title": "독립, 전쟁 그리고 통일을 기억하기",
+   "teaser": "1945년 독립 선언에서 1975년 전쟁의 종결, 1976년 국가 통일까지. 사건의 구분과 사람들의 삶을 함께 바라봐요.",
+   "photo": "saigon-independence-palace",
+   "places": [
+    {
+     "name": "바딘 광장 · 하노이",
+     "query": "Quảng trường Ba Đình, Hà Nội"
+    },
+    {
+     "name": "통일궁 · 호찌민시",
+     "query": "Dinh Độc Lập, Thành phố Hồ Chí Minh"
+    },
+    {
+     "name": "전쟁박물관 · 호찌민시",
+     "query": "Bảo tàng Chứng tích Chiến tranh"
+    }
+   ],
+   "guides": [
+    "hanoi",
+    "saigon"
+   ]
+  },
+  {
+   "id": "doi-moi-today",
+   "mark": "1986",
+   "period": "1986–오늘",
+   "kicker": "Vietnam today",
+   "title": "도이머이 이후, 한국과 가까워진 베트남",
+   "teaser": "1986년 도이머이와 1992년 한–베 수교. 여행과 일상, 문화가 오가는 오늘의 연결을 만나 보세요.",
+   "photo": "saigon-landmark81-thuthiem",
+   "places": [
+    {
+     "name": "하노이",
+     "query": "Hà Nội"
+    },
+    {
+     "name": "호찌민시",
+     "query": "Thành phố Hồ Chí Minh"
+    }
+   ],
+   "guides": [
+    "hanoi",
+    "saigon"
+   ]
+  }
+ ]
+}

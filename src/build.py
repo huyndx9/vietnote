@@ -129,6 +129,38 @@ class Site:
             img_coffee=self.img('vietnamese-phin-coffee', '핀 필터로 내리는 베트남 커피', '(max-width: 760px) 46vw, 27vw'),
             img_lantern=self.img('hoian-lantern-shop', '호이안의 등불 가게', '(max-width: 760px) 46vw, 27vw'))
 
+    def home_history(self):
+        """Homepage history roll: horizontally scrolling chapters from the Hùng kings to today."""
+        chapters = load_json('history.json')['chapters']
+        places = {d['id']: d for d in self.destinations}
+        marks, cards = [], []
+        for i, c in enumerate(chapters):
+            n = f'{i + 1:02d}'
+            marks.append(f'<li><button type="button" data-history-index="{i}" aria-label="{h(c["period"])} · {h(c["title"])}"'
+                         f'{" aria-current=" + chr(34) + "true" + chr(34) if i == 0 else ""}>{h(c["mark"])}</button></li>')
+            p = self.photo(c['photo']) if c.get('photo') else None
+            figure = ''
+            if p:
+                credit = f'Photo: {h(p["author"])} · {h(p["license"])}'
+                figure = (f'<figure class="history-photo">{self.img(c["photo"], p["alt"], "(max-width: 760px) 82vw, (max-width: 1200px) 42vw, 30vw")}'
+                          f'<figcaption><a href="{h(p["url"])}" target="_blank" rel="noopener noreferrer">{credit}</a></figcaption></figure>')
+            visit = ' · '.join(f'<a href="https://www.google.com/maps/search/?api=1&amp;query={quote(pl["query"])}" target="_blank" rel="noopener">{h(pl["name"])}</a>'
+                               for pl in c['places'])
+            guides = ''.join(f'<a class="history-guide" href="{places[g]["url"]}">{h(places[g]["title"])} 여행 가이드 ↗</a>'
+                             for g in c['guides'][:2] if g in places)
+            cards.append(
+                f'<li class="history-card" id="history-{h(c["id"])}" aria-roledescription="slide" aria-label="{n} / {len(chapters)}">'
+                f'{figure}<div class="history-body"><div class="history-period"><span>{n}</span>{h(c["period"])}</div>'
+                f'<small class="history-kicker">{h(c["kicker"])}</small><h3>{h(c["title"])}</h3><p>{h(c["teaser"])}</p>'
+                f'<p class="history-visit"><strong>지금 가볼 곳</strong>{visit}</p>{guides}</div></li>')
+        return ('<section class="history-roll wrap" id="history" aria-roledescription="carousel" aria-label="베트남 역사 이야기">'
+                '<div class="history-bar"><ol class="history-timeline">' + ''.join(marks) + '</ol>'
+                '<div class="history-nav"><span id="historyStatus" aria-live="polite">01 / ' + str(len(chapters)) + '</span>'
+                '<button type="button" id="historyPrev" aria-label="이전 이야기" disabled>←</button>'
+                '<button type="button" id="historyNext" aria-label="다음 이야기">→</button></div></div>'
+                '<ol class="history-track" id="historyTrack" tabindex="0" aria-label="좌우로 넘겨 보세요">' + ''.join(cards) + '</ol>'
+                '<p class="history-note">전승과 기록된 역사를 구분해 소개해요. 연대와 해석은 학계와 자료에 따라 다를 수 있어요.</p></section>')
+
     def home_routes(self):
         """Homepage strip of the three sample itineraries."""
         order = ['hanoi-3days', 'danang-4days', 'phuquoc-4days']
@@ -365,7 +397,7 @@ class Site:
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
-        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), seasons=self.home_seasons())
+        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(), seasons=self.home_seasons())
         self.page('index.html', '베트남을 발견하는 새로운 시선', main,
                   '베트남의 여행지, 문화, 음식과 현지 이야기를 기록하는 여행 매거진 VIETNOTE.',
                   home=True, atlas=True)

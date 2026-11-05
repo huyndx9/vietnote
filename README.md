@@ -100,6 +100,11 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
   `src/assets/PHOTO-SOURCES.md`; nguồn dữ liệu bản đồ trong `src/MAP-SOURCE.md`.
 - Trang chủ có thêm dải 3 lịch trình mẫu và khối "언제 갈까요" theo miền
   (`src/content/seasons.json`, chỉ là xu hướng chung, kèm lời nhắc xem dự báo).
+- Dưới đoạn "A country of a thousand untold stories" là dải trượt 13 chương lịch sử
+  (từ truyền thuyết Hùng Vương đến hôm nay), mỗi chương có ảnh, mô tả ngắn, nơi đến
+  được hôm nay và link trang điểm đến. Không tự chạy: vuốt, kéo, nút ← →, thanh mốc
+  năm hoặc phím mũi tên. Nội dung trong `src/content/history.json` (sửa chữ, đổi ảnh
+  bằng stem trong photos.json, xóa một mục để bỏ chương).
 - Trang 여행지 liệt kê đủ 42 điểm đến của bản đồ (lọc Bắc/Trung/Nam, tìm kiếm).
 
 ## Hành vi và giới hạn hiện tại

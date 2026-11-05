@@ -381,3 +381,65 @@ function setupHeroSlideshow() {
   sync();
 }
 setupHeroSlideshow();
+
+// Homepage history roll: arrows, timeline chips and the counter follow the
+// card nearest the left edge. No autoplay; swipe, trackpad and keys scroll natively.
+(() => {
+  const track = document.getElementById("historyTrack");
+  if (!track) return;
+  const cards = [...track.children];
+  const marks = [...document.querySelectorAll("[data-history-index]")];
+  const prev = document.getElementById("historyPrev");
+  const next = document.getElementById("historyNext");
+  const status = document.getElementById("historyStatus");
+  const timeline = marks[0]?.closest(".history-timeline");
+  let active = 0, requested = null;
+  const pad = (n) => String(n).padStart(2, "0");
+  function setActive(i) {
+    active = i;
+    marks.forEach((m, k) => m.setAttribute("aria-current", String(k === i)));
+    status.textContent = `${pad(i + 1)} / ${pad(cards.length)}`;
+    prev.disabled = i === 0;
+    next.disabled = i === cards.length - 1;
+    const m = marks[i];
+    if (m && timeline) {
+      // offsetLeft is relative to the <li>, so measure against the timeline instead.
+      const t = timeline.getBoundingClientRect(), r = m.getBoundingClientRect();
+      const left = timeline.scrollLeft + (r.left - t.left) - (t.width - r.width) / 2;
+      timeline.scrollTo({ left, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }
+  }
+  function go(i) {
+    i = Math.max(0, Math.min(cards.length - 1, i));
+    requested = i;
+    const max = track.scrollWidth - track.clientWidth;
+    const target = Math.min(cards[i].offsetLeft - cards[0].offsetLeft, max);
+    // The last cards cannot reach the left edge: when the track is already
+    // where it needs to be, no scroll event fires, so update the state here.
+    if (Math.abs(target - track.scrollLeft) < 4) setActive(i);
+    else track.scrollTo({ left: target });
+  }
+  let ticking = false;
+  track.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const x = track.scrollLeft;
+      let best = 0;
+      cards.forEach((c, k) => {
+        if (Math.abs(c.offsetLeft - cards[0].offsetLeft - x) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - x)) best = k;
+      });
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 4) best = Math.max(best, requested ?? best);
+      setActive(best);
+    });
+  });
+  prev.addEventListener("click", () => go(active - 1));
+  next.addEventListener("click", () => go(active + 1));
+  marks.forEach((m, k) => m.addEventListener("click", () => go(k)));
+  track.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") { e.preventDefault(); go(active + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); go(active - 1); }
+  });
+  setActive(0);
+})();
