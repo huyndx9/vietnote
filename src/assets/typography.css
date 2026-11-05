@@ -871,3 +871,5 @@ form textarea {
   .section-sub, .page-intro p, .map-intro p, .intro p { font-size: 16px; }
   .destination p, .browse-card p { font-size: 15px; }
 }
+/* Keep section actions inside very narrow phone viewports. */
+@media(max-width:400px){.section-head{flex-wrap:wrap}}
