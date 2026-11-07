@@ -264,8 +264,9 @@ function setupAI() {
   const suggestions = endpoint
     ? `<div class="ai-suggestions">
           <button type="button">부모님과 다낭 3박 4일 일정 추천해 줘</button>
-          <button type="button">하노이에서 꼭 먹어야 할 음식은?</button>
-          <button type="button">여행에 쓰는 베트남어 인사말 알려 줘</button>
+          <button type="button">푸꾸옥 4박 5일 예산은 얼마나 들까요?</button>
+          <button type="button">고수 못 먹는 사람을 위한 베트남 음식 추천</button>
+          <button type="button">택시·그랩 탈 때 쓰는 베트남어 알려 줘</button>
         </div>`
     : `<div class="connection-note"><strong>AI 연결 준비 중</strong><br>DeepSeek API가 아직 연결되지 않아 AI 답변을 생성할 수 없습니다. 아래 항목은 편집된 여행 콘텐츠로 이동합니다.</div>
         <div class="ai-suggestions">
