@@ -336,12 +336,45 @@ function setupChat(host, endpoint) {
     history = [];
   let busy = false;
   function add(role, text) {
-    const p = document.createElement("p");
+    const p = document.createElement("div");
     p.className = `ai-msg ai-msg-${role}`;
     p.textContent = text; // never innerHTML: replies are untrusted text
     log.append(p);
     p.scrollIntoView({ block: "nearest" });
     return p;
+  }
+  // Minimal Markdown (### headings, - / 1. lists, **bold**) built as DOM
+  // nodes with textContent, so model output can never inject HTML.
+  function inline(el, text) {
+    text.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
+      if (/^\*\*[^*]+\*\*$/.test(part)) {
+        const b = document.createElement("strong");
+        b.textContent = part.slice(2, -2);
+        el.append(b);
+      } else if (part) el.append(part.replace(/\*\*/g, ""));
+    });
+  }
+  function renderReply(el, text) {
+    el.textContent = "";
+    let list = null;
+    for (const raw of text.replace(/\r/g, "").split("\n")) {
+      const line = raw.trim();
+      const bullet = line.match(/^[-*•]\s+(.*)/), numbered = line.match(/^(\d+)[.)]\s+(.*)/);
+      if (bullet || numbered) {
+        const tag = bullet ? "UL" : "OL";
+        if (!list || list.tagName !== tag) el.append((list = document.createElement(tag)));
+        const li = document.createElement("li");
+        inline(li, bullet ? bullet[1] : numbered[2]);
+        list.append(li);
+        continue;
+      }
+      list = null;
+      if (!line || /^-{3,}$/.test(line)) continue;
+      const heading = line.match(/^#{1,6}\s+(.*)/);
+      const node = document.createElement(heading ? "h4" : "p");
+      inline(node, heading ? heading[1] : line);
+      el.append(node);
+    }
   }
   async function ask(question) {
     const q = question.trim();
@@ -351,7 +384,7 @@ function setupChat(host, endpoint) {
     host.querySelector(".ai-suggestions")?.remove();
     add("user", q);
     history.push({ role: "user", content: q });
-    const pending = add("assistant", "답변을 준비하고 있어요…");
+    const pending = add("assistant", "답변을 준비하고 있어요… 자세한 일정은 30초쯤 걸릴 수 있어요.");
     pending.classList.add("is-pending");
     try {
       const r = await fetch(endpoint, {
@@ -361,7 +394,7 @@ function setupChat(host, endpoint) {
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok || !data.reply) throw new Error(data.error || r.status);
-      pending.textContent = data.reply;
+      renderReply(pending, data.reply);
       pending.scrollIntoView({ block: "start" });
       history.push({ role: "assistant", content: data.reply });
     } catch {
