@@ -275,6 +275,7 @@ class Site:
             title=h(f'VIETNOTE — {title}' if home else f'{title} — VIETNOTE'),
             description=h(description or self.config['default_description']),
             preload=preload,
+            ai_endpoint=h(self.config.get('ai_endpoint', '')),
             base_css=self.asset('base.css'),
             pages_css=self.asset('pages.css'),
             typography_css=self.asset('typography.css'),
