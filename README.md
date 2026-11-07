@@ -140,22 +140,42 @@ Khi bổ sung địa điểm, cập nhật cả hai file JSON và kiểm tra ngu
 ## Kết nối chatbot DeepSeek
 
 API key không được nằm trong website (mọi file JS đều công khai). Key được lưu làm
-secret của một Cloudflare Worker nhỏ (`worker/`), website chỉ gọi Worker đó.
+secret của một Cloudflare Worker nhỏ (`worker/`); website chỉ gọi Worker đó.
 
-Cần: Node.js LTS (https://nodejs.org) và tài khoản Cloudflare miễn phí.
+### Cách 1 — chỉ dùng trình duyệt (khuyên dùng)
 
-```bash
-python3 scripts/setup-ai.py
-```
+1. Tạo tài khoản miễn phí tại https://dash.cloudflare.com/sign-up, rồi mở mục
+   **Workers & Pages** một lần (để Cloudflare tạo tên miền `*.workers.dev`).
+2. Mở https://dash.cloudflare.com/profile/api-tokens → **Create Token** → mẫu
+   **Edit Cloudflare Workers** → **Use template** → **Continue to summary** →
+   **Create Token** → sao chép token.
+3. Mở https://github.com/huyndx9/vietnote/settings/secrets/actions →
+   **New repository secret**, tạo 2 secret:
+   - `CLOUDFLARE_API_TOKEN` = token ở bước 2
+   - `DEEPSEEK_API_KEY` = API key DeepSeek
+4. Mở https://github.com/huyndx9/vietnote/actions/workflows/pages.yml →
+   **Run workflow** → **Run workflow**. Khoảng 2 phút sau chatbot hoạt động trên
+   https://huyndx9.github.io/vietnote/ .
 
-Trên Windows: nhấp đúp `SETUP-AI-WINDOWS.bat`. Script hỏi API key (dán vào rồi Enter,
-ký tự không hiện ra), mở trình duyệt đăng nhập Cloudflare lần đầu, triển khai Worker,
-lưu key làm secret, ghi URL Worker vào `ai_endpoint` của `src/content/site.json`,
-build lại và hỏi thử một câu. Sau đó commit `src/content/site.json` và push lên `main`.
+Từ đó mỗi lần push lên `main`, workflow tự triển khai Worker, cập nhật key và đưa URL
+Worker vào website. Đổi key: sửa secret `DEEPSEEK_API_KEY` rồi chạy lại workflow.
+Nếu token thấy nhiều tài khoản Cloudflare, thêm secret `CLOUDFLARE_ACCOUNT_ID`.
+Khi chưa có `CLOUDFLARE_API_TOKEN`, website vẫn được triển khai với trợ lý ở trạng
+thái "chưa kết nối".
 
-- Đổi key: chạy lại script. Kiểm tra: `python3 scripts/setup-ai.py --test`.
-- Chỉ ghi URL Worker có sẵn: `python3 scripts/setup-ai.py --endpoint https://…workers.dev`.
-- Lời dặn cho AI (system prompt), giới hạn độ dài: `worker/index.js`. Website được phép
-  gọi Worker: `ALLOWED_ORIGINS` trong `worker/wrangler.toml`.
+### Cách 2 — chạy trên máy
+
+Cần Node.js LTS và tài khoản Cloudflare. Chạy `python3 scripts/setup-ai.py` (Windows:
+nhấp đúp `SETUP-AI-WINDOWS.bat`), dán API key khi được hỏi. Script đăng nhập
+Cloudflare, triển khai Worker, lưu key, ghi URL vào `ai_endpoint` của
+`src/content/site.json` và build lại; sau đó commit `site.json` và push.
+`--test` hỏi thử Worker; `--endpoint URL` chỉ ghi URL có sẵn.
+
+### Ghi chú
+
+- Lời dặn cho AI (system prompt) và giới hạn độ dài: `worker/index.js`. Website được
+  phép gọi Worker: `ALLOWED_ORIGINS` trong `worker/wrangler.toml`.
+- Thứ tự ưu tiên URL: biến môi trường `VIETNOTE_AI_ENDPOINT` (workflow đặt) rồi
+  `ai_endpoint` trong `site.json`.
 - Nên đặt hạn mức chi tiêu trong tài khoản DeepSeek; kiểm tra Origin không chặn được
   người gọi Worker trực tiếp.

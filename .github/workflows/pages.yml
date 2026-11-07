@@ -13,6 +13,8 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -21,8 +23,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      # Chatbot: runs only after the CLOUDFLARE_API_TOKEN secret is added
+      # (see README "Kết nối chatbot DeepSeek"). Without it the site is
+      # published with the assistant shown as "not connected".
+      - uses: actions/setup-node@v4
+        if: env.HAS_CLOUDFLARE == 'true'
+        with:
+          node-version: '22'
+      - name: Deploy chatbot worker
+        id: ai
+        if: env.HAS_CLOUDFLARE == 'true'
+        run: bash scripts/deploy-worker.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       - name: Build static site
         run: python scripts/build-pages.py --base-path /vietnote/
+        env:
+          VIETNOTE_AI_ENDPOINT: ${{ steps.ai.outputs.url }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
