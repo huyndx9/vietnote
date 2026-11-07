@@ -145,7 +145,7 @@ secret của một Cloudflare Worker nhỏ (`worker/`); website chỉ gọi Work
 ### Cách 1 — chỉ dùng trình duyệt (khuyên dùng)
 
 1. Tạo tài khoản miễn phí tại https://dash.cloudflare.com/sign-up, rồi mở mục
-   **Workers & Pages** một lần (để Cloudflare tạo tên miền `*.workers.dev`).
+   (workflow tự đăng ký tên miền `*.workers.dev` nếu tài khoản chưa có).
 2. Mở https://dash.cloudflare.com/profile/api-tokens → **Create Token** → mẫu
    **Edit Cloudflare Workers** → **Use template** → **Continue to summary** →
    **Create Token** → sao chép token.
