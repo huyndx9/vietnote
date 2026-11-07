@@ -583,9 +583,67 @@ form textarea {
   border: 1px solid var(--line);
   font-size: 13px;
 }
+.ai-suggestions button {
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+.ai-suggestions button:hover {
+  background: #f1f4ee;
+}
+.ai-messages {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.ai-messages:empty {
+  display: none;
+}
+.ai-msg {
+  margin: 0;
+  max-width: 88%;
+  padding: 10px 13px;
+  font-size: 13px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  scroll-margin: 12px 0 96px; /* clear of the sticky compose bar */
+}
+.ai-msg-user {
+  justify-self: end;
+  background: #263e34;
+  color: #fffef8;
+}
+.ai-msg-assistant {
+  justify-self: start;
+  background: #eae7de;
+}
+.ai-msg.is-pending {
+  color: var(--muted);
+}
+.ai-msg.is-error {
+  background: #f6e3dc;
+}
+.ai-disclaimer {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 10px;
+}
 .ai-compose {
   display: flex;
   gap: 8px;
+  /* Stays visible at the bottom of the scrolling panel as the conversation grows. */
+  position: sticky;
+  bottom: -24px;
+  margin: 0 -24px -24px;
+  padding: 12px 24px 24px;
+  background: var(--bg);
 }
 .ai-compose input {
   min-width: 0;
@@ -595,11 +653,17 @@ form textarea {
   font-size: 12px;
 }
 .ai-compose button {
-  background: #d8d8d0;
+  background: #263e34;
   border: 0;
-  padding: 10px;
-  color: #686e64;
+  padding: 10px 14px;
+  color: #fffef8;
   white-space: nowrap;
+  cursor: pointer;
+}
+.ai-compose button:disabled {
+  background: #d8d8d0;
+  color: #686e64;
+  cursor: default;
 }
 a:focus-visible,
 button:focus-visible,

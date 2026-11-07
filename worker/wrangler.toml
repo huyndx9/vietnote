@@ -1,0 +1,10 @@
+# Cloudflare Worker that keeps the DeepSeek API key off the public website.
+# Deploy with: python3 scripts/setup-ai.py  (or SETUP-AI-WINDOWS.bat)
+name = "vietnote-ai"
+main = "index.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+[vars]
+# Websites allowed to call this Worker (comma separated).
+ALLOWED_ORIGINS = "https://huyndx9.github.io,http://localhost:8000,http://127.0.0.1:8000"

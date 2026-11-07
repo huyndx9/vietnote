@@ -114,9 +114,8 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
   và không gửi đến quản trị viên.
 - Chia sẻ dùng native share nếu có, nếu không thì sao chép liên kết.
 - Nút bản đồ mở Google Maps; bản đồ Leaflet không cần API key hay tile bên ngoài.
-- Trợ lý DeepSeek mới có giao diện và hiển thị rõ trạng thái chưa kết nối; không gọi AI,
-  không nhận API key phía trình duyệt. Muốn dùng thật cần route phía máy chủ và secret
-  `DEEPSEEK_API_KEY` chỉ nằm ở máy chủ.
+- Trợ lý DeepSeek: khi `ai_endpoint` trong `site.json` còn trống, khung chat hiển thị
+  "chưa kết nối" và chỉ gợi ý bài viết. Xem mục "Kết nối chatbot DeepSeek" bên dưới.
 - Lịch trình là gợi ý biên tập, không phải sản phẩm đặt chỗ. Thông tin nhập cảnh, giá,
   giờ mở cửa, thời tiết cần kiểm tra lại với nguồn chính thức.
 - Chưa có tài khoản hay cơ sở dữ liệu.
@@ -137,3 +136,46 @@ Các bài có 13 phần, mục lục, lưu sổ tay, chia sẻ, câu tiếng Vi�
 liên kết Google Maps và địa điểm liên quan. Nội dung là hướng dẫn biên tập;
 không khẳng định đã trực tiếp đến thăm hoặc cung cấp giá/giờ mở cửa trực tiếp.
 Khi bổ sung địa điểm, cập nhật cả hai file JSON và kiểm tra nguồn thông tin.
+
+## Kết nối chatbot DeepSeek
+
+API key không được nằm trong website (mọi file JS đều công khai). Key được lưu làm
+secret của một Cloudflare Worker nhỏ (`worker/`); website chỉ gọi Worker đó.
+
+### Cách 1 — chỉ dùng trình duyệt (khuyên dùng)
+
+1. Tạo tài khoản miễn phí tại https://dash.cloudflare.com/sign-up, rồi mở mục
+   **Workers & Pages** một lần (để Cloudflare tạo tên miền `*.workers.dev`).
+2. Mở https://dash.cloudflare.com/profile/api-tokens → **Create Token** → mẫu
+   **Edit Cloudflare Workers** → **Use template** → **Continue to summary** →
+   **Create Token** → sao chép token.
+3. Mở https://github.com/huyndx9/vietnote/settings/secrets/actions →
+   **New repository secret**, tạo 2 secret:
+   - `CLOUDFLARE_API_TOKEN` = token ở bước 2
+   - `DEEPSEEK_API_KEY` = API key DeepSeek
+4. Mở https://github.com/huyndx9/vietnote/actions/workflows/pages.yml →
+   **Run workflow** → **Run workflow**. Khoảng 2 phút sau chatbot hoạt động trên
+   https://huyndx9.github.io/vietnote/ .
+
+Từ đó mỗi lần push lên `main`, workflow tự triển khai Worker, cập nhật key và đưa URL
+Worker vào website. Đổi key: sửa secret `DEEPSEEK_API_KEY` rồi chạy lại workflow.
+Nếu token thấy nhiều tài khoản Cloudflare, thêm secret `CLOUDFLARE_ACCOUNT_ID`.
+Khi chưa có `CLOUDFLARE_API_TOKEN`, website vẫn được triển khai với trợ lý ở trạng
+thái "chưa kết nối".
+
+### Cách 2 — chạy trên máy
+
+Cần Node.js LTS và tài khoản Cloudflare. Chạy `python3 scripts/setup-ai.py` (Windows:
+nhấp đúp `SETUP-AI-WINDOWS.bat`), dán API key khi được hỏi. Script đăng nhập
+Cloudflare, triển khai Worker, lưu key, ghi URL vào `ai_endpoint` của
+`src/content/site.json` và build lại; sau đó commit `site.json` và push.
+`--test` hỏi thử Worker; `--endpoint URL` chỉ ghi URL có sẵn.
+
+### Ghi chú
+
+- Lời dặn cho AI (system prompt) và giới hạn độ dài: `worker/index.js`. Website được
+  phép gọi Worker: `ALLOWED_ORIGINS` trong `worker/wrangler.toml`.
+- Thứ tự ưu tiên URL: biến môi trường `VIETNOTE_AI_ENDPOINT` (workflow đặt) rồi
+  `ai_endpoint` trong `site.json`.
+- Nên đặt hạn mức chi tiêu trong tài khoản DeepSeek; kiểm tra Origin không chặn được
+  người gọi Worker trực tiếp.

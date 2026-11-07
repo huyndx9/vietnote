@@ -258,7 +258,21 @@ if (feedback) {
   };
 }
 function setupAI() {
+  // Worker URL from site.json "ai_endpoint" (see scripts/setup-ai.py). Empty = not connected.
+  const endpoint = document.querySelector('meta[name="vietnote-ai"]')?.content.trim() || "";
   const host = document.createElement("div");
+  const suggestions = endpoint
+    ? `<div class="ai-suggestions">
+          <button type="button">부모님과 다낭 3박 4일 일정 추천해 줘</button>
+          <button type="button">하노이에서 꼭 먹어야 할 음식은?</button>
+          <button type="button">여행에 쓰는 베트남어 인사말 알려 줘</button>
+        </div>`
+    : `<div class="connection-note"><strong>AI 연결 준비 중</strong><br>DeepSeek API가 아직 연결되지 않아 AI 답변을 생성할 수 없습니다. 아래 항목은 편집된 여행 콘텐츠로 이동합니다.</div>
+        <div class="ai-suggestions">
+          <a href="${BASE}articles/danang-4days/">부모님과 다낭 3박 4일 ↗</a>
+          <a href="${BASE}food/">베트남 음식과 커피 알아보기 ↗</a>
+          <a href="${BASE}articles/language/">여행 베트남어 표현 보기 ↗</a>
+        </div>`;
   host.innerHTML = `
     <div class="ai-mascot-dock">
       <button type="button" class="ai-launcher" aria-label="AI에게 물어보기" title="AI에게 물어보기" aria-expanded="false" aria-controls="aiPanel">
@@ -272,14 +286,15 @@ function setupAI() {
         <button aria-label="도우미 닫기">×</button>
       </div>
       <div class="ai-body">
-        <p class="ai-greeting">어떤 베트남 여행을 꿈꾸세요?<br>먼저 여행 노트에서 아이디어를 찾아보세요.</p>
-        <div class="connection-note"><strong>AI 연결 준비 중</strong><br>DeepSeek API가 아직 연결되지 않아 AI 답변을 생성할 수 없습니다. 아래 항목은 편집된 여행 콘텐츠로 이동합니다.</div>
-        <div class="ai-suggestions">
-          <a href="${BASE}articles/danang-4days/">부모님과 다낭 3박 4일 ↗</a>
-          <a href="${BASE}food/">베트남 음식과 커피 알아보기 ↗</a>
-          <a href="${BASE}articles/language/">여행 베트남어 표현 보기 ↗</a>
-        </div>
-        <div class="ai-compose"><input disabled aria-label="AI 연결 후 질문 가능" placeholder="API 연결 후 질문할 수 있어요"><button disabled>전송</button></div>
+        <p class="ai-greeting">어떤 베트남 여행을 꿈꾸세요?<br>${endpoint ? "궁금한 것을 물어보세요." : "먼저 여행 노트에서 아이디어를 찾아보세요."}</p>
+        ${suggestions}
+        <div class="ai-messages" role="log" aria-live="polite"></div>
+        ${endpoint ? '<p class="ai-disclaimer">AI 답변은 틀릴 수 있어요. 요금·운영 시간·입국 조건은 공식 안내를 확인해 주세요.</p>' : ""}
+        <form class="ai-compose">${
+          endpoint
+            ? '<input name="q" maxlength="1000" autocomplete="off" aria-label="질문 입력" placeholder="베트남 여행에 대해 물어보세요"><button type="submit">전송</button>'
+            : '<input disabled aria-label="AI 연결 후 질문 가능" placeholder="API 연결 후 질문할 수 있어요"><button type="submit" disabled>전송</button>'
+        }</form>
       </div>
     </section>`;
   document.body.append(host);
@@ -311,6 +326,62 @@ function setupAI() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !panel.hidden) show(false);
   });
+  if (endpoint) setupChat(host, endpoint);
+}
+function setupChat(host, endpoint) {
+  const form = host.querySelector(".ai-compose"),
+    input = form.elements.q,
+    send = form.querySelector("button"),
+    log = host.querySelector(".ai-messages"),
+    history = [];
+  let busy = false;
+  function add(role, text) {
+    const p = document.createElement("p");
+    p.className = `ai-msg ai-msg-${role}`;
+    p.textContent = text; // never innerHTML: replies are untrusted text
+    log.append(p);
+    p.scrollIntoView({ block: "nearest" });
+    return p;
+  }
+  async function ask(question) {
+    const q = question.trim();
+    if (!q || busy) return;
+    busy = true;
+    send.disabled = true;
+    host.querySelector(".ai-suggestions")?.remove();
+    add("user", q);
+    history.push({ role: "user", content: q });
+    const pending = add("assistant", "답변을 준비하고 있어요…");
+    pending.classList.add("is-pending");
+    try {
+      const r = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history.slice(-10) }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.reply) throw new Error(data.error || r.status);
+      pending.textContent = data.reply;
+      pending.scrollIntoView({ block: "start" });
+      history.push({ role: "assistant", content: data.reply });
+    } catch {
+      pending.textContent = "지금은 답변할 수 없어요. 잠시 후 다시 시도해 주세요.";
+      pending.classList.add("is-error");
+      history.pop(); // let the user ask the same question again
+    } finally {
+      pending.classList.remove("is-pending");
+      busy = false;
+      send.disabled = false;
+      input.focus();
+    }
+  }
+  form.onsubmit = (e) => {
+    e.preventDefault();
+    const q = input.value;
+    input.value = "";
+    ask(q);
+  };
+  host.querySelectorAll(".ai-suggestions button").forEach((b) => (b.onclick = () => ask(b.textContent)));
 }
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
