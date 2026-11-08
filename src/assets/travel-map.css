@@ -1263,3 +1263,12 @@
   .map-intro p { font-size: 16px; }
   .map-interest-bar > span, .map-interest-chips button { font-size: 13px; }
 }
+
+/* Detail labels: terrain, seas, rivers and major cities (shown as you zoom in) */
+.atlas-detail-label{white-space:nowrap;font-family:'Pretendard',sans-serif;line-height:18px;pointer-events:none}
+.atlas-detail-sea{font-size:12px;font-style:italic;letter-spacing:.2em;color:#6f9aa3;text-align:center}
+.atlas-detail-region{font-size:12px;font-weight:600;letter-spacing:.14em;color:#8b9a78;text-align:center}
+.atlas-detail-range{font-size:11px;letter-spacing:.3em;color:#a08a6a;text-align:center}
+.atlas-detail-peak{font-size:11px;font-weight:600;color:#8a6a4a}
+.atlas-detail-river{font-size:11px;font-style:italic;color:#5f9aa1;text-align:center}
+.atlas-detail-city{font-size:11px;font-weight:500;color:#5d665b}

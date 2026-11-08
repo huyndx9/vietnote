@@ -8,8 +8,18 @@ Reference implementation/documentation: https://leafletjs.com/examples/geojson/
 Local vector data in src/assets/map-geography.js:
 - Natural Earth 1:10m admin-0 country polygons, Vietnam and regional context:
   https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_10m_admin_0_countries.geojson
-- Natural Earth 1:50m river centerlines, Mekong, Hong and Chao Phraya:
-  https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_50m_rivers_lake_centerlines.geojson
+- Natural Earth 1:10m river centerlines (Hồng, Đà, Mekong, Cả, Ba, Srêpốk ...):
+  https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_10m_rivers_lake_centerlines.geojson
+- Natural Earth 1:10m roads, major and secondary highways inside Vietnam:
+  https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_10m_roads.geojson
+  Rivers and roads are produced by scripts/map-layers.py (clip, Douglas-Peucker
+  simplification, rounding). Re-run it to refresh them; countries are kept.
+- Korean editorial labels for seas, deltas, highlands, mountain ranges, the
+  Fansipan summit, two rivers and major cities are placed by hand in
+  travel-map.js and appear progressively as the map is zoomed in.
+- Map labels are in Korean. Vietnamese names remain in search (diacritics are
+  normalised) and in Google Maps links. Province boundaries are not drawn:
+  Natural Earth still has the 63 provinces from before the July 2025 merger.
 
 Natural Earth is public domain:
 https://www.naturalearthdata.com/about/terms-of-use/

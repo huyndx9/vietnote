@@ -283,7 +283,7 @@ function setupAI() {
     </div>
     <section class="ai-panel" id="aiPanel" aria-label="베트남 여행 도우미" hidden>
       <div class="ai-header">
-        <div><strong>베트남 여행 도우미</strong><small>VIETNOTE · DEEPSEEK</small></div>
+        <div><strong>베트남 여행 도우미</strong><small>VIETNOTE · AI 여행 도우미</small></div>
         <button aria-label="도우미 닫기">×</button>
       </div>
       <div class="ai-body">

@@ -873,3 +873,8 @@ form textarea {
 }
 /* Keep section actions inside very narrow phone viewports. */
 @media(max-width:400px){.section-head{flex-wrap:wrap}}
+
+/* Korean display headings: tighter leading than the English serif titles had. */
+.journey h2 { line-height: 1.2; letter-spacing: -0.03em; }
+.section-title, .page-intro h1, .map-intro h1, .map-intro h2 { letter-spacing: -0.03em; }
+.history-kicker { text-transform: none; letter-spacing: .02em; }

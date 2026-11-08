@@ -9,6 +9,8 @@
     }),
   );
   const places = window.VIETNOTE_DESTINATIONS;
+  // Short Korean name for pins and chips: "하노이 · 호안끼엠 호수" -> "하노이".
+  const shortName = (p) => p.title.split(" · ")[0];
   const seasons = window.VIETNOTE_SEASONS;
   // Preview photos come from src/content/photos.json ("places") via map-destinations.js.
   const regionNames = { north: "북부", central: "중부", south: "남부" };
@@ -67,17 +69,80 @@
       fillOpacity: 1,
     }),
   }).addTo(map);
+  // Main roads (Natural Earth 1:10m, inside Vietnam), drawn under the rivers.
+  if (window.VIETNOTE_GEOGRAPHY.roads)
+    L.geoJSON(window.VIETNOTE_GEOGRAPHY.roads, {
+      interactive: false,
+      style: (f) => ({
+        color: f.properties.major ? "#c79a63" : "#d3b48c",
+        weight: f.properties.major ? 1.8 : 1,
+        opacity: 0.9,
+        dashArray: f.properties.major ? null : "3 3",
+      }),
+    }).addTo(map);
   L.geoJSON(window.VIETNOTE_GEOGRAPHY.rivers, {
     interactive: false,
-    style: { color: "#9fc7ca", weight: 1.3, opacity: 0.9 },
+    style: (f) => ({
+      color: "#8fbfc4",
+      weight: (f.properties.rank ?? 9) <= 4 ? 1.8 : 1,
+      opacity: 0.9,
+    }),
   }).addTo(map);
+  // Editorial Korean labels for terrain, seas and major cities. Detail labels
+  // appear as the reader zooms in so the overview stays calm.
+  map.createPane("detailLabels");
+  map.getPane("detailLabels").style.zIndex = 440;
+  map.getPane("detailLabels").style.pointerEvents = "none";
+  const detailLabels = [
+    // [text, lat, lon, kind, minZoom]
+    ["통킹만", 20.1, 107.75, "sea", 5],
+    ["타이만", 9.6, 102.6, "sea", 5],
+    ["메콩 삼각주", 9.95, 105.75, "region", 6],
+    ["홍강 삼각주", 20.62, 106.25, "region", 6.5],
+    ["떠이응우옌 고원", 13.3, 108.05, "region", 6],
+    ["쯔엉선 산맥", 17.2, 105.85, "range", 6],
+    ["호앙리엔선 산맥", 22.05, 103.55, "range", 6.5],
+    ["▲ 판시판산 3,143m", 22.303, 103.775, "peak", 7],
+    ["홍강", 21.55, 104.95, "river", 7],
+    ["메콩강", 11.45, 105.1, "river", 7],
+    ["• 하이퐁", 20.86, 106.68, "city", 6.5],
+    ["• 빈", 18.68, 105.68, "city", 6.5],
+    ["• 꽝응아이", 15.12, 108.8, "city", 7],
+    ["• 플래이꾸", 13.98, 108.0, "city", 7],
+    ["• 비엔호아", 10.95, 106.82, "city", 7.5],
+    ["• 롱쑤옌", 10.38, 105.43, "city", 7.5],
+    ["• 박닌", 21.19, 106.07, "city", 7.5],
+    ["• 타인호아", 19.81, 105.78, "city", 7],
+  ];
+  const detailMarkers = detailLabels.map(([text, lat, lon, kind, minZoom]) => ({
+    minZoom,
+    marker: L.marker([lat, lon], {
+      interactive: false,
+      keyboard: false,
+      pane: "detailLabels",
+      icon: L.divIcon({
+        className: "atlas-detail-label atlas-detail-" + kind,
+        html: text,
+        iconSize: [150, 18],
+        iconAnchor: kind === "city" || kind === "peak" ? [6, 9] : [75, 9],
+      }),
+    }),
+  }));
+  const syncDetailLabels = () => {
+    const z = map.getZoom();
+    for (const { minZoom, marker } of detailMarkers) {
+      if (z >= minZoom) marker.addTo(map);
+      else marker.remove();
+    }
+  };
+  map.on("zoomend", syncDetailLabels);
   const labels = [
-    ["VIỆT NAM", 16.8, 107.3, "country-vietnam"],
-    ["LÀO", 18.4, 103.4, ""],
-    ["CAMPUCHIA", 12.9, 104.3, ""],
-    ["THÁI LAN", 16.4, 100.8, ""],
-    ["TRUNG QUỐC", 24.5, 106, ""],
-    ["BIỂN ĐÔNG", 14, 114, "ocean-label"],
+    ["베트남", 16.8, 107.3, "country-vietnam"],
+    ["라오스", 18.4, 103.4, ""],
+    ["캄보디아", 12.9, 104.3, ""],
+    ["태국", 16.4, 100.8, ""],
+    ["중국", 24.5, 106, ""],
+    ["비엔동 (남중국해)", 14, 114, "ocean-label"],
   ];
   for (const [name, lat, lon, extra] of labels)
     L.marker([lat, lon], {
@@ -95,8 +160,8 @@
   const archipelagos = [
     {
       id: "hoang-sa",
-      name: "QUẦN ĐẢO HOÀNG SA",
-      english: "Paracel Islands",
+      name: "호앙사 군도",
+      english: "Hoàng Sa · 파라셀 제도",
       label: [17.7, 112],
       islands: [
         [16.834, 112.337],
@@ -108,8 +173,8 @@
     },
     {
       id: "truong-sa",
-      name: "QUẦN ĐẢO TRƯỜNG SA",
-      english: "Spratly Islands",
+      name: "쯔엉사 군도",
+      english: "Trường Sa · 스프래틀리 제도",
       label: [12.15, 114.1],
       islands: [
         [8.643, 111.92],
@@ -149,6 +214,7 @@
     }).addTo(map);
     label.getElement().dataset.archipelago = group.id;
   }
+  syncDetailLabels();
   const markerLayer = L.markerClusterGroup({
     showCoverageOnHover: false,
     maxClusterRadius: 38,
@@ -247,17 +313,17 @@
       image.onerror = () => {
         image.remove();
         photo.classList.add("no-photo");
-        photo.textContent = p.vi;
+        photo.textContent = shortName(p);
       };
       photo.append(image);
     } else {
       photo.classList.add("no-photo");
-      photo.textContent = p.vi;
+      photo.textContent = shortName(p);
     }
     const body = document.createElement("div");
     body.className = "map-preview-body";
     const label = document.createElement("small");
-    label.textContent = regionNames[p.region] + " / " + p.vi;
+    label.textContent = regionNames[p.region] + " · " + categoryNames[p.category];
     const title = document.createElement("strong");
     title.textContent = p.title;
     const description = document.createElement("p");
@@ -340,7 +406,7 @@
       return el;
     };
     const section = node("section", "map-season");
-    section.setAttribute("aria-label", p.vi + " · When to go");
+    section.setAttribute("aria-label", shortName(p) + " · 언제 갈까요");
     const heading = node("div", "map-season-heading");
     heading.append(node("h3", "", "When to go."), node("span", "", climate.label + " 기준"));
     const best = node("p", "season-best");
@@ -377,16 +443,16 @@
     detail.replaceChildren();
     const eyebrow = document.createElement("div");
     eyebrow.className = "section-no";
-    eyebrow.textContent = regionNames[p.region] + " / " + p.vi;
+    eyebrow.textContent = regionNames[p.region] + " · " + categoryNames[p.category];
     const title = document.createElement("h2");
     const titleLink=document.createElement("a");titleLink.href=p.url;titleLink.textContent=p.title;title.append(titleLink);
     const desc = document.createElement("p");
     desc.textContent = p.teaser;
     const coords = document.createElement("small");
-    coords.textContent = `${p.lat.toFixed(3)}° N · ${p.lon.toFixed(3)}° E`;
+    coords.textContent = `북위 ${p.lat.toFixed(3)}° · 동경 ${p.lon.toFixed(3)}°`;
     const maps = document.createElement("a");
     maps.className = "primary-button";
-    maps.textContent = "Google Maps에서 위치 보기 ↗";
+    maps.textContent = "구글 지도에서 위치 보기 ↗";
     maps.href =
       "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.vi + " Vietnam");
     maps.target = "_blank";
@@ -402,12 +468,12 @@
       cover.append(img);
     } else {
       const word = document.createElement("span");
-      word.textContent = p.vi;
+      word.textContent = shortName(p);
       cover.append(word);
     }
     const tag = document.createElement("span");
     tag.className = "map-cover-tag";
-    tag.textContent = regionNames[p.region] + " VIETNAM";
+    tag.textContent = regionNames[p.region] + " 베트남";
     cover.append(tag);
     const body = document.createElement("div");
     body.className = "map-detail-body";
@@ -439,7 +505,7 @@
     story.append(tip);
     body.append(experiences, seasonCard(p), story, coords, maps);
     detail.append(cover, body);
-    document.getElementById("mapSelection").textContent = p.vi;
+    document.getElementById("mapSelection").textContent = shortName(p);
     host.dataset.selectedRegion = p.region;
     if (p.url) {
       const article = document.createElement("a");
@@ -476,7 +542,7 @@
       const marker = L.marker([p.lat, p.lon], {
         icon,
         keyboard: true,
-        title: p.vi,
+        title: p.title,
         riseOnHover: true,
       });
       destinationMarkers.set(p.id, marker);
@@ -491,7 +557,7 @@
         el.setAttribute("role", "button");
         el.setAttribute("aria-label", p.title);
         el.setAttribute("aria-pressed", String(selected === p.id));
-        el.querySelector(".map-pin-label").textContent = p.vi;
+        el.querySelector(".map-pin-label").textContent = shortName(p);
         bindPreview(el, p);
         el.onclick = (e) => {
           e.stopPropagation();
@@ -514,7 +580,7 @@
       const name = document.createElement("strong");
       name.textContent = p.title;
       const sub = document.createElement("small");
-      sub.textContent = p.vi + " · " + categoryNames[p.category];
+      sub.textContent = regionNames[p.region] + " · " + categoryNames[p.category];
       const arrow = document.createElement("span");
       arrow.className = "map-place-arrow";
       arrow.textContent = "↗";
