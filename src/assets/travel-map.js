@@ -285,8 +285,11 @@
     const above = rect.top - box.height - gap;
     const top =
       above >= edge ? above : Math.min(innerHeight - box.height - edge, rect.bottom + gap);
-    preview.style.left = left + "px";
-    preview.style.top = Math.max(edge, top) + "px";
+    // In desktop-site mode the page is zoomed (see desktop_mode.py); rects are
+    // in zoomed pixels while style lengths are multiplied by the zoom.
+    const zoom = parseFloat(document.documentElement.style.zoom) || 1;
+    preview.style.left = left / zoom + "px";
+    preview.style.top = Math.max(edge, top) / zoom + "px";
   }
   function bindPreview(el, p) {
     el.addEventListener("pointerenter", (e) => {

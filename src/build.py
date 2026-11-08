@@ -20,6 +20,7 @@ from pathlib import Path
 from string import Template
 from urllib.parse import quote
 from place_guides import sections as guide_sections, REGIONS
+from desktop_mode import DETECT_SCRIPT, transform as desktop_mode_css
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'src'
@@ -273,6 +274,7 @@ class Site:
                        f'imagesrcset="{srcset}" imagesizes="96vw" fetchpriority="high">')
         self.write(path, self.render(
             'layout',
+            desktop_mode_script=DETECT_SCRIPT,
             title=h(f'VIETNOTE — {title}' if home else f'{title} — VIETNOTE'),
             description=h(description or self.config['default_description']),
             preload=preload,
@@ -405,6 +407,9 @@ class Site:
         if self.out.exists():
             shutil.rmtree(self.out)
         shutil.copytree(ASSETS, self.out / 'assets')
+        # Keep the phone layout when a phone browser forces "desktop site" (see desktop_mode.py).
+        for sheet in (self.out / 'assets').glob('*.css'):
+            sheet.write_text(desktop_mode_css(sheet.read_text(encoding='utf-8')), encoding='utf-8')
         self.load_items()
         self.write_data_scripts()
         self.build_listings()

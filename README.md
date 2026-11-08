@@ -107,6 +107,15 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
   bằng stem trong photos.json, xóa một mục để bỏ chương).
 - Trang 여행지 liệt kê đủ 42 điểm đến của bản đồ (lọc Bắc/Trung/Nam, tìm kiếm).
 
+## Điện thoại ở chế độ "trang web cho máy tính"
+- Một số trình duyệt (Chrome có bật "데스크톱 사이트", trình duyệt trong ứng dụng) bỏ qua
+  thẻ viewport và dựng trang rộng khoảng 980px, nên điện thoại hiện bố cục máy tính bị thu nhỏ.
+- `src/desktop_mode.py` xử lý tự động: đoạn script trong `<head>` nhận ra màn hình cảm ứng
+  nhỏ đang hiển thị bố cục rộng, gắn class `rds` và phóng trang về đúng bề rộng màn hình;
+  lúc build, mỗi khối `@media` theo bề rộng được nhân bản theo bề rộng thiết bị, đơn vị
+  `vw`/`vh` đổi sang biến. Ở chế độ bình thường giao diện không thay đổi.
+- Khi viết CSS mới cứ dùng `@media (max-width: …)` và `vw`/`vh` như thường; build tự xử lý.
+
 ## Hành vi và giới hạn hiện tại
 
 - Tìm kiếm và lọc chạy hoàn toàn trên trình duyệt.
