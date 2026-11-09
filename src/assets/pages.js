@@ -765,6 +765,210 @@ function setupPostcards() {
 }
 setupPostcards();
 
+// Homepage route notes: every few seconds one note is torn in half across the
+// middle (the top half stays on the peg a moment, the bottom half drops) and a
+// new itinerary from #routePool swings onto the peg.
+function setupRouteNotes() {
+  const grid = document.querySelector(".route-grid"),
+    data = document.getElementById("routePool"),
+    pauseButton = document.querySelector(".route-pause");
+  if (!grid || !data) return;
+  const cards = [...grid.querySelectorAll(".route-card")];
+  let queue = [];
+  try {
+    queue = JSON.parse(data.textContent);
+  } catch {
+    return;
+  }
+  if (!queue.length || !cards.length) return;
+  for (let i = queue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [queue[i], queue[j]] = [queue[j], queue[i]];
+  }
+  const read = (card) => {
+    const img = card.querySelector("img");
+    return {
+      url: card.querySelector("h3 a").getAttribute("href"),
+      title: card.querySelector("h3 a").textContent,
+      city: card.querySelector(".meta").textContent,
+      length: card.querySelector(".route-length").textContent,
+      days: [...card.querySelectorAll(".route-days li")].map((li) => li.textContent),
+      src: img.getAttribute("src"),
+      srcset: img.getAttribute("srcset") || "",
+      alt: img.alt,
+    };
+  };
+  const showing = cards.map(read);
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const INTERVAL = 4200;
+  let step = 0,
+    timer = 0,
+    busy = false,
+    onScreen = false,
+    hovering = false,
+    paused = reduce.matches;
+
+  function fill(card, r) {
+    card.querySelectorAll("a").forEach((a) => (a.href = r.url));
+    card.querySelector("h3 a").textContent = r.title;
+    card.querySelector(".meta").textContent = r.city;
+    card.querySelector(".route-length").textContent = r.length;
+    const list = card.querySelector(".route-days");
+    list.replaceChildren(
+      ...r.days.map((t) => {
+        const li = document.createElement("li");
+        li.textContent = t;
+        return li;
+      }),
+    );
+    const img = card.querySelector("img");
+    if (r.srcset) img.srcset = r.srcset;
+    else img.removeAttribute("srcset");
+    img.src = r.src;
+    img.alt = r.alt;
+  }
+  async function preload(r) {
+    const img = new Image();
+    if (r.srcset) {
+      img.sizes = cards[0].querySelector("img").sizes || "31vw";
+      img.srcset = r.srcset;
+    }
+    img.src = r.src;
+    try {
+      await img.decode();
+    } catch {
+      /* show it anyway */
+    }
+  }
+  // A ragged line across the middle of the note, as polygon points (x%, y%).
+  function tearLine() {
+    const pts = [];
+    for (let i = 0; i <= 16; i++) {
+      const y = 48 + (i % 2 ? 1.6 : -1.6) + (Math.random() * 2 - 1) * 1.8 + (i / 16) * 4;
+      pts.push(`${(i / 16) * 100}% ${y.toFixed(2)}%`);
+    }
+    return pts;
+  }
+  function shred(card, tilt, tint, half, clip) {
+    const piece = card.cloneNode(true);
+    piece.classList.add("route-shred", half);
+    piece.setAttribute("aria-hidden", "true");
+    piece.inert = true;
+    piece.querySelectorAll("img").forEach((i) => (i.loading = "eager"));
+    Object.assign(piece.style, {
+      left: card.offsetLeft + "px",
+      top: card.offsetTop + "px",
+      width: card.offsetWidth + "px",
+      height: card.offsetHeight + "px",
+      clipPath: `polygon(${clip})`,
+    });
+    piece.style.setProperty("--tilt", tilt + "deg");
+    piece.style.setProperty("--paper-tint", tint);
+    grid.append(piece);
+    return piece;
+  }
+  async function turn() {
+    if (busy) return;
+    busy = true;
+    const slot = step % cards.length;
+    step++;
+    const card = cards[slot],
+      next = queue.shift();
+    await preload(next);
+    const cs = getComputedStyle(card);
+    const tilt = parseFloat(cs.getPropertyValue("--tilt")) || 0,
+      tint = cs.getPropertyValue("--paper-tint");
+    const line = tearLine();
+    const top = shred(card, tilt, tint, "top", ["0% -80px", "100% -80px", ...line.slice().reverse()].join(","));
+    const bottom = shred(card, tilt, tint, "bottom", [...line, "100% calc(100% + 80px)", "0% calc(100% + 80px)"].join(","));
+    const rot = (d) => `rotate(${(tilt + d).toFixed(2)}deg)`;
+    card.style.opacity = "0";
+    queue.push(showing[slot]);
+    showing[slot] = next;
+    fill(card, next);
+    const fell = bottom.animate(
+      [
+        { transform: rot(0) },
+        { transform: `translate(2px, 8px) ${rot(4)}`, offset: 0.18 },
+        { transform: `translate(26px, 260px) ${rot(16)}`, opacity: 0 },
+      ],
+      { duration: 1100, easing: "cubic-bezier(.5,0,.85,.55)", fill: "forwards" },
+    );
+    const hung = top.animate(
+      [
+        { transform: rot(0) },
+        { transform: rot(-5), offset: 0.3 },
+        { transform: rot(3), opacity: 1, offset: 0.55 },
+        { transform: `translateY(-10px) ${rot(1)}`, opacity: 0 },
+      ],
+      { duration: 1000, easing: "ease-out", fill: "forwards" },
+    );
+    await new Promise((r) => setTimeout(r, 650));
+    card.style.opacity = "";
+    const swing = card.animate(
+      [
+        { transform: `translateY(-36px) ${rot(9)}`, opacity: 0 },
+        { opacity: 1, offset: 0.3 },
+        { transform: rot(-4), offset: 0.6 },
+        { transform: rot(1.5), offset: 0.82 },
+        { transform: rot(0) },
+      ],
+      { duration: 900, easing: "ease-out" },
+    );
+    await Promise.all([fell.finished, hung.finished, swing.finished]);
+    top.remove();
+    bottom.remove();
+    busy = false;
+  }
+  function running() {
+    return !paused && !hovering && onScreen && !document.hidden;
+  }
+  function schedule() {
+    clearTimeout(timer);
+    if (running())
+      timer = setTimeout(async () => {
+        await turn();
+        schedule();
+      }, INTERVAL);
+  }
+  function syncButton() {
+    if (!pauseButton) return;
+    pauseButton.hidden = false;
+    pauseButton.setAttribute("aria-pressed", String(paused));
+    pauseButton.innerHTML = paused ? "▶ <span>자동 넘기기</span>" : "Ⅱ <span>멈추기</span>";
+    pauseButton.setAttribute("aria-label", paused ? "추천 일정 자동 넘기기 시작" : "추천 일정 자동 넘기기 멈추기");
+  }
+  pauseButton?.addEventListener("click", () => {
+    paused = !paused;
+    syncButton();
+    schedule();
+  });
+  for (const [type, value] of [
+    ["pointerenter", true],
+    ["pointerleave", false],
+    ["focusin", true],
+  ])
+    grid.addEventListener(type, (e) => {
+      if (e.pointerType === "touch") return;
+      hovering = value;
+      schedule();
+    });
+  grid.addEventListener("focusout", () => {
+    hovering = grid.matches(":hover");
+    schedule();
+  });
+  document.addEventListener("visibilitychange", schedule);
+  new IntersectionObserver(
+    ([entry]) => {
+      onScreen = entry.isIntersecting;
+      schedule();
+    },
+    { threshold: 0.35 },
+  ).observe(grid);
+  syncButton();
+}
+setupRouteNotes();
+
 function setupHeroSlideshow() {
   const slides = [...document.querySelectorAll(".hero-slide")];
   // With a single photograph there is nothing to rotate; hide the dots and pause button.

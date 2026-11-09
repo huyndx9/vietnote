@@ -1103,12 +1103,6 @@ textarea:focus-visible {
   margin-top: auto;
   align-self: flex-start;
 }
-@media (max-width: 900px) {
-  .route-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* When to go: shared month colors and seasonal typography for atlas cards. */
 .season-best {
   display: grid;
