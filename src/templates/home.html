@@ -41,8 +41,9 @@ $history
 <h2 class="section-title band-title">어디로 갈까요? <span class="hand">도시마다 다른 베트남</span></h2>
 <div class="section-sub">베트남의 도시와 자연, 그곳에 담긴 이야기를 만나보세요.</div>
 </div>
-<a class="band-link" href="${base}destinations/">여행지 전체 보기 ↗</a>
+<div class="band-actions"><button type="button" class="postcard-pause" aria-pressed="false" hidden>Ⅱ <span>멈추기</span></button><a class="band-link" href="${base}destinations/">여행지 전체 보기 ↗</a></div>
 </div>
+<script type="application/json" id="postcardPool">$postcard_pool</script>
 <div class="postcards">
 <a class="postcard" href="${base}destinations/hanoi/">
 <span class="postcard-photo">$img_hanoi</span>
@@ -68,6 +69,7 @@ $history
 <span class="postcard-body"><span class="region-tag south">남부</span><strong>푸꾸옥</strong><span>천천히 머물고 싶은 섬</span></span>
 <span class="postcard-go" aria-hidden="true">↗</span>
 </a>
+$wide_postcards
 </div>
 </div>
 </section>

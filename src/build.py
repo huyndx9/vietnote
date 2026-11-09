@@ -500,6 +500,52 @@ class Site:
         self.page('404.html', pages['404']['title'], self.render('not-found'), pages['404']['description'],
                   index=False)
 
+    # The four postcards written in home.html, and four more shown on wide screens.
+    POSTCARDS_IN_TEMPLATE = ('hanoi', 'hoian', 'danang', 'phuquoc')
+    POSTCARDS_WIDE = ('halong', 'hue', 'dalat', 'saigon')
+
+    def postcard_entry(self, d):
+        stem = self.place_photo(d['id'])
+        photo = self.photo(stem)
+        return {
+            'id': d['id'], 'url': d['url'], 'vi': d['vi'], 'name': d['title'].split(' · ')[0],
+            'region': d['region'], 'regionLabel': REGIONS[d['region']],
+            'tagline': d['teaser'].split('. ')[0].rstrip('.'),
+            'stem': stem, 'src': self.url(f'assets/{stem}-640.webp'),
+            'srcset': ','.join(f'{self.url(f"assets/{stem}-{w}.webp")} {w}w' for w in photo['widths'] if w <= 960),
+            'alt': photo['alt'],
+        }
+
+    def wide_postcards(self):
+        """Second row of homepage postcards; CSS shows it on wide screens only."""
+        by_id = {d['id']: d for d in self.destinations}
+        cards = []
+        for place_id in self.POSTCARDS_WIDE:
+            x = self.postcard_entry(by_id[place_id])
+            cards.append(
+                f'<a class="postcard postcard-wide" href="{h(x["url"])}">'
+                f'<span class="postcard-photo">{self.img(x["stem"], x["alt"], "(max-width: 1000px) 46vw, 23vw")}</span>'
+                f'<span class="postcard-stamp" lang="vi">{h(x["vi"])}</span>'
+                f'<span class="postcard-body"><span class="region-tag {x["region"]}">{h(x["regionLabel"])}</span>'
+                f'<strong>{h(x["name"])}</strong><span>{h(x["tagline"])}</span></span>'
+                '<span class="postcard-go" aria-hidden="true">↗</span></a>')
+        return '\n'.join(cards)
+
+    def postcard_pool(self):
+        """Destinations the homepage postcards turn over to (pages.js), as JSON for
+        a <script type="application/json">: every atlas place with a photo that
+        is not already on a postcard."""
+        on_screen = set(self.POSTCARDS_IN_TEMPLATE) | set(self.POSTCARDS_WIDE)
+        pool = []
+        for d in self.destinations:
+            if d['id'] in on_screen or not self.place_photo(d['id']):
+                continue
+            entry = self.postcard_entry(d)
+            for key in ('id', 'stem'):
+                entry.pop(key)
+            pool.append(entry)
+        return json.dumps(pool, ensure_ascii=False).replace('</', '<\\/')
+
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
@@ -507,7 +553,8 @@ class Site:
         names = ''.join(f'<span lang="vi">{h(d["vi"])}</span>' for d in self.destinations)
         main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(),
                            hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(),
-                           ticker=names + names)
+                           ticker=names + names, postcard_pool=self.postcard_pool(),
+                           wide_postcards=self.wide_postcards())
         home = self.config['pages']['home']
         website = {'@type': 'WebSite', 'name': self.config['site_name'], 'url': self.public_url,
                    'description': home['description'], 'inLanguage': 'ko', 'publisher': self.publisher()}
