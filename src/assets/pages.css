@@ -1022,12 +1022,6 @@ textarea:focus-visible {
   height: clamp(260px, 36vw, 600px);
   object-fit: cover;
 }
-.guide-cover figcaption {
-  font-size: 11px;
-  line-height: 1.8;
-  color: var(--muted);
-  margin-top: 10px;
-}
 .guide-cover a {
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -1038,9 +1032,6 @@ textarea:focus-visible {
   }
   .guide-cover img {
     height: 250px;
-  }
-  .guide-cover figcaption {
-    font-size: 10px;
   }
 }
 
@@ -1253,17 +1244,6 @@ textarea:focus-visible {
   border-bottom: 1px solid
     color-mix(in srgb, var(--coral-deep) 40%, transparent);
   padding-bottom: 6px;
-}
-.photo-caption {
-  max-width: 1440px;
-  margin: 8px auto 0;
-  font-size: 12px;
-  color: var(--muted);
-  text-align: right;
-}
-.photo-caption a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 
 /* Homepage history roll: chapters from the Hùng kings to today (scroll-snap, no autoplay) */
@@ -1498,20 +1478,6 @@ textarea:focus-visible {
   aspect-ratio: 4/3;
   overflow: hidden;
   background: var(--line);
-}
-.history-photo figcaption {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  max-width: 100%;
-  font-size: 11px;
-  line-height: 1.4;
-  padding: 4px 8px;
-  background: color-mix(in srgb, var(--ink) 53%, transparent);
-  color: var(--paper);
-}
-.history-photo figcaption a {
-  color: inherit;
 }
 .history-body {
   padding: 22px 24px 26px;

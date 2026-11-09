@@ -1174,10 +1174,6 @@ body {
 .guide-cover img {
   border-radius: var(--radius-lg);
 }
-.photo-caption,
-.guide-cover figcaption {
-  color: var(--muted);
-}
 .article-toc {
   border-radius: var(--radius-md);
   background: var(--mist);
@@ -1628,8 +1624,9 @@ html,
 body {
   overflow-x: clip;
 }
-/* The atlas keeps every gesture that starts on it, also at the map's edge. */
+/* Touch gestures on the atlas are handled in travel-map.js (pan the map, then
+   scroll the page at its edge). No overscroll-behavior here: Leaflet's
+   container is overflow: hidden, so it would stop mouse-wheel scrolling of the page. */
 #vietnamMap {
   touch-action: none;
-  overscroll-behavior: none;
 }
