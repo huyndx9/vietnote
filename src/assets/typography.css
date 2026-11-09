@@ -6,17 +6,10 @@
   font-weight: 300 700;
   font-display: swap;
 }
-@font-face {
-  font-family: "Playfair Display";
-  src: url("fonts/Playfair-Display-subset.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400 900;
-  font-display: swap;
-}
 :root {
-  --font-body: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
-  --font-display: "Playfair Display", "Pretendard", serif;
-  --muted: #65695f;
+  --font-body: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui,
+    sans-serif;
+  --font-display: "Bricolage Grotesque", "Pretendard", sans-serif;
 }
 body {
   font-family: var(--font-body);
@@ -48,23 +41,6 @@ p {
   font-family: var(--font-display);
   font-weight: 400;
 }
-.logo {
-  font-family: var(--font-body);
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.06em;
-  line-height: 1;
-}
-.nav {
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.5;
-  gap: 24px;
-}
-.nav a {
-  padding: 10px 0;
-}
 .eyebrow,
 .section-no,
 .meta {
@@ -84,33 +60,13 @@ p {
   font-size: 11px;
   letter-spacing: 0.04em;
 }
-.hero h1 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(88px, 16vw, 240px);
-  line-height: 1.1;
-  letter-spacing: -0.06em;
-}
-.hero-korean {
-  font-size: clamp(15px, 1.6vw, 20px);
-  line-height: 1.8;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-}
-.hero-bottom {
-  line-height: 1.7;
-  letter-spacing: 0.08em;
-}
 .section-title {
   font-size: clamp(40px, 4.7vw, 68px);
   line-height: 1.15;
   font-weight: 400;
   margin: 16px 0;
 }
-.section-sub,
-.destination p,
-.editorial p,
-.journey p {
+.section-sub, .editorial p, .journey p {
   font-size: 15px;
   line-height: 1.9;
   letter-spacing: -0.015em;
@@ -131,12 +87,6 @@ p {
   font-size: 16px;
   line-height: 1.95;
   letter-spacing: -0.02em;
-}
-.destination h3 {
-  font-size: 30px;
-  line-height: 1.35;
-  font-weight: 400;
-  margin: 10px 0;
 }
 .editorial h3 {
   font-family: var(--font-body);
@@ -203,7 +153,7 @@ p {
   font-size: 17px;
   line-height: 1.95;
   letter-spacing: -0.015em;
-  color: #454b43;
+  color: var(--ink);
 }
 .article-toc {
   font-size: 13px;
@@ -233,54 +183,12 @@ form textarea {
   font-size: 14px;
   line-height: 1.8;
 }
-.mobilemenu a {
-  font-family: var(--font-body);
-  font-size: 27px;
-  font-weight: 500;
-  line-height: 1.6;
-  letter-spacing: -0.03em;
-}
-.footer .section-sub {
-  font-size: 14px;
-  line-height: 1.9;
-}
-.footer-links {
-  font-size: 12px;
-  line-height: 1.8;
-  letter-spacing: 0.02em;
-}
-.footer-bottom {
-  font-size: 11px;
-  line-height: 1.8;
-  letter-spacing: 0;
-  gap: 24px;
-}
 .section.wrap {
   padding: 90px 5.5%;
-}
-@media (max-width: 1100px) {
-  .nav {
-    font-size: 13px;
-    gap: 13px;
-  }
 }
 @media (max-width: 650px) {
   body {
     font-size: 15px;
-  }
-  .logo {
-    font-size: 24px;
-  }
-  .hero h1 {
-    font-size: clamp(78px, 22vw, 140px);
-  }
-  .hero .eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.12em;
-  }
-  .hero-bottom {
-    font-size: 9px;
-    letter-spacing: 0.02em;
   }
   .section.wrap {
     padding: 60px 6%;
@@ -296,12 +204,6 @@ form textarea {
   }
   .intro h2 {
     font-size: 32px;
-  }
-  .destination h3 {
-    font-size: 26px;
-  }
-  .destination p {
-    font-size: 13px;
   }
   .editorial h3 {
     font-size: 29px;
@@ -347,85 +249,6 @@ form textarea {
   .action-button {
     font-size: 12px;
   }
-  .mobilemenu a {
-    font-size: 25px;
-  }
-}
-
-/* VIETNOTE travel journal — spacious editorial layout. */
-:root {
-  --bg: #faf8f3;
-  --ink: #203b32;
-  --muted: #697168;
-  --accent: #9d4d34;
-  --line: #dcded4;
-}
-.topbar {
-  height: 94px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 18px;
-}
-.logo {
-  font-size: 30px;
-  letter-spacing: -0.065em;
-}
-.nav a {
-  position: relative;
-}
-.nav a:after {
-  content: "";
-  position: absolute;
-  bottom: 3px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--accent);
-  transition: width 0.2s;
-}
-.nav a:hover:after {
-  width: 100%;
-}
-.hero {
-  margin: 0 24px;
-  height: calc(100svh - 140px);
-  min-height: 590px;
-  max-height: 900px;
-}
-.hero:before {
-  background: linear-gradient(180deg, #10251b18 20%, #10251b08 40%, #10251b80 100%);
-}
-.hero-content {
-  align-items: flex-start;
-  justify-content: flex-end;
-  text-align: left;
-  padding: 0 6% 160px;
-}
-.hero h1 {
-  font-size: clamp(110px, 16vw, 238px);
-  margin: 12px 0 20px;
-  letter-spacing: -0.065em;
-}
-.hero .eyebrow {
-  border-top: 1px solid #ffffff90;
-  padding-top: 18px;
-  letter-spacing: 0.2em;
-}
-.hero-korean {
-  font-size: 18px;
-  letter-spacing: 0.04em;
-}
-.hero-bottom {
-  left: 6%;
-  right: 6%;
-  bottom: 32px;
-  border-top: 1px solid #ffffff60;
-  padding-top: 22px;
-}
-.hero-controls {
-  left: auto;
-  right: 5%;
-  transform: none;
-  bottom: 98px;
 }
 .intro {
   padding: 110px 24px 95px;
@@ -468,27 +291,9 @@ form textarea {
   background: var(--ink);
   color: var(--bg);
 }
-.destinations {
-  gap: 24px;
-}
-.destination .photo {
-  height: 390px;
-}
-.destination:nth-child(2) .photo,
-.destination:nth-child(3) .photo,
-.destination:nth-child(4) .photo {
-  height: 390px;
-  margin-top: 0;
-}
-.destination:nth-child(even) {
-  padding-top: 52px;
-}
-.destination h3 {
-  font-size: 32px;
-}
 .photo,
 .card-image {
-  background: #e6e8df;
+  background: var(--line);
 }
 .editorial {
   grid-template-columns: 1.25fr 1fr;
@@ -506,13 +311,13 @@ form textarea {
   margin-top: 18px;
 }
 .notebook {
-  background: #e9ede5;
+  background: var(--sky);
   padding: 90px 0;
 }
 .guide {
-  background: #faf8f3;
+  background: var(--mist);
   border: 0;
-  border-top: 1px solid #c6cec0;
+  border-top: 1px solid var(--sky-2);
   padding: 27px;
   min-height: 160px;
 }
@@ -539,25 +344,11 @@ form textarea {
 }
 .journey {
   margin: 60px 24px 0;
-  background: #203b32;
+  background: var(--ink);
   min-height: 460px;
 }
 .journey h2 {
   font-size: clamp(54px, 6vw, 88px);
-}
-.footer {
-  padding-top: 70px;
-  padding-bottom: 25px;
-}
-.footer-top {
-  padding-bottom: 45px;
-}
-.footer h2 {
-  font-size: 38px;
-}
-.footer-bottom {
-  border-top: 1px solid var(--line);
-  padding-top: 22px;
 }
 .page-intro {
   padding: 65px 0 55px;
@@ -606,22 +397,12 @@ form textarea {
   transition: background 0.2s;
 }
 .action-button:hover {
-  background: #e9ede5;
+  background: var(--sky);
 }
 .feedback-panel {
-  background: #e9ede5;
+  background: var(--sky);
 }
 @media (max-width: 900px) {
-  .destinations {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .destination:nth-child(even) {
-    padding-top: 30px;
-  }
-  .destination .photo,
-  .destination:nth-child(n) .photo {
-    height: 340px;
-  }
   .editorial .photo {
     height: 480px;
   }
@@ -630,48 +411,6 @@ form textarea {
   }
 }
 @media (max-width: 650px) {
-  .topbar {
-    height: 74px;
-    margin-bottom: 10px;
-  }
-  .logo {
-    font-size: 25px;
-  }
-  .hero {
-    margin: 0 10px;
-    min-height: 560px;
-    height: calc(100svh - 110px);
-  }
-  .hero-content {
-    padding: 0 6% 165px;
-  }
-  .hero h1 {
-    font-size: clamp(76px, 22vw, 135px);
-    margin-bottom: 20px;
-  }
-  .hero-korean {
-    font-size: 15px;
-    max-width: 250px;
-    line-height: 1.8;
-  }
-  .hero .eyebrow {
-    font-size: 8px;
-    letter-spacing: 0.12em;
-  }
-  .hero-controls {
-    bottom: 104px;
-    left: 6%;
-    right: auto;
-  }
-  .hero-dot {
-    padding: 10px;
-  }
-  .hero-bottom {
-    left: 6%;
-    right: 6%;
-    bottom: 22px;
-    font-size: 8px;
-  }
   .intro {
     padding: 72px 6% 64px;
   }
@@ -694,19 +433,6 @@ form textarea {
   .textlink {
     padding: 10px;
     font-size: 9px;
-  }
-  .destinations {
-    gap: 18px;
-  }
-  .destination .photo,
-  .destination:nth-child(n) .photo {
-    height: 235px;
-  }
-  .destination:nth-child(even) {
-    padding-top: 26px;
-  }
-  .destination h3 {
-    font-size: 26px;
   }
   .editorial {
     grid-template-columns: 1fr;
@@ -738,9 +464,6 @@ form textarea {
   .journey h2 {
     font-size: 55px;
   }
-  .footer {
-    padding-top: 48px;
-  }
   .page-intro {
     padding: 35px 0;
   }
@@ -768,9 +491,6 @@ form textarea {
   .article-body p {
     font-size: 16px;
   }
-  .footer h2 {
-    font-size: 32px;
-  }
 }
 /* Grid children may shrink below the min-content width of their longest word. */
 .notebook-layout > * {
@@ -786,7 +506,6 @@ form textarea {
 }
 @media (min-width: 1101px) {
   .wrap,
-  .topbar,
   .page-wrap,
   .page-wrap.map-page {
     width: 100%;
@@ -796,22 +515,11 @@ form textarea {
   .section.wrap {
     padding-inline: var(--page-gutter);
   }
-  .topbar {
-    gap: 32px;
-  }
-  .nav {
-    font-size: clamp(14px, 0.9vw, 18px);
-    gap: clamp(20px, 1.6vw, 40px);
-  }
   .page-intro {
     max-width: 1100px;
   }
   .article-layout {
     grid-template-columns: 220px minmax(0, 760px);
-  }
-  .destination .photo,
-  .destination:nth-child(n) .photo {
-    height: clamp(390px, 23vw, 640px);
   }
   .editorial .photo {
     height: clamp(550px, 32vw, 820px);
@@ -822,14 +530,8 @@ form textarea {
   .section-title {
     font-size: clamp(52px, 4vw, 88px);
   }
-  .section-sub,
-  .editorial p,
-  .destination p,
-  .browse-card p {
+  .section-sub, .editorial p, .browse-card p {
     font-size: clamp(15px, 1vw, 20px);
-  }
-  .destination h3 {
-    font-size: clamp(30px, 2vw, 44px);
   }
   .browse-card h2 {
     font-size: clamp(23px, 1.4vw, 30px);
@@ -842,39 +544,81 @@ form textarea {
    darker muted colour (≈7:1 on the cream background) and larger Korean
    lines under the English display headings.
    --------------------------------------------------------------------- */
-:root { --muted: #4f574f; }
-.eyebrow, .section-no, .meta, .textlink, .browse-card .meta {
+.eyebrow,
+.section-no,
+.meta,
+.textlink,
+.browse-card .meta {
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
 }
-.hero .eyebrow, .hero-content .eyebrow { font-size: 12px; font-weight: 600; }
-.hero-korean { font-size: clamp(16px, 1.6vw, 21px); font-weight: 500; }
-.hero-bottom { font-size: 11px; }
 /* Korean line that explains each English headline */
-.section-sub, .page-intro p, .map-intro p, .intro p {
+.section-sub,
+.page-intro p,
+.map-intro p,
+.intro p {
   font-size: clamp(16px, 1.3vw, 19px);
   font-weight: 500;
   line-height: 1.75;
-  color: #3f463f;
+  color: var(--ink);
 }
-.footer .section-sub { font-size: 15px; font-weight: 400; color: var(--muted); }
-.destination p, .browse-card p { font-size: 16px; color: var(--muted); }
-.article-heading p { font-size: clamp(16px, 1.3vw, 18px); color: #3f463f; }
-.list-count, .breadcrumb, .guide small, .storage-note { font-size: 13px; color: var(--muted); }
-.filter-chip { font-size: 14px; font-weight: 500; }
+.browse-card p {
+  font-size: 16px;
+  color: var(--muted);
+}
+.article-heading p {
+  font-size: clamp(16px, 1.3vw, 18px);
+  color: var(--ink);
+}
+.list-count,
+.breadcrumb,
+.guide small,
+.storage-note {
+  font-size: 13px;
+  color: var(--muted);
+}
+.filter-chip {
+  font-size: 14px;
+  font-weight: 500;
+}
 @media (max-width: 760px) {
-  .eyebrow, .section-no, .meta, .textlink, .browse-card .meta { font-size: 12px; }
-  .hero .eyebrow, .hero-content .eyebrow { font-size: 10px; }
-  .hero-korean { font-size: 16px; }
-  .hero-bottom { font-size: 10px; }
-  .section-sub, .page-intro p, .map-intro p, .intro p { font-size: 16px; }
-  .destination p, .browse-card p { font-size: 15px; }
+  .eyebrow,
+  .section-no,
+  .meta,
+  .textlink,
+  .browse-card .meta {
+    font-size: 12px;
+  }
+  .section-sub,
+  .page-intro p,
+  .map-intro p,
+  .intro p {
+    font-size: 16px;
+  }
+  .browse-card p {
+    font-size: 15px;
+  }
 }
 /* Keep section actions inside very narrow phone viewports. */
-@media(max-width:400px){.section-head{flex-wrap:wrap}}
+@media (max-width: 400px) {
+  .section-head {
+    flex-wrap: wrap;
+  }
+}
 
 /* Korean display headings: tighter leading than the English serif titles had. */
-.journey h2 { line-height: 1.2; letter-spacing: -0.03em; }
-.section-title, .page-intro h1, .map-intro h1, .map-intro h2 { letter-spacing: -0.03em; }
-.history-kicker { text-transform: none; letter-spacing: .02em; }
+.journey h2 {
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.section-title,
+.page-intro h1,
+.map-intro h1,
+.map-intro h2 {
+  letter-spacing: -0.03em;
+}
+.history-kicker {
+  text-transform: none;
+  letter-spacing: 0.02em;
+}

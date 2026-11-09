@@ -34,7 +34,6 @@ MAP_STYLES = ('vendor/leaflet/leaflet.css', 'vendor/markercluster/MarkerCluster.
 MAP_SCRIPTS = ('vendor/leaflet/leaflet.js', 'vendor/markercluster/leaflet.markercluster.js',
                'map-geography.js', 'map-destinations.js', 'travel-map.js')
 COMMON_SCRIPTS = ('content.js', 'pages.js')
-HERO_SIZES = (640, 960, 1440, 1920, 2560)
 
 
 def h(value):
@@ -276,8 +275,9 @@ class Site:
         scripts = COMMON_SCRIPTS + (MAP_SCRIPTS if atlas else ())
         preload = ''
         if home:
-            srcset = ','.join(f'{self.url(f"assets/halong-haneul-trac-{w}.webp")} {w}w' for w in HERO_SIZES)
-            preload = (f'<link rel="preload" as="image" href="{self.url("assets/halong-haneul-trac-1440.webp")}" '
+            first = next(x for x in self.photos if x.get('hero', True))  # same image as hero_slides()
+            srcset = ','.join(f'{self.url(f"assets/{first['stem']}-{w}.webp")} {w}w' for w in first['widths'])
+            preload = (f'<link rel="preload" as="image" href="{self.url(f"assets/{first['stem']}-1440.webp")}" '
                        f'imagesrcset="{srcset}" imagesizes="96vw" fetchpriority="high">')
         self.write(path, self.render(
             'layout',
@@ -289,9 +289,11 @@ class Site:
             preload=preload,
             # VIETNOTE_AI_ENDPOINT is set by the Pages workflow after it deploys worker/.
             ai_endpoint=h(os.environ.get('VIETNOTE_AI_ENDPOINT') or self.config.get('ai_endpoint', '')),
+            fonts_css=self.asset('fonts/display-fonts.css'),
             base_css=self.asset('base.css'),
             pages_css=self.asset('pages.css'),
             typography_css=self.asset('typography.css'),
+            theme_css=self.asset('theme.css'),
             extra_head='\n'.join(f'<link rel="stylesheet" href="{self.asset(s)}">' for s in styles),
             header=self.render('header', nav=nav),
             main=main,
@@ -504,7 +506,11 @@ class Site:
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
-        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(), hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history())
+        # Vietnamese place names scrolling under the hero; the list is written twice for a seamless loop.
+        names = ''.join(f'<span lang="vi">{h(d["vi"])}</span>' for d in self.destinations)
+        main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(),
+                           hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(),
+                           place_count=len(self.destinations), ticker=names + names)
         home = self.config['pages']['home']
         website = {'@type': 'WebSite', 'name': self.config['site_name'], 'url': self.public_url,
                    'description': home['description'], 'inLanguage': 'ko', 'publisher': self.publisher()}
@@ -520,6 +526,18 @@ class Site:
         missing = ''.join(sorted(used - font_hangul))
         if missing:
             print('WARNING: Pretendard subset lacks', missing, '- run scripts/subset-fonts.py')
+        # Display fonts declare the characters they contain in their unicode-range lists.
+        css = (ASSETS / 'fonts' / 'display-fonts.css').read_text(encoding='utf-8')
+        for family in ('Black Han Sans', 'Nanum Pen Script'):
+            covered = set()
+            for block in re.findall(r'@font-face \{(.*?)\}', css, re.S):
+                if f"'{family}'" in block:
+                    for part in re.search(r'unicode-range: ([^;]+);', block).group(1).split(','):
+                        first, _, last = part.strip()[2:].partition('-')
+                        covered.update(chr(c) for c in range(int(first, 16), int(last or first, 16) + 1))
+            gaps = ''.join(sorted(used - covered))
+            if gaps:
+                print(f'WARNING: {family} lacks', gaps, '- headings with these syllables fall back to Pretendard')
 
     def build(self):
         if self.out.exists():

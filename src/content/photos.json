@@ -2,30 +2,6 @@
  "_note": "Photographs stored in this project. Licences checked via the Wikimedia Commons API on 2026-11-04. Hero slides appear in this order; CC BY photos must keep author, source and licence visible.",
  "photos": [
   {
-   "stem": "halong-haneul-trac",
-   "widths": [
-    640,
-    960,
-    1440,
-    1920,
-    2560
-   ],
-   "width": 3200,
-   "height": 2133,
-   "title": "하롱베이 · Hạ Long Bay",
-   "place": "하롱베이",
-   "alt": "하롱베이의 석회암 섬과 바다",
-   "author": "Haneul Trac",
-   "source": "Pexels",
-   "url": "https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/",
-   "license": "Pexels License",
-   "license_url": "https://www.pexels.com/license/",
-   "hero": true,
-   "places": [
-    "halong"
-   ]
-  },
-  {
    "stem": "hoian-chua-cau-night",
    "widths": [
     640,
@@ -47,6 +23,30 @@
    "hero": true,
    "places": [
     "hoian"
+   ]
+  },
+  {
+   "stem": "halong-haneul-trac",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920,
+    2560
+   ],
+   "width": 3200,
+   "height": 2133,
+   "title": "하롱베이 · Hạ Long Bay",
+   "place": "하롱베이",
+   "alt": "하롱베이의 석회암 섬과 바다",
+   "author": "Haneul Trac",
+   "source": "Pexels",
+   "url": "https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "hero": true,
+   "places": [
+    "halong"
    ]
   },
   {

@@ -60,8 +60,16 @@ template. Không sửa trực tiếp file trong `dist/` hay `_site/`.
   `home.html` là phần thân trang chủ; `atlas.html` dùng chung cho trang bản đồ và trang chủ.
   Ký tự `$` trong template phải viết thành `$$`.
 - **Giao diện và chức năng**: `src/assets/base.css`, `pages.css`, `typography.css`,
-  `travel-map.css`, `pages.js`, `travel-map.js`. Giữ bản dễ đọc; trang tự gắn
+  `travel-map.css`, `theme.css`, `pages.js`, `travel-map.js`. Giữ bản dễ đọc; trang tự gắn
   `?v=<hash>` vào CSS/JS khi build nên trình duyệt luôn tải bản mới.
+- **Màu và kiểu giao diện (“Nắng Hội An”)**: bảng màu là các biến trong `:root` ở đầu
+  `base.css` (vàng nắng, xanh biển, đỏ cam đèn lồng, mực đêm…); không viết mã màu trực tiếp
+  trong quy tắc CSS mà dùng biến. `theme.css` nạp cuối cùng, chứa header, hero, dải chữ chạy,
+  footer, thẻ bưu thiếp, ảnh khung vòm và các thành phần chung. Màu vùng thống nhất:
+  Bắc vàng, Trung đỏ cam, Nam xanh biển. Chữ nhỏ trên nền màu dùng `--sea-band`/`--ink`
+  để đạt độ tương phản WCAG AA.
+- **Ảnh hero**: thứ tự slide theo thứ tự trong `photos.json` (ảnh có `"hero": false` bị bỏ
+  qua); ảnh đầu tiên cũng là ảnh được preload.
 
 ## Đường dẫn và GitHub Pages
 
@@ -106,8 +114,12 @@ Advisor. `robots.txt` sẽ có hiệu lực nếu sau này dùng tên miền ri�
 ## Font và ảnh
 
 - Chữ thân bài dùng Pretendard (OFL-1.1), font ưu tiên tiếng Hàn và có đủ dấu tiếng
-  Việt; tiêu đề lớn dùng Playfair Display (OFL-1.1). Cả hai đã được cắt gọn trong
-  `src/assets/fonts/*-subset.woff2`.
+  Việt, đã cắt gọn trong `src/assets/fonts/Pretendard-subset.woff2`.
+- Phông hiển thị (OFL-1.1): Black Han Sans cho tiêu đề lớn tiếng Hàn, Bricolage Grotesque
+  cho logo và tiêu đề Latin, Nanum Pen Script cho dòng ghi chú viết tay. Chúng nằm trong
+  `src/assets/fonts/<tên phông>/`, chia nhỏ theo dải Unicode (`display-fonts.css`) nên mỗi
+  trang chỉ tải phần chứa ký tự đang dùng. Tạo lại bằng `python3 scripts/vendor-display-fonts.py`
+  (cần npm). Build cảnh báo nếu tiêu đề dùng âm tiết mà phông không có.
 - Pretendard giữ 2.350 âm tiết Hangul thông dụng (KS X 1001) và mọi âm tiết đang dùng.
   Nếu build báo `WARNING: Pretendard subset lacks …`, chạy
   `pip install fonttools brotli` rồi `python3 scripts/subset-fonts.py`.
