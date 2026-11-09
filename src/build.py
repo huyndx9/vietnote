@@ -172,7 +172,7 @@ class Site:
             cards.append(
                 f'<article class="route-card"><a class="route-photo" href="{x["url"]}">{self.img(x["photo"], x["title"], "(max-width: 760px) 92vw, 31vw")}'
                 f'<span class="route-length">{nights}박 {x["days"]}일</span></a>'
-                f'<div class="route-body"><div class="meta">{h(x["city"])}</div><h3><a href="{x["url"]}">{h(x["title"])}</a></h3>'
+                f'<div class="route-body"><div class="meta hand">{h(x["city"])}</div><h3><a href="{x["url"]}">{h(x["title"])}</a></h3>'
                 f'<ol class="route-days">{days}</ol><a class="textlink" href="{x["url"]}">일정 자세히 보기 ↗</a></div></article>')
         return ('<section class="section wrap home-routes" id="routes"><div class="section-head"><div>'
                 '<div class="section-no">02 / SUGGESTED ROUTES</div><h2 class="section-title serif">Ready-made journeys.</h2>'
@@ -381,7 +381,7 @@ class Site:
                            image=image, meta=meta, title=h(x['title']), desc=h(x['desc']))
 
     def atlas(self, heading):
-        return self.render('atlas', heading=heading, total=len(self.destinations))
+        return self.render('atlas', heading=heading)
 
     # ---- pages ---------------------------------------------------------
     def build_listings(self):
@@ -507,7 +507,7 @@ class Site:
         names = ''.join(f'<span lang="vi">{h(d["vi"])}</span>' for d in self.destinations)
         main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(),
                            hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(),
-                           place_count=len(self.destinations), ticker=names + names)
+                           ticker=names + names)
         home = self.config['pages']['home']
         website = {'@type': 'WebSite', 'name': self.config['site_name'], 'url': self.public_url,
                    'description': home['description'], 'inLanguage': 'ko', 'publisher': self.publisher()}
