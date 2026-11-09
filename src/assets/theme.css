@@ -811,9 +811,16 @@ body {
 .postcard:hover .postcard-go {
   transform: rotate(45deg);
 }
+/* eight postcards (two rows) on wide screens, the first four elsewhere */
+.postcards {
+  row-gap: 30px;
+}
 @media (max-width: 1000px) {
   .postcards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .postcard-wide {
+    display: none;
   }
 }
 @media (max-width: 560px) {

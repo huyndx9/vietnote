@@ -543,8 +543,9 @@ setupFilters();
 renderNotebook();
 setupAI();
 
-// Homepage postcards: every few seconds one card turns over, left to right,
-// and shows a destination that has not been on screen yet. The pool comes from
+// Homepage postcards: every few seconds one card turns over and shows a
+// destination that has not been on screen yet. One card at a time, zig-zagging
+// between the two rows so a column never turns twice in a row. The pool comes from
 // the build (postcardPool). Pauses on hover/focus, off screen, in a hidden tab,
 // with the pause button, and never starts with reduced motion.
 function setupPostcards() {
@@ -578,7 +579,10 @@ function setupPostcards() {
   }));
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   const INTERVAL = 3200;
-  let slot = 0,
+  // row 1 col 1, row 2 col 2, row 1 col 3, row 2 col 4, row 2 col 1, row 1 col 2, ...
+  const ORDER = [0, 5, 2, 7, 4, 1, 6, 3].filter((i) => i < cards.length);
+  let step = 0,
+    slot = 0,
     timer = 0,
     busy = false,
     onScreen = false,
@@ -615,6 +619,12 @@ function setupPostcards() {
   async function turn() {
     if (busy) return;
     busy = true;
+    // Skip cards hidden on narrow screens (the second row).
+    for (let tries = 0; tries < ORDER.length; tries++) {
+      slot = ORDER[step % ORDER.length];
+      step++;
+      if (cards[slot].offsetParent) break;
+    }
     const card = cards[slot],
       next = queue.shift();
     await preload(next);
@@ -632,7 +642,6 @@ function setupPostcards() {
     });
     await back.finished;
     card.getAnimations().forEach((a) => a.cancel());
-    slot = (slot + 1) % cards.length;
     busy = false;
   }
   function running() {
