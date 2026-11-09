@@ -500,6 +500,27 @@ class Site:
         self.page('404.html', pages['404']['title'], self.render('not-found'), pages['404']['description'],
                   index=False)
 
+    def postcard_pool(self):
+        """Atlas destinations the homepage postcards rotate through (pages.js),
+        as JSON for a <script type="application/json">. The four postcards in the
+        template show first; these are the places not on screen yet."""
+        on_screen = {'hanoi', 'hoian', 'danang', 'phuquoc'}
+        pool = []
+        for d in self.destinations:
+            stem = self.place_photo(d['id'])
+            if d['id'] in on_screen or not stem:
+                continue
+            photo = self.photo(stem)
+            pool.append({
+                'url': d['url'], 'vi': d['vi'], 'name': d['title'].split(' · ')[0],
+                'region': d['region'], 'regionLabel': REGIONS[d['region']],
+                'tagline': d['teaser'].split('. ')[0].rstrip('.'),
+                'src': self.url(f'assets/{stem}-640.webp'),
+                'srcset': ','.join(f'{self.url(f"assets/{stem}-{w}.webp")} {w}w' for w in photo['widths'] if w <= 960),
+                'alt': photo['alt'],
+            })
+        return json.dumps(pool, ensure_ascii=False).replace('</', '<\\/')
+
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
@@ -507,7 +528,7 @@ class Site:
         names = ''.join(f'<span lang="vi">{h(d["vi"])}</span>' for d in self.destinations)
         main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(),
                            hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(),
-                           ticker=names + names)
+                           ticker=names + names, postcard_pool=self.postcard_pool())
         home = self.config['pages']['home']
         website = {'@type': 'WebSite', 'name': self.config['site_name'], 'url': self.public_url,
                    'description': home['description'], 'inLanguage': 'ko', 'publisher': self.publisher()}

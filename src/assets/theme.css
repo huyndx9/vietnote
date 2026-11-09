@@ -713,14 +713,48 @@ body {
   color: var(--ink);
   transition: transform 0.3s;
 }
+.postcard {
+  /* tilt and lift use rotate/translate so pages.js can flip the card with transform */
+  transition:
+    rotate 0.3s,
+    translate 0.3s;
+}
 .postcard:nth-child(odd) {
-  transform: rotate(-1deg);
+  rotate: -1deg;
 }
 .postcard:nth-child(even) {
-  transform: rotate(1deg);
+  rotate: 1deg;
 }
 .postcard:hover {
-  transform: rotate(0) translateY(-6px);
+  rotate: 0deg;
+  translate: 0 -6px;
+}
+.postcards {
+  perspective: 1400px;
+}
+.band-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.postcard-pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--paper) 55%, transparent);
+  background: transparent;
+  color: var(--paper);
+  font-size: 13px;
+  font-weight: 700;
+}
+.postcard-pause:hover {
+  background: color-mix(in srgb, var(--paper) 14%, transparent);
+}
+.postcard-pause[hidden] {
+  display: none;
 }
 .postcard-photo {
   display: block;

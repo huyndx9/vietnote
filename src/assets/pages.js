@@ -543,6 +543,152 @@ setupFilters();
 renderNotebook();
 setupAI();
 
+// Homepage postcards: every few seconds one card turns over, left to right,
+// and shows a destination that has not been on screen yet. The pool comes from
+// the build (postcardPool). Pauses on hover/focus, off screen, in a hidden tab,
+// with the pause button, and never starts with reduced motion.
+function setupPostcards() {
+  const host = document.querySelector(".postcards"),
+    data = document.getElementById("postcardPool"),
+    pauseButton = document.querySelector(".postcard-pause");
+  if (!host || !data) return;
+  const cards = [...host.querySelectorAll(".postcard")];
+  let queue = [];
+  try {
+    queue = JSON.parse(data.textContent);
+  } catch {
+    return;
+  }
+  if (!queue.length || !cards.length) return;
+  for (let i = queue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [queue[i], queue[j]] = [queue[j], queue[i]];
+  }
+  // The cards' own places join the end of the queue as they are replaced.
+  const showing = cards.map((card) => ({
+    url: card.getAttribute("href"),
+    vi: card.querySelector(".postcard-stamp").textContent,
+    name: card.querySelector(".postcard-body strong").textContent,
+    region: [...card.querySelector(".region-tag").classList].find((c) => c !== "region-tag"),
+    regionLabel: card.querySelector(".region-tag").textContent,
+    tagline: card.querySelector(".postcard-body > span:last-child").textContent,
+    src: card.querySelector("img").getAttribute("src"),
+    srcset: card.querySelector("img").getAttribute("srcset") || "",
+    alt: card.querySelector("img").alt,
+  }));
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const INTERVAL = 3200;
+  let slot = 0,
+    timer = 0,
+    busy = false,
+    onScreen = false,
+    hovering = false,
+    paused = reduce.matches;
+
+  function fill(card, place) {
+    card.href = place.url;
+    card.querySelector(".postcard-stamp").textContent = place.vi;
+    card.querySelector(".postcard-body strong").textContent = place.name;
+    const tag = card.querySelector(".region-tag");
+    tag.className = `region-tag ${place.region}`;
+    tag.textContent = place.regionLabel;
+    card.querySelector(".postcard-body > span:last-child").textContent = place.tagline;
+    const img = card.querySelector("img");
+    if (place.srcset) img.srcset = place.srcset;
+    else img.removeAttribute("srcset");
+    img.src = place.src;
+    img.alt = place.alt;
+  }
+  async function preload(place) {
+    const img = new Image();
+    if (place.srcset) {
+      img.sizes = cards[0].querySelector("img").sizes || "25vw";
+      img.srcset = place.srcset;
+    }
+    img.src = place.src;
+    try {
+      await img.decode();
+    } catch {
+      /* show it anyway; the browser will finish loading */
+    }
+  }
+  async function turn() {
+    if (busy) return;
+    busy = true;
+    const card = cards[slot],
+      next = queue.shift();
+    await preload(next);
+    const half = { duration: 380, fill: "forwards" };
+    await card.animate([{ transform: "rotateY(0deg)" }, { transform: "rotateY(90deg)" }], {
+      ...half,
+      easing: "cubic-bezier(.5,0,.75,0)",
+    }).finished;
+    queue.push(showing[slot]);
+    showing[slot] = next;
+    fill(card, next);
+    const back = card.animate([{ transform: "rotateY(-90deg)" }, { transform: "rotateY(0deg)" }], {
+      ...half,
+      easing: "cubic-bezier(.25,1,.5,1)",
+    });
+    await back.finished;
+    card.getAnimations().forEach((a) => a.cancel());
+    slot = (slot + 1) % cards.length;
+    busy = false;
+  }
+  function running() {
+    return !paused && !hovering && onScreen && !document.hidden;
+  }
+  function schedule() {
+    clearTimeout(timer);
+    if (running())
+      timer = setTimeout(async () => {
+        await turn();
+        schedule();
+      }, INTERVAL);
+  }
+  function syncButton() {
+    if (!pauseButton) return;
+    pauseButton.hidden = false;
+    pauseButton.setAttribute("aria-pressed", String(paused));
+    pauseButton.innerHTML = paused ? "▶ <span>자동 넘기기</span>" : "Ⅱ <span>멈추기</span>";
+    pauseButton.setAttribute(
+      "aria-label",
+      paused ? "여행지 카드 자동 넘기기 시작" : "여행지 카드 자동 넘기기 멈추기",
+    );
+  }
+  pauseButton?.addEventListener("click", () => {
+    paused = !paused;
+    syncButton();
+    schedule();
+  });
+  host.addEventListener("pointerenter", () => {
+    hovering = true;
+    schedule();
+  });
+  host.addEventListener("pointerleave", () => {
+    hovering = false;
+    schedule();
+  });
+  host.addEventListener("focusin", () => {
+    hovering = true;
+    schedule();
+  });
+  host.addEventListener("focusout", () => {
+    hovering = host.matches(":hover");
+    schedule();
+  });
+  document.addEventListener("visibilitychange", schedule);
+  new IntersectionObserver(
+    ([entry]) => {
+      onScreen = entry.isIntersecting;
+      schedule();
+    },
+    { threshold: 0.35 },
+  ).observe(host);
+  syncButton();
+}
+setupPostcards();
+
 function setupHeroSlideshow() {
   const slides = [...document.querySelectorAll(".hero-slide")];
   // With a single photograph there is nothing to rotate; hide the dots and pause button.
