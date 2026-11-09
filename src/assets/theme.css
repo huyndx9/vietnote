@@ -308,8 +308,11 @@ body {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--ink) 66%, transparent) 0%, transparent 64%),
+  background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--ink) 66%, transparent) 0%,
+      transparent 64%
+    ),
     linear-gradient(180deg, transparent 30%, color-mix(in srgb, var(--ink) 82%, transparent));
 }
 .hero-content {
@@ -323,19 +326,19 @@ body {
 }
 .hero-hand {
   margin: 0;
-  font: 400 clamp(26px, 2.6vw, 36px)/1 var(--font-hand);
+  font: 400 clamp(26px, 2.6vw, 36px) / 1 var(--font-hand);
   transform: rotate(-3deg);
   transform-origin: left;
   text-shadow: 0 2px 12px color-mix(in srgb, var(--ink) 70%, transparent);
 }
 .hero-hello {
   margin: 0;
-  font: 800 clamp(18px, 2vw, 26px)/1.1 var(--font-latin);
+  font: 800 clamp(18px, 2vw, 26px) / 1.1 var(--font-latin);
   letter-spacing: 0.04em;
 }
 .hero-title {
   margin: 0;
-  font: 400 clamp(64px, 10vw, 150px)/0.92 var(--font-headline);
+  font: 400 clamp(64px, 10vw, 150px) / 0.92 var(--font-headline);
   color: var(--sun);
   letter-spacing: -0.01em;
   text-shadow: 0 3px 28px color-mix(in srgb, var(--ink) 55%, transparent);
@@ -513,7 +516,7 @@ body {
   animation: ticker 120s linear infinite;
 }
 .hero-ticker span {
-  font: 800 clamp(18px, 1.8vw, 24px)/1 var(--font-latin);
+  font: 800 clamp(18px, 1.8vw, 24px) / 1 var(--font-latin);
   letter-spacing: -0.01em;
   white-space: nowrap;
   padding: 0 18px;
@@ -706,7 +709,7 @@ body {
 }
 .band-title {
   margin: 12px 0 8px;
-  font: 400 clamp(36px, 4.6vw, 62px)/1.1 var(--font-headline);
+  font: 400 clamp(36px, 4.6vw, 62px) / 1.1 var(--font-headline);
   letter-spacing: -0.01em;
   color: var(--paper);
 }
@@ -914,7 +917,7 @@ body {
   box-shadow: 16px 16px 0 var(--sea);
 }
 .editorial h3 {
-  font: 400 clamp(32px, 3.4vw, 50px)/1.25 var(--font-headline);
+  font: 400 clamp(32px, 3.4vw, 50px) / 1.25 var(--font-headline);
   letter-spacing: -0.01em;
 }
 
@@ -996,4 +999,313 @@ body {
 }
 .journey .route g {
   fill: var(--paper);
+}
+
+/* ---------- listing pages ---------- */
+.page-intro {
+  position: relative;
+  isolation: isolate;
+}
+.page-intro h1 {
+  position: relative;
+  display: inline-block;
+}
+/* sun disc behind the title, like the homepage editorial photo */
+.page-intro h1::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 1.15em;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sun);
+  right: -0.32em;
+  top: -0.28em;
+  opacity: 0.85;
+}
+.browse-toolbar {
+  border-color: var(--line);
+}
+.browse-search {
+  border-radius: 999px;
+  background: var(--mist);
+  border: 1.5px solid var(--line);
+  padding-inline: 16px;
+}
+
+/* postcard cards (listings, related articles, notebook) */
+.browse-grid {
+  gap: 26px 22px;
+}
+.browse-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 10px 58px;
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+.browse-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 26px 46px -26px color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.browse-card .card-image {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--sky);
+  margin-bottom: 6px;
+}
+.browse-card .postcard-stamp {
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+}
+.browse-card .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  margin: 0;
+}
+.browse-card h2 {
+  padding: 0 8px;
+  margin: 0;
+  font: 400 22px/1.3 var(--font-headline);
+  letter-spacing: -0.01em;
+}
+.browse-card h2 a::after {
+  /* the whole card is clickable through the title link */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.browse-card .save-button {
+  z-index: 2;
+}
+.browse-card p {
+  padding: 0 8px;
+  margin: 0;
+  color: var(--muted);
+}
+.card-go {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sun);
+  color: var(--ink);
+  font-weight: 800;
+  transition: transform 0.3s;
+}
+.browse-card:hover .card-go {
+  transform: rotate(45deg);
+}
+.save-button {
+  background: var(--paper);
+  color: var(--coral-deep);
+  border: 0;
+  box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.save-button[aria-pressed="true"] {
+  background: var(--coral);
+  color: var(--paper);
+}
+.guide-art {
+  background: var(--sun-soft);
+  color: var(--coral-deep);
+}
+.guide-art.place-art {
+  background: linear-gradient(135deg, var(--sky) 0%, var(--sun-soft) 100%);
+  color: var(--sea-deep);
+}
+
+/* ---------- article and place guide pages ---------- */
+.breadcrumb {
+  color: var(--muted);
+}
+.breadcrumb a {
+  color: var(--sea-deep);
+  font-weight: 600;
+}
+.article-heading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(34px, 5vw, 64px) clamp(20px, 5vw, 72px);
+  border-radius: var(--radius-lg);
+  background: var(--sky);
+}
+/* a sun rising over the corner and a band of sea at the bottom */
+.article-heading::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: clamp(140px, 18vw, 260px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sun);
+  top: clamp(-90px, -6vw, -50px);
+  right: clamp(-70px, -4vw, -30px);
+}
+.article-heading::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  background: var(--sea);
+}
+.article-heading .section-no {
+  color: var(--sea-deep);
+}
+.article-heading h1 {
+  font-size: clamp(34px, 4.6vw, 64px);
+  color: var(--ink);
+}
+.article-heading > p {
+  color: var(--ink);
+}
+.article-heading > small {
+  color: var(--muted);
+}
+.guide-facts > span {
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  border: 0;
+  padding: 12px 16px;
+}
+.guide-facts small {
+  color: var(--sea-deep);
+}
+.article-cover,
+.guide-cover {
+  position: relative;
+}
+.article-cover img,
+.guide-cover img {
+  border-radius: var(--radius-lg);
+}
+.photo-caption,
+.guide-cover figcaption {
+  color: var(--muted);
+}
+.article-toc {
+  border-radius: var(--radius-md);
+  background: var(--mist);
+  border: 1px solid var(--line);
+  padding: 20px 22px;
+}
+.article-toc strong {
+  font-family: var(--font-latin);
+  color: var(--sea-deep);
+}
+.article-toc a:hover {
+  color: var(--sea-deep);
+}
+.article-body h2 {
+  font: 400 clamp(24px, 2.4vw, 32px) / 1.3 var(--font-headline);
+  letter-spacing: -0.01em;
+}
+.article-body a {
+  color: var(--sea-deep);
+}
+.phrase {
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+}
+.phrase:hover {
+  border-color: var(--sun);
+  background: var(--sun-soft);
+}
+.article-end {
+  border-radius: var(--radius-md);
+  background: var(--sun-soft);
+  border: 0;
+}
+.related .serif,
+.related h2 {
+  font-family: var(--font-latin);
+  font-weight: 800;
+}
+.guide-related a {
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+.guide-related a:hover {
+  border-color: var(--sun);
+}
+.guide-related small {
+  color: var(--sea-deep);
+}
+
+/* ---------- notebook, about, empty states ---------- */
+.storage-note {
+  border-radius: var(--radius-sm);
+  background: var(--sun-soft);
+  color: var(--ink);
+}
+.empty-state {
+  border-radius: var(--radius-md);
+}
+.feedback-panel {
+  border-radius: var(--radius-lg);
+  background: var(--sky);
+}
+.about-image img {
+  border-radius: 999px 999px var(--radius-md) var(--radius-md);
+  border: 8px solid var(--paper);
+  box-shadow: 16px 16px 0 var(--sun);
+}
+@media (max-width: 560px) {
+  .browse-grid {
+    gap: 16px 12px;
+  }
+  .browse-card {
+    padding: 6px 6px 50px;
+    border-radius: var(--radius-sm);
+  }
+  .browse-card .postcard-stamp {
+    display: none;
+  }
+  .browse-card h2 {
+    font-size: 17px;
+    padding: 0 4px;
+  }
+  .browse-card p {
+    font-size: 13px;
+    padding: 0 4px;
+  }
+  .browse-card .meta {
+    padding: 0 4px;
+    gap: 4px;
+  }
+  .card-go {
+    width: 30px;
+    height: 30px;
+    right: 10px;
+    bottom: 10px;
+  }
+  .article-heading::before {
+    width: 110px;
+    top: -46px;
+    right: -36px;
+  }
 }

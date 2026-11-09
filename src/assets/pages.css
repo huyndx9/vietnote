@@ -1355,7 +1355,7 @@ textarea:focus-visible {
   color: var(--ink);
 }
 .m-cool {
-  background: var(--line);
+  background: var(--sky-2);
   color: var(--ink);
 }
 .m-rain {
@@ -1396,7 +1396,7 @@ textarea:focus-visible {
   background: var(--sun);
 }
 .season-legend .m-cool i {
-  background: var(--line);
+  background: var(--sky-2);
 }
 .season-legend .m-rain i {
   background: var(--muted);

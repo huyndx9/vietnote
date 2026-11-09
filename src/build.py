@@ -33,6 +33,10 @@ ASSETS = SRC / 'assets'
 MAP_STYLES = ('vendor/leaflet/leaflet.css', 'vendor/markercluster/MarkerCluster.css', 'travel-map.css')
 MAP_SCRIPTS = ('vendor/leaflet/leaflet.js', 'vendor/markercluster/leaflet.markercluster.js',
                'map-geography.js', 'map-destinations.js', 'travel-map.js')
+# Elements set in the handwriting font (see scripts/subset-hand-font.py).
+HAND_NOTE = re.compile(r'<(\w+)[^>]*class="[^"]*\b(?:hand|hero-hand|footer-hand)\b[^"]*"[^>]*>(.*?)</\1>', re.S)
+# CSS class for each Korean region label (colours in theme.css).
+REGION_CLASS = {'북부': 'north', '중부': 'central', '남부': 'south'}
 COMMON_SCRIPTS = ('content.js', 'pages.js')
 
 
@@ -229,7 +233,7 @@ class Site:
 
     def write_data_scripts(self):
         """Browser copies of the content used by search, notebook and atlas."""
-        keys = ('id', 'title', 'category', 'desc', 'photo', 'region', 'city', 'keywords', 'days', 'url')
+        keys = ('id', 'title', 'category', 'desc', 'photo', 'region', 'city', 'keywords', 'days', 'url', 'vi')
         self.destinations = load_json('map-destinations.json')
         self.guide_notes = load_json('place-guides.json')
         if set(self.guide_notes) != {p['id'] for p in self.destinations}:
@@ -379,9 +383,12 @@ class Site:
             image = f'<div class="guide-art place-art"><span>{h(x["title"].split(" · ")[0].replace(" 여행 가이드", ""))}</span></div>'
         else:
             image = f'<div class="guide-art">{h(x.get("icon", "✦"))}</div>'
-        meta = self.categories[x['category']]['label'] + (f' · {x["region"]}' if 'region' in x else '')
-        return self.render('card', id=h(x['id']), url=h(x['url']), city=h(x.get('city', '')),
-                           image=image, meta=h(meta), title=h(x['title']), desc=h(x['desc']))
+        meta = h(self.categories[x['category']]['label'])
+        if x.get('region'):
+            meta += f' <span class="region-tag {REGION_CLASS.get(x["region"], "")}">{h(x["region"])}</span>'
+        stamp = f'<span class="postcard-stamp" lang="vi">{h(x["vi"])}</span>' if x.get('vi') and x['photo'] else ''
+        return self.render('card', id=h(x['id']), url=h(x['url']), city=h(x.get('city', '')), stamp=stamp,
+                           image=image, meta=meta, title=h(x['title']), desc=h(x['desc']))
 
     def atlas(self, heading):
         return self.render('atlas', heading=heading, total=len(self.destinations))
@@ -526,18 +533,25 @@ class Site:
         missing = ''.join(sorted(used - font_hangul))
         if missing:
             print('WARNING: Pretendard subset lacks', missing, '- run scripts/subset-fonts.py')
-        # Display fonts declare the characters they contain in their unicode-range lists.
+        # Black Han Sans declares the characters it contains in its unicode-range lists.
         css = (ASSETS / 'fonts' / 'display-fonts.css').read_text(encoding='utf-8')
-        for family in ('Black Han Sans', 'Nanum Pen Script'):
-            covered = set()
-            for block in re.findall(r'@font-face \{(.*?)\}', css, re.S):
-                if f"'{family}'" in block:
-                    for part in re.search(r'unicode-range: ([^;]+);', block).group(1).split(','):
-                        first, _, last = part.strip()[2:].partition('-')
-                        covered.update(chr(c) for c in range(int(first, 16), int(last or first, 16) + 1))
-            gaps = ''.join(sorted(used - covered))
-            if gaps:
-                print(f'WARNING: {family} lacks', gaps, '- headings with these syllables fall back to Pretendard')
+        covered = set()
+        for block in re.findall(r'@font-face \{(.*?)\}', css, re.S):
+            if "'Black Han Sans'" in block:
+                for part in re.search(r'unicode-range: ([^;]+);', block).group(1).split(','):
+                    first, _, last = part.strip()[2:].partition('-')
+                    covered.update(chr(c) for c in range(int(first, 16), int(last or first, 16) + 1))
+        gaps = ''.join(sorted(used - covered))
+        if gaps:
+            print('WARNING: Black Han Sans lacks', gaps, '- headings with these syllables fall back to Pretendard')
+        # The handwriting font holds only the characters of the handwritten notes.
+        notes = ''.join(html.unescape(re.sub(r'<[^>]+>', '', inner))
+                        for page in self.out.rglob('*.html')
+                        for _, inner in HAND_NOTE.findall(page.read_text(encoding='utf-8')))
+        hand = set((SRC / 'font-hand.txt').read_text(encoding='utf-8'))
+        missing = ''.join(sorted(set(notes) - hand - set(' \n')))
+        if missing:
+            print('WARNING: handwriting font lacks', missing, '- run scripts/subset-hand-font.py')
 
     def build(self):
         if self.out.exists():

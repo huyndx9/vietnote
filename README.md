@@ -117,9 +117,14 @@ Advisor. `robots.txt` sẽ có hiệu lực nếu sau này dùng tên miền ri�
   Việt, đã cắt gọn trong `src/assets/fonts/Pretendard-subset.woff2`.
 - Phông hiển thị (OFL-1.1): Black Han Sans cho tiêu đề lớn tiếng Hàn, Bricolage Grotesque
   cho logo và tiêu đề Latin, Nanum Pen Script cho dòng ghi chú viết tay. Chúng nằm trong
-  `src/assets/fonts/<tên phông>/`, chia nhỏ theo dải Unicode (`display-fonts.css`) nên mỗi
-  trang chỉ tải phần chứa ký tự đang dùng. Tạo lại bằng `python3 scripts/vendor-display-fonts.py`
-  (cần npm). Build cảnh báo nếu tiêu đề dùng âm tiết mà phông không có.
+  `src/assets/fonts/<tên phông>/`. Black Han Sans và Bricolage chia nhỏ theo dải Unicode
+  (`display-fonts.css`) nên mỗi trang chỉ tải phần chứa ký tự đang dùng; tạo lại bằng
+  `python3 scripts/vendor-display-fonts.py` (cần npm). Build cảnh báo nếu tiêu đề dùng âm tiết
+  mà Black Han Sans không có.
+- Nanum Pen Script chỉ chứa đúng các ký tự của dòng ghi chú viết tay (class `hand`,
+  `hero-hand`, `footer-hand`), khoảng 15 KB. Khi sửa hoặc thêm ghi chú viết tay, nếu build báo
+  `WARNING: handwriting font lacks …`, chạy `pip install fonttools brotli` rồi
+  `python3 src/build.py && python3 scripts/subset-hand-font.py && python3 src/build.py`.
 - Pretendard giữ 2.350 âm tiết Hangul thông dụng (KS X 1001) và mọi âm tiết đang dùng.
   Nếu build báo `WARNING: Pretendard subset lacks …`, chạy
   `pip install fonttools brotli` rồi `python3 scripts/subset-fonts.py`.

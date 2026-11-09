@@ -1,5 +1,9 @@
 """Copy the display fonts into src/assets/fonts/ and write display-fonts.css.
 
+The handwriting font (Nanum Pen Script) is not copied here: it is cut down to
+the characters of the handwritten notes by scripts/subset-hand-font.py, and
+this stylesheet only declares that one file.
+
 The fonts come from Fontsource npm packages (OFL-1.1), already split by
 unicode-range like Google Fonts, so a page downloads only the slices that
 contain the characters it shows. Needs npm on the PATH; the normal site build
@@ -19,7 +23,6 @@ fonts = root / 'src' / 'assets' / 'fonts'
 # folder name: (npm package, stylesheet in the package, family name used by the site)
 PACKAGES = {
     'black-han-sans': ('@fontsource/black-han-sans@5.3.0', 'index.css', 'Black Han Sans'),
-    'nanum-pen-script': ('@fontsource/nanum-pen-script@5.3.0', 'index.css', 'Nanum Pen Script'),
     'bricolage-grotesque': ('@fontsource-variable/bricolage-grotesque@5.3.0', 'wght.css', 'Bricolage Grotesque'),
 }
 
@@ -44,5 +47,12 @@ with tempfile.TemporaryDirectory() as tmp:
             block = re.sub(r'src:[^;]*;', f'src: url("{folder}/{name}") format("woff2");', block)
             block = re.sub(r"font-family: '[^']*';", f"font-family: '{family}';", block)
             css.append(block)
+css.append('''@font-face {
+  font-family: 'Nanum Pen Script';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("nanum-pen-script/NanumPenScript-subset.woff2") format("woff2");
+}''')
 (fonts / 'display-fonts.css').write_text('\n'.join(css) + '\n')
 print(f'wrote {fonts / "display-fonts.css"}')

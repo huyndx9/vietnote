@@ -54,16 +54,23 @@ function syncSave() {
         : "♡ 여행 노트에 저장";
   });
 }
+// Same markup as src/templates/card.html, for cards drawn in the browser (notebook).
+const regionClass = { 북부: "north", 중부: "central", 남부: "south" };
 function card(x) {
   const image = x.photo
     ? `<img loading="lazy" src="${x.photo}" alt="${esc(x.title)} 관련 풍경">`
     : '<div class="guide-art">✦</div>';
+  const region = x.region
+    ? ` <span class="region-tag ${regionClass[x.region] || ""}">${esc(x.region)}</span>`
+    : "";
+  const stamp = x.vi && x.photo ? `<span class="postcard-stamp" lang="vi">${esc(x.vi)}</span>` : "";
   return (
     `<article class="browse-card">` +
-    `<div class="card-image"><a href="${x.url}">${image}</a>` +
+    `<div class="card-image"><a href="${x.url}" tabindex="-1" aria-hidden="true">${image}</a>${stamp}` +
     `<button class="save-button" data-save="${x.id}" aria-label="여행 노트에 저장">♡</button></div>` +
-    `<div class="meta">${categoryNames[x.category]}</div>` +
-    `<h2><a href="${x.url}">${esc(x.title)}</a></h2><p>${esc(x.desc)}</p></article>`
+    `<div class="meta">${categoryNames[x.category]}${region}</div>` +
+    `<h2><a href="${x.url}">${esc(x.title)}</a></h2><p>${esc(x.desc)}</p>` +
+    `<span class="card-go" aria-hidden="true">↗</span></article>`
   );
 }
 function renderNotebook() {
@@ -309,11 +316,22 @@ function setupAI() {
     dock.classList.toggle("is-paused", motionPaused);
     motionToggle.textContent = motionPaused ? "▶" : "Ⅱ";
     motionToggle.setAttribute("aria-pressed", String(motionPaused));
-    motionToggle.setAttribute("aria-label", motionPaused ? "자동 재생 시작" : "자동 재생 일시 정지");
+    motionToggle.setAttribute(
+      "aria-label",
+      motionPaused ? "자동 재생 시작" : "자동 재생 일시 정지",
+    );
   }
-  motionToggle.onclick = () => { motionPaused = !motionPaused; syncMotion(); };
-  reducedMotion.addEventListener("change", (event) => { motionPaused = event.matches; syncMotion(); });
-  document.addEventListener("visibilitychange", () => dock.classList.toggle("is-away", document.hidden));
+  motionToggle.onclick = () => {
+    motionPaused = !motionPaused;
+    syncMotion();
+  };
+  reducedMotion.addEventListener("change", (event) => {
+    motionPaused = event.matches;
+    syncMotion();
+  });
+  document.addEventListener("visibilitychange", () =>
+    dock.classList.toggle("is-away", document.hidden),
+  );
   syncMotion();
   function show(open) {
     panel.hidden = !open;
@@ -360,7 +378,8 @@ function setupChat(host, endpoint) {
     let list = null;
     for (const raw of text.replace(/\r/g, "").split("\n")) {
       const line = raw.trim();
-      const bullet = line.match(/^[-*•]\s+(.*)/), numbered = line.match(/^(\d+)[.)]\s+(.*)/);
+      const bullet = line.match(/^[-*•]\s+(.*)/),
+        numbered = line.match(/^(\d+)[.)]\s+(.*)/);
       if (bullet || numbered) {
         const tag = bullet ? "UL" : "OL";
         if (!list || list.tagName !== tag) el.append((list = document.createElement(tag)));
@@ -385,7 +404,10 @@ function setupChat(host, endpoint) {
     host.querySelector(".ai-suggestions")?.remove();
     add("user", q);
     history.push({ role: "user", content: q });
-    const pending = add("assistant", "답변을 준비하고 있어요… 자세한 일정은 30초쯤 걸릴 수 있어요.");
+    const pending = add(
+      "assistant",
+      "답변을 준비하고 있어요… 자세한 일정은 30초쯤 걸릴 수 있어요.",
+    );
     pending.classList.add("is-pending");
     try {
       const r = await fetch(endpoint, {
@@ -415,7 +437,9 @@ function setupChat(host, endpoint) {
     input.value = "";
     ask(q);
   };
-  host.querySelectorAll(".ai-suggestions button").forEach((b) => (b.onclick = () => ask(b.textContent)));
+  host
+    .querySelectorAll(".ai-suggestions button")
+    .forEach((b) => (b.onclick = () => ask(b.textContent)));
 }
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
@@ -519,7 +543,8 @@ setupHeroSlideshow();
   const next = document.getElementById("historyNext");
   const status = document.getElementById("historyStatus");
   const timeline = marks[0]?.closest(".history-timeline");
-  let active = 0, requested = null;
+  let active = 0,
+    requested = null;
   const pad = (n) => String(n).padStart(2, "0");
   function setActive(i) {
     active = i;
@@ -530,9 +555,13 @@ setupHeroSlideshow();
     const m = marks[i];
     if (m && timeline && (!disclosure || disclosure.open)) {
       // offsetLeft is relative to the <li>, so measure against the timeline instead.
-      const t = timeline.getBoundingClientRect(), r = m.getBoundingClientRect();
+      const t = timeline.getBoundingClientRect(),
+        r = m.getBoundingClientRect();
       const left = timeline.scrollLeft + (r.left - t.left) - (t.width - r.width) / 2;
-      timeline.scrollTo({ left, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      timeline.scrollTo({
+        left,
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      });
     }
   }
   function go(i) {
@@ -556,9 +585,14 @@ setupHeroSlideshow();
       const x = track.scrollLeft;
       let best = 0;
       cards.forEach((c, k) => {
-        if (Math.abs(c.offsetLeft - cards[0].offsetLeft - x) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - x)) best = k;
+        if (
+          Math.abs(c.offsetLeft - cards[0].offsetLeft - x) <
+          Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - x)
+        )
+          best = k;
       });
-      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 4) best = Math.max(best, requested ?? best);
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 4)
+        best = Math.max(best, requested ?? best);
       setActive(best);
     });
   });
@@ -566,14 +600,21 @@ setupHeroSlideshow();
   next.addEventListener("click", () => go(active + 1));
   marks.forEach((m, k) => m.addEventListener("click", () => go(k)));
   track.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight") { e.preventDefault(); go(active + 1); }
-    if (e.key === "ArrowLeft") { e.preventDefault(); go(active - 1); }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      go(active + 1);
+    }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      go(active - 1);
+    }
   });
   disclosure?.addEventListener("toggle", () => {
     // Measure the timeline once its native disclosure has become visible.
-    if (disclosure.open) requestAnimationFrame(() => {
-      if (disclosure.open) setActive(active);
-    });
+    if (disclosure.open)
+      requestAnimationFrame(() => {
+        if (disclosure.open) setActive(active);
+      });
   });
   setActive(0);
 })();
