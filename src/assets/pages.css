@@ -1568,3 +1568,19 @@ textarea:focus-visible {
     grid-auto-columns: 82%;
   }
 }
+
+/* Search: month summary for queries such as "12월" */
+.search-month{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 16px;padding:14px 16px;background:#eef2ea;border-radius:8px;font-size:14px}
+.search-month strong{flex-basis:100%;font-size:15px}
+.search-month span{padding:4px 10px;border-radius:999px;font-weight:600;font-size:13px}
+
+/* Place guides: month-by-month bar in the weather section */
+.guide-season{margin:6px 0 22px;display:grid;gap:12px}
+.guide-season .season-legend{margin:0}
+
+/* Phones: keep search results in view; the big title pushed them below the fold. */
+@media (max-width: 760px) {
+  .global-search #searchTitle { font-size: 26px; line-height: 1.2; margin: 6px 0 14px; }
+  .global-search .section-no { font-size: 11px; }
+  .global-search { padding-top: 22px; }
+}

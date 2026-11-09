@@ -242,7 +242,12 @@ class Site:
             entry['sections'] = [[s['title'], s['body']] for s in searchable]
             public.append(entry)
         self.write('assets/content.js',
-                   'window.VIETNOTE_CONTENT=' + json.dumps(public, ensure_ascii=False) + ';\n')
+                   'window.VIETNOTE_CONTENT=' + json.dumps(public, ensure_ascii=False) + ';\n' +
+                   # Month-by-month pattern per region, for search queries such as "12월".
+                   'window.VIETNOTE_MONTHS=' + json.dumps(
+                       {'legend': load_json('seasons.json')['legend'],
+                        'regions': [{'label': r['label'], 'months': r['months']} for r in load_json('seasons.json')['regions']]},
+                       ensure_ascii=False, separators=(',', ':')) + ';\n')
         for p in self.destinations:  # atlas previews read photos from photos.json
             stem = self.place_photo(p['id'])
             if stem:
@@ -430,8 +435,11 @@ class Site:
             cover = ''
             if x['photo']:
                 cover = f'<div class="article-cover">{self.img(x["photo"], f"{x["title"]} 관련 풍경", "(max-width: 760px) 92vw, 80vw", lazy=False)}</div>'
-            related = [r for r in self.items if r['id'] != x['id'] and (
-                r['category'] == x['category'] or (r.get('city') and r.get('city') == x.get('city')))][:3]
+            # Itineraries link first to the guides of the places they visit.
+            related = [a for g in x.get('guides', []) for a in self.place_articles if a['id'] == 'place-' + g]
+            related += [r for r in self.items if r['id'] != x['id'] and r not in related and (
+                r['category'] == x['category'] or (r.get('city') and r.get('city') == x.get('city')))]
+            related = related[:3]
             edited = date.fromisoformat(x['date'])
             main = self.render(
                 'article', id=h(x['id']), label=h(label), category_url=self.url(x['category'] + '/'),
@@ -448,6 +456,19 @@ class Site:
                       schema=[self.article_schema(x, path, description),
                               self.breadcrumbs((label, f'{x["category"]}/index.html'), (x['title'], path))])
 
+    def season_strip(self, region_id):
+        """Month-by-month bar for a region (same data as the atlas card)."""
+        seasons = load_json('seasons.json')
+        r = next(x for x in seasons['regions'] if x['id'] == region_id)
+        legend = seasons['legend']
+        months = ''.join(f'<li class="m-{m}" title="{i + 1}월 · {h(legend[m])}"><span>{i + 1}</span></li>'
+                         for i, m in enumerate(r['months']))
+        keys = ''.join(f'<li class="m-{k}"><i></i>{h(v)}</li>' for k, v in legend.items() if k in r['months'])
+        return (f'<div class="guide-season"><p class="season-best"><span>추천 시기 · {h(r["label"])}</span>'
+                f'<strong>{h(r["best"])}</strong><em>{h(r["best_note"])}</em></p>'
+                f'<ol class="season-months" aria-label="{h(r["label"])} 월별 날씨">{months}</ol>'
+                f'<ul class="season-legend">{keys}</ul></div>')
+
     def build_place_guides(self):
         for p,article in zip(self.destinations,self.place_articles):
             g=self.guide_notes[p['id']]
@@ -455,6 +476,8 @@ class Site:
             blocks=[]
             for section in article['sections']:
                 body=''.join(f'<p>{h(text)}</p>' for text in section['body'].split('\n\n'))
+                if section['id']=='weather':
+                    body=self.season_strip(p['region'])+body
                 if section['id']=='phrases':
                     phrases=[('이 주소로 가 주세요','Cho tôi đến địa chỉ này.'),('고수를 빼 주세요','Không cho rau mùi.'),('맵지 않게 해 주세요','Không cay.'),('얼마인가요?','Bao nhiêu tiền?'),('도와주세요','Làm ơn giúp tôi.'),('감사합니다','Cảm ơn.')]
                     body+='<div class="phrase-cards">'+''.join(f'<button class="phrase" data-copy="{h(vi)}"><span>{h(ko)}</span><strong>{h(vi)}</strong><small>눌러서 복사하기</small></button>' for ko,vi in phrases)+'</div>'

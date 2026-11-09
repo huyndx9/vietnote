@@ -167,23 +167,83 @@ function openSearch(query = "") {
     }
   });
 }
+// ---- Search -----------------------------------------------------------
+// Readers type several words ("다낭 12월 날씨"), other spellings ("호치민",
+// "나짱") and travel slang ("유심", "그랩", "맛집"). Each word becomes a group of
+// synonyms; items are ranked by how many groups they match, then by where
+// (title > place > summary > body). Diacritics are ignored.
+const SEARCH_SYNONYMS = [
+  ["호치민", "호찌민", "호찌민시", "사이공", "saigon", "ho chi minh", "hcm"],
+  ["나짱", "나트랑", "nha trang"], ["다낭", "da nang", "danang"], ["호이안", "hoi an"],
+  ["하노이", "hanoi", "ha noi"], ["푸꾸옥", "푸국", "phu quoc"], ["하롱", "하롱베이", "ha long", "halong"],
+  ["달랏", "da lat", "dalat"], ["사파", "sa pa", "sapa"], ["후에", "hue"], ["무이네", "mui ne"],
+  ["유심", "usim", "심카드", "sim", "esim", "이심", "데이터", "로밍", "통신"],
+  ["그랩", "grab", "택시", "차량 호출", "콜택시"],
+  ["맛집", "음식", "먹거리", "식당", "food"],
+  ["치안", "안전", "소매치기", "위험", "사기"],
+  ["무비자", "비자", "입국", "전자비자", "evisa", "e-visa", "45일"],
+  ["환전", "환율", "현금", "카드", "atm", "vnd", "물가", "예산", "경비"],
+  ["날씨", "기후", "우기", "건기", "태풍", "계절", "언제"],
+  ["쌀국수", "퍼", "pho", "phở"], ["반미", "banh mi"], ["분짜", "bun cha"],
+  ["커피", "카페", "에그커피", "cà phê"], ["야시장", "시장", "night market"],
+  ["가는 법", "가는법", "교통", "이동", "공항", "버스", "기차"],
+  ["부모님", "효도", "어르신"], ["아이", "아기", "유모차", "가족"], ["마사지", "스파"], ["쇼핑", "기념품"],
+];
+const foldText = (s) =>
+  // NFC again afterwards: NFD also splits Hangul syllables into jamo.
+  String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").normalize("NFC").replace(/đ/gi, "d").toLocaleLowerCase();
+const SEARCH_GROUPS = SEARCH_SYNONYMS.map((g) => g.map(foldText));
+function queryGroups(q) {
+  const text = foldText(q).replace(/(가는) (법)/g, "$1$2");
+  const words = text.split(/[\s,·/]+/).filter((w) => w.length > 0);
+  return words.map((w) => {
+    if (/^\d{1,2}월$/.test(w)) return [w, ...SEARCH_GROUPS.find((g) => g.includes("날씨"))];
+    const hit = SEARCH_GROUPS.find((g) => g.some((t) => t === w || (w.length > 1 && t.startsWith(w))));
+    return hit ? [...new Set([w, ...hit])] : [w];
+  });
+}
+function searchItems(q, items = content) {
+  const groups = queryGroups(q);
+  if (!groups.length) return items;
+  const ranked = items.map((x) => {
+    const fields = [
+      [foldText(x.title), 6], [foldText([x.city, x.keywords, categoryNames[x.category]].join(" ")), 5],
+      [foldText(x.desc), 3], [foldText(x.sections.flat().join(" ")), 1],
+    ];
+    let matched = 0, score = 0;
+    for (const g of groups) {
+      let best = 0;
+      for (const [text, w] of fields) if (w > best && g.some((t) => text.includes(t))) best = w;
+      if (best) { matched++; score += best; }
+    }
+    return { x, matched, score };
+  });
+  const top = Math.max(0, ...ranked.map((r) => r.matched));
+  return ranked.filter((r) => top && r.matched === top).sort((a, b) => b.score - a.score).map((r) => r.x);
+}
+function monthHint(q) {
+  const m = foldText(q).match(/(\d{1,2})월/);
+  const data = window.VIETNOTE_MONTHS;
+  if (!m || !data || +m[1] < 1 || +m[1] > 12) return "";
+  const i = +m[1] - 1;
+  return `<div class="search-month"><strong>${i + 1}월 지역별 날씨</strong>${data.regions
+    .map((r) => `<span class="m-${r.months[i]}">${esc(r.label)} · ${esc(data.legend[r.months[i]])}</span>`)
+    .join("")}</div>`;
+}
 function renderResults() {
-  const q = document.getElementById("globalQuery").value.trim().toLocaleLowerCase();
-  const results = content.filter((x) =>
-    [x.title, x.desc, x.city, x.keywords, ...x.sections.flat()]
-      .join(" ")
-      .toLocaleLowerCase()
-      .includes(q),
-  );
+  const q = document.getElementById("globalQuery").value.trim();
+  const results = q ? searchItems(q) : content;
   document.getElementById("searchCount").textContent = results.length + "개의 여행 노트";
-  document.getElementById("searchResults").innerHTML = results.length
-    ? results
-        .map(
-          (x) =>
-            `<a class="search-result" href="${x.url}"><small>${categoryNames[x.category]}</small><strong>${esc(x.title)}</strong><p>${esc(x.desc)}</p></a>`,
-        )
-        .join("")
-    : '<p class="empty">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>';
+  document.getElementById("searchResults").innerHTML =
+    monthHint(q) +
+    (results.length
+      ? results
+          .map(
+            (x) =>
+              `<a class="search-result" href="${x.url}"><small>${categoryNames[x.category]}</small><strong>${esc(x.title)}</strong><p>${esc(x.desc)}</p></a>`,
+          )
+          .join("")
+      : '<p class="empty">검색 결과가 없습니다. 도시 이름이나 "비자", "환전", "날씨"처럼 짧게 입력해 보세요.</p>');
 }
 function setupFilters() {
   const grid = document.getElementById("browseGrid");
@@ -197,11 +257,7 @@ function setupFilters() {
       const link = el.querySelector("h2 a");
       const x = content.find((v) => v.url === link.getAttribute("href"));
       const matches =
-        (!q ||
-          [x.title, x.desc, x.keywords, ...x.sections.flat()]
-            .join(" ")
-            .toLowerCase()
-            .includes(q)) &&
+        (!q || searchItems(q, [x]).length > 0) &&
         (filter === "전체" || x.region === filter || x.city === filter);
       el.hidden = !matches;
       if (matches) count++;
