@@ -172,7 +172,7 @@ class Site:
             cards.append(
                 f'<article class="route-card"><a class="route-photo" href="{x["url"]}">{self.img(x["photo"], x["title"], "(max-width: 760px) 92vw, 31vw")}'
                 f'<span class="route-length">{nights}박 {x["days"]}일</span></a>'
-                f'<div class="route-body"><div class="meta">{h(x["city"])}</div><h3><a href="{x["url"]}">{h(x["title"])}</a></h3>'
+                f'<div class="route-body"><div class="meta hand">{h(x["city"])}</div><h3><a href="{x["url"]}">{h(x["title"])}</a></h3>'
                 f'<ol class="route-days">{days}</ol><a class="textlink" href="{x["url"]}">일정 자세히 보기 ↗</a></div></article>')
         return ('<section class="section wrap home-routes" id="routes"><div class="section-head"><div>'
                 '<div class="section-no">02 / SUGGESTED ROUTES</div><h2 class="section-title serif">Ready-made journeys.</h2>'
