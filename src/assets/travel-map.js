@@ -55,16 +55,75 @@
     // 1 = the map stops firmly at the edge instead of stretching and snapping back.
     maxBoundsViscosity: 1,
   }).setView([16, 106], 5);
-  // A drag on the map must never turn into a page scroll, even in in-app
-  // browsers that ignore Leaflet's touch-action: none. Only moves are blocked,
-  // so taps on markers and buttons still work; two-finger pinch stays with Leaflet.
+  // Phones: a one-finger swipe pans the map; once the map has reached its edge
+  // in the direction of the swipe, the rest of the swipe scrolls the page (with
+  // momentum after the finger lifts), so the page never gets stuck on the map.
+  // The map keeps touch-action: none, so this handler decides who moves.
+  function verticalRoom() {
+    const zoom = map.getZoom(),
+      limits = map.options.maxBounds,
+      view = map.getPixelBounds();
+    return {
+      north: view.min.y - map.project(limits.getNorthWest(), zoom).y,
+      south: map.project(limits.getSouthEast(), zoom).y - view.max.y,
+    };
+  }
+  const pageZoom = () => parseFloat(document.documentElement.style.zoom) || 1; // desktop-site mode
+  let lastY = null,
+    lastTime = 0,
+    velocity = 0,
+    scrollingPage = false,
+    fling = 0;
+  mapElement.addEventListener(
+    "touchstart",
+    (event) => {
+      cancelAnimationFrame(fling);
+      scrollingPage = false;
+      velocity = 0;
+      lastY = event.touches.length === 1 ? event.touches[0].clientY : null; // pinch: map only
+      lastTime = performance.now();
+    },
+    { passive: true },
+  );
   mapElement.addEventListener(
     "touchmove",
     (event) => {
       if (event.cancelable) event.preventDefault();
+      if (lastY === null || event.touches.length !== 1) {
+        lastY = null;
+        return;
+      }
+      const y = event.touches[0].clientY,
+        dy = lastY - y, // > 0: finger moves up, content should move up
+        now = performance.now();
+      lastY = y;
+      if (!dy) return;
+      const room = verticalRoom();
+      if (dy > 0 ? room.south < 1 : room.north < 1) {
+        const step = dy / pageZoom();
+        window.scrollBy(0, step);
+        velocity = step / Math.max(8, now - lastTime);
+        scrollingPage = true;
+      } else {
+        scrollingPage = false;
+        velocity = 0;
+      }
+      lastTime = now;
     },
     { passive: false },
   );
+  mapElement.addEventListener("touchend", () => {
+    lastY = null;
+    if (!scrollingPage || Math.abs(velocity) < 0.15) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let v = velocity * 16; // px per frame
+    const glide = () => {
+      window.scrollBy(0, v);
+      v *= 0.94;
+      if (Math.abs(v) > 0.5) fling = requestAnimationFrame(glide);
+    };
+    fling = requestAnimationFrame(glide);
+  });
   const pins = map.getPane("markerPane");
   pins.id = "mapPins";
   map.createPane("countryLabels");
