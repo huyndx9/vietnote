@@ -63,9 +63,9 @@
     interactive: false,
     smoothFactor: 0.35,
     style: (f) => ({
-      color: f.properties.name === "Vietnam" ? "#6f927f" : "#bfc9b9",
+      color: f.properties.name === "Vietnam" ? "#e0a400" : "#c6d9de",
       weight: f.properties.name === "Vietnam" ? 1.4 : 0.8,
-      fillColor: f.properties.name === "Vietnam" ? "#d4e1c9" : "#eceee3",
+      fillColor: f.properties.name === "Vietnam" ? "#fff1c4" : "#eef5f6",
       fillOpacity: 1,
     }),
   }).addTo(map);
@@ -74,7 +74,7 @@
     L.geoJSON(window.VIETNOTE_GEOGRAPHY.roads, {
       interactive: false,
       style: (f) => ({
-        color: f.properties.major ? "#c79a63" : "#d3b48c",
+        color: f.properties.major ? "#f08a5d" : "#f5b896",
         weight: f.properties.major ? 1.8 : 1,
         opacity: 0.9,
         dashArray: f.properties.major ? null : "3 3",
@@ -83,7 +83,7 @@
   L.geoJSON(window.VIETNOTE_GEOGRAPHY.rivers, {
     interactive: false,
     style: (f) => ({
-      color: "#8fbfc4",
+      color: "#5cc6c6",
       weight: (f.properties.rank ?? 9) <= 4 ? 1.8 : 1,
       opacity: 0.9,
     }),
@@ -195,9 +195,9 @@
       L.circleMarker(location, {
         pane: "islandLabels",
         radius: 2.8,
-        color: "#628d86",
+        color: "#007c75",
         weight: 1,
-        fillColor: "#f8fcf6",
+        fillColor: "#ffffff",
         fillOpacity: 1,
         interactive: false,
       }).addTo(map);
@@ -330,9 +330,7 @@
     description.textContent = p.teaser;
     const hint = document.createElement("span");
     hint.className = "map-preview-hint";
-    hint.textContent = p.photo
-      ? "여행 가이드 읽기 ↗"
-      : "여행 가이드 읽기 ↗";
+    hint.textContent = p.photo ? "여행 가이드 읽기 ↗" : "여행 가이드 읽기 ↗";
     body.append(label, title, description, hint);
     preview.append(photo, body);
     preview.hidden = false;
@@ -365,7 +363,9 @@
     el.addEventListener("focus", () => {
       if (matchMedia("(hover: hover)").matches || el.matches(":focus-visible")) showPreview(p, el);
     });
-    el.addEventListener("blur", (e) => {if(e.relatedTarget !== preview) hidePreview()});
+    el.addEventListener("blur", (e) => {
+      if (e.relatedTarget !== preview) hidePreview();
+    });
   }
   preview.addEventListener("blur", hidePreview);
   preview.addEventListener("pointerenter", () => clearTimeout(hideTimer));
@@ -410,7 +410,11 @@
     const heading = node("div", "map-season-heading");
     heading.append(node("h3", "", "When to go."), node("span", "", climate.label + " 기준"));
     const best = node("p", "season-best");
-    best.append(node("span", "", "추천 시기"), node("strong", "", climate.best), node("em", "", climate.best_note));
+    best.append(
+      node("span", "", "추천 시기"),
+      node("strong", "", climate.best),
+      node("em", "", climate.best_note),
+    );
     const months = node("ol", "season-months");
     months.setAttribute("aria-label", climate.label + " 월별 날씨");
     climate.months.forEach((condition, i) => {
@@ -431,9 +435,16 @@
     const notes = node("details", "map-season-notes");
     const pack = node("p", "season-pack");
     pack.append(node("span", "", "짐 준비"), document.createTextNode(climate.pack));
-    notes.append(node("summary", "", "날씨와 짐 준비"),
-      node("p", "season-summary", climate.summary), pack,
-      node("p", "season-note", "지역의 일반적인 경향이에요. 고도와 해안에 따라 다르니 출발 전 현지 예보와 태풍 정보를 확인하세요."));
+    notes.append(
+      node("summary", "", "날씨와 짐 준비"),
+      node("p", "season-summary", climate.summary),
+      pack,
+      node(
+        "p",
+        "season-note",
+        "지역의 일반적인 경향이에요. 고도와 해안에 따라 다르니 출발 전 현지 예보와 태풍 정보를 확인하세요.",
+      ),
+    );
     section.append(heading, best, months, legend, notes);
     return section;
   }
@@ -445,7 +456,10 @@
     eyebrow.className = "section-no";
     eyebrow.textContent = regionNames[p.region] + " · " + categoryNames[p.category];
     const title = document.createElement("h2");
-    const titleLink=document.createElement("a");titleLink.href=p.url;titleLink.textContent=p.title;title.append(titleLink);
+    const titleLink = document.createElement("a");
+    titleLink.href = p.url;
+    titleLink.textContent = p.title;
+    title.append(titleLink);
     const desc = document.createElement("p");
     desc.textContent = p.teaser;
     const coords = document.createElement("small");
@@ -458,8 +472,8 @@
     maps.target = "_blank";
     maps.rel = "noopener noreferrer";
     const cover = document.createElement("a");
-    cover.href=p.url;
-    cover.setAttribute("aria-label",p.title+" 여행 가이드 읽기");
+    cover.href = p.url;
+    cover.setAttribute("aria-label", p.title + " 여행 가이드 읽기");
     cover.className = "map-detail-cover " + p.region;
     if (p.photo) {
       const img = document.createElement("img");
@@ -573,8 +587,8 @@
       });
       markerLayer.addLayer(marker);
       const button = document.createElement("a");
-      button.className="map-place-link";
-      button.href=p.url;
+      button.className = "map-place-link";
+      button.href = p.url;
       button.dataset.place = p.id;
       button.dataset.region = p.region;
       const name = document.createElement("strong");

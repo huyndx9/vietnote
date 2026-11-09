@@ -1,0 +1,1311 @@
+/*
+ * VIETNOTE visual theme: "Hội An sunshine".
+ * Loaded last. Colour tokens live in base.css (:root); display fonts in fonts/display-fonts.css.
+ *
+ * Fonts by role
+ *   --font-headline  Black Han Sans      big Korean headlines
+ *   --font-latin     Bricolage Grotesque logo, Latin headings, small caps labels
+ *   --font-hand      Nanum Pen Script    short handwritten notes (one per section at most)
+ *   --font-body      Pretendard          everything else
+ * Regions: 북부 sun yellow, 중부 coral, 남부 sea (same in chips, map and season charts).
+ */
+
+:root {
+  --gutter: var(--page-gutter, clamp(18px, 4vw, 96px));
+  --radius-lg: 30px;
+  --radius-md: 22px;
+  --radius-sm: 14px;
+  --shadow-card: 0 18px 40px -26px color-mix(in srgb, var(--ink) 55%, transparent);
+  --region-north: var(--sun);
+  --region-central: var(--coral);
+  --region-south: var(--sea);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+::selection {
+  background: var(--sun);
+  color: var(--ink);
+}
+:focus-visible {
+  outline: 3px solid var(--sea-deep);
+  outline-offset: 3px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- type ---------- */
+.serif,
+.section-title,
+.page-intro h1 {
+  font-family: var(--font-latin);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.article-heading h1,
+.place-guide .article-heading h1 {
+  font-family: var(--font-headline);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+}
+.section-no,
+.eyebrow {
+  font-family: var(--font-latin);
+  color: var(--sea-deep);
+  letter-spacing: 0.14em;
+}
+.meta {
+  color: var(--sea-deep);
+}
+.section-sub,
+.page-intro p {
+  color: var(--muted);
+}
+.textlink {
+  font-family: var(--font-latin);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  border-bottom: 3px solid var(--sun);
+  padding-bottom: 4px;
+}
+.textlink:hover {
+  color: var(--sea-deep);
+}
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Latin display headings share one weight wherever older rules set 400 */
+.map-page .map-intro :is(h1, h2),
+.page-wrap.empty-state h1,
+.map-detail h3,
+.journey h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+/* ---------- buttons & chips ---------- */
+.action-button,
+.primary-button {
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 700;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.action-button:hover,
+.primary-button:hover {
+  background: var(--sun);
+  border-color: var(--sun);
+  transform: translateY(-1px);
+}
+.primary-button {
+  background: var(--sun);
+  border-color: var(--sun);
+}
+.filter-chip {
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+}
+.filter-chip:hover {
+  border-color: var(--sea-deep);
+}
+.filter-chip.active,
+.filter-chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- header ---------- */
+.topbar {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 84px;
+  padding: 14px var(--gutter);
+  background: var(--paper);
+}
+.logo,
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: 800 26px/1 var(--font-latin);
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.logo-sun {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--sun);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sun) 35%, transparent);
+  transition: transform 0.4s;
+}
+.logo:hover .logo-sun {
+  transform: scale(1.25);
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.nav a {
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--ink);
+  transition: background 0.2s;
+}
+.nav a:hover {
+  background: var(--sky);
+}
+.nav a[aria-current="page"] {
+  background: var(--sky);
+  color: var(--sea-deep);
+}
+.navright {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.iconbtn {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 21px;
+  display: grid;
+  place-items: center;
+}
+.iconbtn:hover {
+  background: var(--sky);
+}
+.notebook-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.notebook-link:hover {
+  background: var(--sea-band);
+}
+.menu-btn {
+  display: none;
+}
+.mobilemenu {
+  display: none;
+}
+.mobilemenu.open {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: calc(76px + env(safe-area-inset-top, 0px)) 28px 28px;
+  background: var(--sea-band);
+  overflow-y: auto;
+}
+.mobilemenu a {
+  font: 400 30px/1.35 var(--font-headline);
+  color: var(--paper);
+}
+.mobilemenu a:hover {
+  color: var(--sun);
+}
+.mobilemenu button {
+  position: absolute;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: 18px;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sun);
+  color: var(--ink);
+  font-size: 28px;
+}
+@media (max-width: 980px) {
+  .nav {
+    display: none;
+  }
+  .menu-btn {
+    display: grid;
+  }
+}
+@media (max-width: 520px) {
+  .topbar {
+    min-height: 68px;
+    gap: 10px;
+  }
+  .logo {
+    font-size: 22px;
+  }
+  .notebook-link {
+    padding: 9px 13px;
+  }
+  .notebook-link span {
+    display: none;
+  }
+}
+
+/* ---------- hero ---------- */
+.hero {
+  position: relative;
+  margin: 0 clamp(10px, 1.6vw, 24px);
+  min-height: 560px;
+  height: min(820px, calc(100svh - 110px));
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  background: var(--ink);
+  color: var(--paper);
+  isolation: isolate;
+}
+.hero-slides {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+/* darkest at the lower left, where the headline sits */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--ink) 66%, transparent) 0%,
+      transparent 64%
+    ),
+    linear-gradient(180deg, transparent 30%, color-mix(in srgb, var(--ink) 82%, transparent));
+}
+.hero-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  max-width: 820px;
+  padding: 0 clamp(22px, 4vw, 64px) clamp(70px, 9vh, 96px);
+}
+.hero-hand {
+  margin: 0;
+  font: 400 clamp(26px, 2.6vw, 36px) / 1 var(--font-hand);
+  transform: rotate(-3deg);
+  transform-origin: left;
+  text-shadow: 0 2px 12px color-mix(in srgb, var(--ink) 70%, transparent);
+}
+.hero-hello {
+  margin: 0;
+  font: 800 clamp(18px, 2vw, 26px) / 1.1 var(--font-latin);
+  letter-spacing: 0.04em;
+}
+.hero-title {
+  margin: 0;
+  font: 400 clamp(64px, 10vw, 150px) / 0.92 var(--font-headline);
+  color: var(--sun);
+  letter-spacing: -0.01em;
+  text-shadow: 0 3px 28px color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.hero-lead {
+  margin: 4px 0 6px;
+  max-width: 460px;
+  font-size: 16px;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+.hero-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 480px;
+  padding: 6px 6px 6px 22px;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: 0 16px 40px -18px color-mix(in srgb, var(--ink) 80%, transparent);
+}
+.hero-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 15px;
+  padding: 10px 0;
+}
+.hero-search input::placeholder {
+  color: var(--muted);
+}
+.hero-search button {
+  flex: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 24px;
+  background: var(--sun);
+  color: var(--ink);
+  font-weight: 800;
+}
+.hero-search button:hover {
+  background: var(--coral);
+  color: var(--paper);
+}
+.hero-search:focus-within {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+}
+.hero-badge {
+  position: absolute;
+  top: clamp(18px, 3vw, 36px);
+  right: clamp(18px, 3vw, 40px);
+  width: clamp(92px, 9vw, 124px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: var(--coral);
+  color: var(--paper);
+  transform: rotate(10deg);
+  font: 800 12px/1.15 var(--font-latin);
+  letter-spacing: 0.08em;
+  transition: transform 0.4s;
+}
+.hero-badge strong {
+  font-size: clamp(30px, 3.4vw, 44px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.hero-badge:hover {
+  transform: rotate(-4deg) scale(1.05);
+}
+.hero-controls {
+  position: absolute;
+  right: clamp(18px, 3vw, 40px);
+  top: calc(clamp(18px, 3vw, 36px) + clamp(92px, 9vw, 124px) + 18px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-dots {
+  display: flex;
+  gap: 4px;
+}
+.hero-dot {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+.hero-dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--paper) 60%, transparent);
+  transition:
+    width 0.3s,
+    background 0.3s;
+}
+.hero-dot[aria-pressed="true"]::before {
+  width: 22px;
+  border-radius: 999px;
+  background: var(--sun);
+}
+.hero-pause {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--paper) 70%, transparent);
+  background: transparent;
+  color: var(--paper);
+  font-size: 12px;
+}
+.hero-controls button:focus-visible {
+  outline: 3px solid var(--sun);
+}
+.hero-caption {
+  position: absolute;
+  left: clamp(22px, 4vw, 64px);
+  bottom: 22px;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+.hero-caption a {
+  color: inherit;
+}
+.hero-caption a:hover {
+  text-decoration: underline;
+}
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 1.2s ease,
+    transform 6s ease-out;
+}
+.hero-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+.hero-slide.is-leaving {
+  opacity: 0;
+}
+
+/* Vietnamese place names scrolling under the hero (decorative; names are in the atlas below) */
+.hero-ticker {
+  margin-top: 18px;
+  overflow: hidden;
+  background: var(--sun);
+  color: var(--ink);
+  transform: rotate(-1deg);
+  padding: 12px 0;
+}
+.hero-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 120s linear infinite;
+}
+.hero-ticker span {
+  font: 800 clamp(18px, 1.8vw, 24px) / 1 var(--font-latin);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  padding: 0 18px;
+}
+.hero-ticker span::after {
+  content: "✦";
+  margin-left: 36px;
+  color: var(--coral);
+}
+.hero-ticker:hover .hero-ticker-track {
+  animation-play-state: paused;
+}
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticker-track {
+    animation: none;
+  }
+  .hero-slide {
+    transition: opacity 0.3s;
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .hero {
+    min-height: 600px;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+  .hero-content {
+    padding: 120px 20px 74px;
+  }
+  .hero-lead {
+    font-size: 15px;
+  }
+  .hero-search {
+    padding-left: 16px;
+  }
+  .hero-search button {
+    padding: 11px 18px;
+  }
+  .hero-caption {
+    left: 20px;
+    right: 110px;
+    font-size: 10px;
+  }
+  .hero-controls {
+    right: 18px;
+    top: 124px;
+  }
+  .hero-dots {
+    display: none;
+  }
+}
+
+/* ---------- footer ---------- */
+.footer {
+  margin-top: 90px;
+  background: var(--ink);
+  color: color-mix(in srgb, var(--paper) 82%, transparent);
+  position: relative;
+}
+.footer-wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  width: 100%;
+  height: 40px;
+  fill: var(--ink);
+}
+.footer-inner {
+  padding: 46px var(--gutter) 30px;
+  display: grid;
+  gap: 44px;
+}
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 36px;
+}
+.footer-brand {
+  display: grid;
+  gap: 12px;
+  max-width: 440px;
+}
+.footer-logo {
+  font-size: clamp(42px, 6vw, 72px);
+  color: var(--paper);
+}
+.footer-logo .logo-sun {
+  width: clamp(16px, 2vw, 24px);
+  height: clamp(16px, 2vw, 24px);
+}
+.footer-hand {
+  margin: 0;
+  font: 400 30px/1.1 var(--font-hand);
+  color: var(--sun);
+}
+.footer-brand p:last-child {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, auto));
+  gap: 10px 36px;
+  align-content: start;
+  font-size: 15px;
+  font-weight: 600;
+}
+.footer-links a {
+  color: var(--paper);
+}
+.footer-links a:hover,
+.footer-bottom a:hover {
+  color: var(--sun);
+}
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 22px;
+  border-top: 1px solid color-mix(in srgb, var(--paper) 18%, transparent);
+  font-size: 12px;
+}
+.footer-bottom a {
+  color: inherit;
+}
+
+/* ---------- region tags ---------- */
+.region-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--sky);
+}
+.region-tag.north {
+  background: var(--sun);
+}
+.region-tag.central {
+  background: var(--coral);
+  color: var(--paper);
+}
+.region-tag.south {
+  background: var(--sea-band);
+  color: var(--paper);
+}
+
+/* ---------- homepage: sea band with postcards ---------- */
+.home-band {
+  position: relative;
+  margin-top: 72px;
+  background: var(--sea-band);
+  color: var(--paper);
+}
+.band-wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 1px);
+  width: 100%;
+  height: 46px;
+  fill: var(--sea-band);
+}
+.home-band-inner {
+  padding: 34px var(--gutter) 64px;
+  display: grid;
+  gap: 34px;
+}
+.home-band .section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+}
+.home-band .section-no {
+  color: var(--sun);
+}
+.band-title {
+  margin: 12px 0 8px;
+  font: 400 clamp(36px, 4.6vw, 62px) / 1.1 var(--font-headline);
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+.band-title .hand {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 0.66em;
+  color: var(--sun);
+  transform: rotate(-3deg);
+}
+.home-band .section-sub {
+  color: color-mix(in srgb, var(--paper) 88%, transparent);
+}
+.band-link {
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--sun);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 14px;
+}
+.band-link:hover {
+  background: var(--paper);
+}
+.postcards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+.postcard {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding: 10px 10px 18px;
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  color: var(--ink);
+  transition: transform 0.3s;
+}
+.postcard:nth-child(odd) {
+  transform: rotate(-1deg);
+}
+.postcard:nth-child(even) {
+  transform: rotate(1deg);
+}
+.postcard:hover {
+  transform: rotate(0) translateY(-6px);
+}
+.postcard-photo {
+  display: block;
+  aspect-ratio: 4 / 3.4;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--sky);
+}
+.postcard-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.postcard-stamp {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 4px 9px;
+  border: 2px dashed var(--sea-band);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--sea-deep);
+  font: 800 12px/1.2 var(--font-latin);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+.postcard-body {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  padding: 0 8px;
+}
+.postcard-body strong {
+  font: 400 26px/1.15 var(--font-headline);
+}
+.postcard-body > span:last-child {
+  color: var(--muted);
+  font-size: 14px;
+}
+.postcard-go {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sun);
+  font-weight: 800;
+  transition: transform 0.3s;
+}
+.postcard:hover .postcard-go {
+  transform: rotate(45deg);
+}
+@media (max-width: 1000px) {
+  .postcards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .postcards {
+    grid-template-columns: 1fr;
+  }
+  .band-title .hand {
+    display: block;
+    margin: 6px 0 0;
+  }
+}
+
+/* ---------- homepage: routes with arch photos ---------- */
+.route-card {
+  border: 0;
+  background: transparent;
+  display: grid;
+  gap: 16px;
+}
+.route-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 4.2;
+  border-radius: 999px 999px var(--radius-md) var(--radius-md);
+  overflow: hidden;
+  border: 6px solid var(--paper);
+  box-shadow: 12px 12px 0 var(--sky-2);
+  background: var(--sky);
+}
+.route-card:nth-child(2) .route-photo {
+  box-shadow: 12px 12px 0 var(--sun);
+}
+.route-card:nth-child(3) .route-photo {
+  box-shadow: 12px 12px 0 color-mix(in srgb, var(--coral) 70%, var(--paper));
+}
+.route-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+.route-card:hover .route-photo img {
+  transform: scale(1.05);
+}
+.route-length {
+  position: absolute;
+  top: auto;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--sun);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.route-body {
+  padding: 0 4px;
+}
+.route-body h3 {
+  font: 400 24px/1.25 var(--font-headline);
+  letter-spacing: -0.01em;
+}
+.route-days li::marker {
+  color: var(--coral);
+}
+
+/* ---------- homepage: editor's pick (arch on a sun disc) ---------- */
+.editorial .photo {
+  position: relative;
+  overflow: visible;
+  background: transparent;
+  aspect-ratio: 4 / 4.4;
+  max-height: 620px;
+  height: auto;
+  isolation: isolate;
+}
+.editorial .photo::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 82%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sun);
+  top: -4%;
+  left: 9%;
+}
+.editorial .photo img {
+  width: 76%;
+  height: 92%;
+  margin: 8% auto 0;
+  display: block;
+  object-fit: cover;
+  border-radius: 999px 999px var(--radius-md) var(--radius-md);
+  border: 8px solid var(--paper);
+  box-shadow: 16px 16px 0 var(--sea);
+}
+.editorial h3 {
+  font: 400 clamp(32px, 3.4vw, 50px) / 1.25 var(--font-headline);
+  letter-spacing: -0.01em;
+}
+
+/* ---------- homepage: before you go (sun block) ---------- */
+.notebook {
+  background: var(--sun-soft);
+  border-radius: var(--radius-lg);
+  margin-inline: clamp(10px, 1.6vw, 24px);
+}
+.guide {
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s;
+}
+.guide:hover {
+  transform: translateY(-4px);
+  background: var(--paper);
+}
+.guide .symbol {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sky);
+  color: var(--sea-deep);
+  font-size: 20px;
+}
+.guide:nth-child(3n + 2) .symbol {
+  background: var(--sun);
+  color: var(--ink);
+}
+.guide:nth-child(3n) .symbol {
+  background: color-mix(in srgb, var(--coral) 18%, var(--paper));
+  color: var(--coral-deep);
+}
+.searchbox {
+  border-radius: 999px;
+  border: 0;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+}
+.searchbox button {
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- homepage: culture stories ---------- */
+.story .photo {
+  border-radius: var(--radius-md);
+}
+.story h3 {
+  font-weight: 700;
+}
+
+/* ---------- homepage: north to south ---------- */
+.journey {
+  margin: 90px clamp(10px, 1.6vw, 24px) 0;
+  border-radius: var(--radius-lg);
+  background: var(--sea-band);
+}
+.journey::before {
+  opacity: 0.18;
+  mix-blend-mode: luminosity;
+}
+.journey h2 {
+  font-family: var(--font-latin);
+  font-weight: 800;
+  color: var(--sun);
+}
+.journey .eyebrow {
+  color: var(--paper);
+}
+.journey .route path {
+  stroke: var(--sun);
+}
+.journey .route g {
+  fill: var(--paper);
+}
+
+/* ---------- listing pages ---------- */
+.page-intro {
+  position: relative;
+  isolation: isolate;
+}
+.page-intro h1 {
+  position: relative;
+  display: inline-block;
+}
+/* sun disc behind the title, like the homepage editorial photo */
+.page-intro h1::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 1.15em;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sun);
+  right: -0.32em;
+  top: -0.28em;
+  opacity: 0.85;
+}
+.browse-toolbar {
+  border-color: var(--line);
+}
+.browse-search {
+  border-radius: 999px;
+  background: var(--mist);
+  border: 1.5px solid var(--line);
+  padding-inline: 16px;
+}
+
+/* postcard cards (listings, related articles, notebook) */
+.browse-grid {
+  gap: 26px 22px;
+}
+.browse-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 10px 58px;
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+.browse-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 26px 46px -26px color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.browse-card .card-image {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--sky);
+  margin-bottom: 6px;
+}
+.browse-card .postcard-stamp {
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+}
+.browse-card .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  margin: 0;
+}
+.browse-card h2 {
+  padding: 0 8px;
+  margin: 0;
+  font: 400 22px/1.3 var(--font-headline);
+  letter-spacing: -0.01em;
+}
+.browse-card h2 a::after {
+  /* the whole card is clickable through the title link */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.browse-card .save-button {
+  z-index: 2;
+}
+.browse-card p {
+  padding: 0 8px;
+  margin: 0;
+  color: var(--muted);
+}
+.card-go {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sun);
+  color: var(--ink);
+  font-weight: 800;
+  transition: transform 0.3s;
+}
+.browse-card:hover .card-go {
+  transform: rotate(45deg);
+}
+.save-button {
+  background: var(--paper);
+  color: var(--coral-deep);
+  border: 0;
+  box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.save-button[aria-pressed="true"] {
+  background: var(--coral);
+  color: var(--paper);
+}
+.guide-art {
+  background: var(--sun-soft);
+  color: var(--coral-deep);
+}
+.guide-art.place-art {
+  background: linear-gradient(135deg, var(--sky) 0%, var(--sun-soft) 100%);
+  color: var(--sea-deep);
+}
+
+/* ---------- article and place guide pages ---------- */
+.breadcrumb {
+  color: var(--muted);
+}
+.breadcrumb a {
+  color: var(--sea-deep);
+  font-weight: 600;
+}
+.article-heading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(34px, 5vw, 64px) clamp(20px, 5vw, 72px);
+  border-radius: var(--radius-lg);
+  background: var(--sky);
+}
+/* a sun rising over the corner and a band of sea at the bottom */
+.article-heading::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: clamp(140px, 18vw, 260px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sun);
+  top: clamp(-90px, -6vw, -50px);
+  right: clamp(-70px, -4vw, -30px);
+}
+.article-heading::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  background: var(--sea);
+}
+.article-heading .section-no {
+  color: var(--sea-deep);
+}
+.article-heading h1 {
+  font-size: clamp(34px, 4.6vw, 64px);
+  color: var(--ink);
+}
+.article-heading > p {
+  color: var(--ink);
+}
+.article-heading > small {
+  color: var(--muted);
+}
+.guide-facts > span {
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  border: 0;
+  padding: 12px 16px;
+}
+.guide-facts small {
+  color: var(--sea-deep);
+}
+.article-cover,
+.guide-cover {
+  position: relative;
+}
+.article-cover img,
+.guide-cover img {
+  border-radius: var(--radius-lg);
+}
+.photo-caption,
+.guide-cover figcaption {
+  color: var(--muted);
+}
+.article-toc {
+  border-radius: var(--radius-md);
+  background: var(--mist);
+  border: 1px solid var(--line);
+  padding: 20px 22px;
+}
+.article-toc strong {
+  font-family: var(--font-latin);
+  color: var(--sea-deep);
+}
+.article-toc a:hover {
+  color: var(--sea-deep);
+}
+.article-body h2 {
+  font: 400 clamp(24px, 2.4vw, 32px) / 1.3 var(--font-headline);
+  letter-spacing: -0.01em;
+}
+.article-body a {
+  color: var(--sea-deep);
+}
+.phrase {
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+}
+.phrase:hover {
+  border-color: var(--sun);
+  background: var(--sun-soft);
+}
+.article-end {
+  border-radius: var(--radius-md);
+  background: var(--sun-soft);
+  border: 0;
+}
+.related .serif,
+.related h2 {
+  font-family: var(--font-latin);
+  font-weight: 800;
+}
+.guide-related a {
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+.guide-related a:hover {
+  border-color: var(--sun);
+}
+.guide-related small {
+  color: var(--sea-deep);
+}
+
+/* ---------- notebook, about, empty states ---------- */
+.storage-note {
+  border-radius: var(--radius-sm);
+  background: var(--sun-soft);
+  color: var(--ink);
+}
+.empty-state {
+  border-radius: var(--radius-md);
+}
+.feedback-panel {
+  border-radius: var(--radius-lg);
+  background: var(--sky);
+}
+.about-image img {
+  border-radius: 999px 999px var(--radius-md) var(--radius-md);
+  border: 8px solid var(--paper);
+  box-shadow: 16px 16px 0 var(--sun);
+}
+@media (max-width: 560px) {
+  .browse-grid {
+    gap: 16px 12px;
+  }
+  .browse-card {
+    padding: 6px 6px 50px;
+    border-radius: var(--radius-sm);
+  }
+  .browse-card .postcard-stamp {
+    display: none;
+  }
+  .browse-card h2 {
+    font-size: 17px;
+    padding: 0 4px;
+  }
+  .browse-card p {
+    font-size: 13px;
+    padding: 0 4px;
+  }
+  .browse-card .meta {
+    padding: 0 4px;
+    gap: 4px;
+  }
+  .card-go {
+    width: 30px;
+    height: 30px;
+    right: 10px;
+    bottom: 10px;
+  }
+  .article-heading::before {
+    width: 110px;
+    top: -46px;
+    right: -36px;
+  }
+}

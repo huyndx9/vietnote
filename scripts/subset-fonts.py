@@ -9,7 +9,8 @@ Pretendard (OFL-1.1) is downloaded from the npm registry. The subset keeps:
   currently used by the site, so new Korean text usually needs no rebuild;
 - Basic Latin, Latin-1, Vietnamese letters and common punctuation/symbols.
 The weight axis is limited to the 300-700 range that the stylesheets use.
-Playfair Display is reduced to Latin and Vietnamese when its original is present.
+Display fonts (Black Han Sans, Nanum Pen Script, Bricolage Grotesque) are not
+subset here; scripts/vendor-display-fonts.py copies them already split by unicode-range.
 """
 import io
 import tarfile
@@ -88,13 +89,6 @@ def main():
     charset = root / 'src' / 'font-hangul.txt'
     charset.write_text(''.join(sorted(hangul)) + '\n', encoding='utf-8')
     print(f'{charset.relative_to(root)}: {len(hangul)} Hangul syllables')
-
-    # The full Playfair Display file was removed after its first subset; re-run
-    # only when a new original is placed at assets/fonts/Playfair-Display.woff2.
-    playfair = fonts / 'Playfair-Display.woff2'
-    if playfair.exists():
-        save(TTFont(playfair), 'Playfair-Display-subset.woff2', latin_and_vietnamese())
-        playfair.unlink()
 
 
 if __name__ == '__main__':
