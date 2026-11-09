@@ -101,7 +101,9 @@
       const room = verticalRoom();
       if (dy > 0 ? room.south < 1 : room.north < 1) {
         const step = dy / pageZoom();
-        window.scrollBy(0, step);
+        // instant: the page sets scroll-behavior: smooth, and a smooth scroll per
+        // touchmove (up to 120 a second) would keep restarting and barely move.
+        window.scrollBy({ top: step, behavior: "instant" });
         velocity = step / Math.max(8, now - lastTime);
         scrollingPage = true;
       } else {
@@ -118,7 +120,7 @@
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let v = velocity * 16; // px per frame
     const glide = () => {
-      window.scrollBy(0, v);
+      window.scrollBy({ top: v, behavior: "instant" });
       v *= 0.94;
       if (Math.abs(v) > 0.5) fling = requestAnimationFrame(glide);
     };
