@@ -247,46 +247,6 @@ img {
 .story:first-child h3 {
   font-size: 25px;
 }
-.journey {
-  margin-top: 85px;
-  position: relative;
-  min-height: 480px;
-  background: var(--ink);
-  color: white;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
-.journey:before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("hagiang-golden-terraces-1920.webp") center/cover;
-  opacity: 0.22;
-}
-.journey-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 30px;
-}
-.journey h2 {
-  font-size: clamp(48px, 6vw, 90px);
-  font-weight: 400;
-  margin: 15px 0;
-}
-.journey p {
-  font-size: 14px;
-  line-height: 2;
-  color: var(--line);
-}
-.route {
-  width: min(430px, 45%);
-  height: 290px;
-}
 .overlay {
   position: fixed;
   inset: 0;
@@ -405,18 +365,6 @@ img {
   .story h3,
   .story:first-child h3 {
     font-size: 17px;
-  }
-  .journey {
-    min-height: 520px;
-    margin-top: 40px;
-  }
-  .journey-inner {
-    flex-direction: column;
-    align-items: start;
-  }
-  .route {
-    width: 100%;
-    height: 210px;
   }
   .modal {
     padding: 28px 20px;

@@ -90,8 +90,7 @@ body {
 /* Latin display headings share one weight wherever older rules set 400 */
 .map-page .map-intro :is(h1, h2),
 .page-wrap.empty-state h1,
-.map-detail h3,
-.journey h2 {
+.map-detail h3 {
   font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: -0.035em;
@@ -974,31 +973,6 @@ body {
 }
 .story h3 {
   font-weight: 700;
-}
-
-/* ---------- homepage: north to south ---------- */
-.journey {
-  margin: 90px clamp(10px, 1.6vw, 24px) 0;
-  border-radius: var(--radius-lg);
-  background: var(--sea-band);
-}
-.journey::before {
-  opacity: 0.18;
-  mix-blend-mode: luminosity;
-}
-.journey h2 {
-  font-family: var(--font-latin);
-  font-weight: 800;
-  color: var(--sun);
-}
-.journey .eyebrow {
-  color: var(--paper);
-}
-.journey .route path {
-  stroke: var(--sun);
-}
-.journey .route g {
-  fill: var(--paper);
 }
 
 /* ---------- listing pages ---------- */

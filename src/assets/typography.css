@@ -66,7 +66,8 @@ p {
   font-weight: 400;
   margin: 16px 0;
 }
-.section-sub, .editorial p, .journey p {
+.section-sub,
+.editorial p {
   font-size: 15px;
   line-height: 1.9;
   letter-spacing: -0.015em;
@@ -198,8 +199,7 @@ form textarea {
   }
   .section-sub,
   .intro p,
-  .editorial p,
-  .journey p {
+  .editorial p {
     font-size: 15px;
   }
   .intro h2 {
@@ -342,14 +342,6 @@ form textarea {
 .story h3 {
   margin-top: 15px;
 }
-.journey {
-  margin: 60px 24px 0;
-  background: var(--ink);
-  min-height: 460px;
-}
-.journey h2 {
-  font-size: clamp(54px, 6vw, 88px);
-}
 .page-intro {
   padding: 65px 0 55px;
 }
@@ -458,12 +450,6 @@ form textarea {
   .story:first-child .photo {
     height: 280px;
   }
-  .journey {
-    margin: 30px 10px 0;
-  }
-  .journey h2 {
-    font-size: 55px;
-  }
   .page-intro {
     padding: 35px 0;
   }
@@ -530,7 +516,9 @@ form textarea {
   .section-title {
     font-size: clamp(52px, 4vw, 88px);
   }
-  .section-sub, .editorial p, .browse-card p {
+  .section-sub,
+  .editorial p,
+  .browse-card p {
     font-size: clamp(15px, 1vw, 20px);
   }
   .browse-card h2 {
@@ -605,12 +593,6 @@ form textarea {
   .section-head {
     flex-wrap: wrap;
   }
-}
-
-/* Korean display headings: tighter leading than the English serif titles had. */
-.journey h2 {
-  line-height: 1.2;
-  letter-spacing: -0.03em;
 }
 .section-title,
 .page-intro h1,
