@@ -1115,8 +1115,12 @@ textarea:focus-visible {
   gap: 2px;
   margin: 0;
   padding: 14px 16px;
-  background: var(--sky);
+  background: var(--month-good-soft);
+  border-left: 5px solid var(--month-good);
   border-radius: 4px;
+}
+.season-best span {
+  color: var(--month-good-ink);
 }
 .season-best span,
 .season-pack span {
@@ -1140,7 +1144,7 @@ textarea:focus-visible {
   margin: 0;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 0;
+  gap: 2px; /* a white seam between months keeps neighbouring colours apart */
   border-radius: 4px;
   overflow: hidden;
 }
@@ -1167,23 +1171,23 @@ textarea:focus-visible {
   gap: 2px;
 }
 .m-good {
-  background: var(--sea-deep);
-  color: var(--paper);
+  background: var(--month-good);
+  color: var(--ink);
 }
 .m-hot {
-  background: var(--sun);
+  background: var(--month-hot);
   color: var(--ink);
 }
 .m-cool {
-  background: var(--sky-2);
+  background: var(--month-cool);
   color: var(--ink);
 }
 .m-rain {
-  background: var(--muted);
+  background: var(--month-rain);
   color: var(--paper);
 }
 .m-storm {
-  background: var(--coral-deep);
+  background: var(--month-storm);
   color: var(--paper);
 }
 .season-legend {
@@ -1210,19 +1214,20 @@ textarea:focus-visible {
   display: inline-block;
 }
 .season-legend .m-good i {
-  background: var(--sea-deep);
+  background: var(--month-good);
 }
 .season-legend .m-hot i {
-  background: var(--sun);
+  background: var(--month-hot);
 }
 .season-legend .m-cool i {
-  background: var(--sky-2);
+  background: var(--month-cool);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent);
 }
 .season-legend .m-rain i {
-  background: var(--muted);
+  background: var(--month-rain);
 }
 .season-legend .m-storm i {
-  background: var(--coral-deep);
+  background: var(--month-storm);
 }
 .season-note {
   font-size: 13px;
