@@ -1620,3 +1620,16 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* ---------- touch safety ---------- */
+/* Nothing may pan the page sideways on phones (clip does not create a scroll box,
+   so sticky headers keep working). */
+html,
+body {
+  overflow-x: clip;
+}
+/* The atlas keeps every gesture that starts on it, also at the map's edge. */
+#vietnamMap {
+  touch-action: none;
+  overscroll-behavior: none;
+}
