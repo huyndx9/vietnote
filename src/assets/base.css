@@ -14,6 +14,14 @@
   --ink: #0f2e3a;
   --muted: #4a6570;
   --line: #d6e6ea;
+  /* When-to-go months: light green marks the months to go */
+  --month-good: #9fe39a;
+  --month-good-soft: #e8f8e4;
+  --month-good-ink: #2f7a35;
+  --month-hot: #ffc533;
+  --month-cool: #d3e6f7;
+  --month-rain: #56707e;
+  --month-storm: #d63c2a;
   /* names used throughout the stylesheets */
   --bg: var(--paper);
   --accent: var(--sea-deep);

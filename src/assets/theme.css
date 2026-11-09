@@ -824,8 +824,54 @@ body {
   }
 }
 @media (max-width: 560px) {
+  /* phones: two smaller postcards per row */
   .postcards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 10px;
+  }
+  .postcard {
+    gap: 8px;
+    padding: 6px 6px 12px;
+    border-radius: var(--radius-sm);
+  }
+  .postcard-photo {
+    aspect-ratio: 4 / 3.6;
+    border-radius: 10px;
+  }
+  .postcard-stamp {
+    top: 12px;
+    left: 12px;
+    padding: 2px 5px;
+    border-width: 1.5px;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    max-width: calc(100% - 24px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .postcard-body {
+    gap: 3px;
+    padding: 0 4px;
+  }
+  .postcard-body .region-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
+  .postcard-body strong {
+    font-size: 18px;
+  }
+  .postcard-body > span:last-child {
+    font-size: 12px;
+    line-height: 1.45;
+    padding-right: 30px;
+  }
+  .postcard-go {
+    width: 28px;
+    height: 28px;
+    right: 10px;
+    bottom: 10px;
+    font-size: 13px;
   }
   .band-title .hand {
     display: block;
@@ -1750,4 +1796,72 @@ body {
    container is overflow: hidden, so it would stop mouse-wheel scrolling of the page. */
 #vietnamMap {
   touch-action: none;
+}
+
+/* ---------- atlas detail card on phones: compact ---------- */
+@media (max-width: 700px) {
+  .map-detail .map-detail-cover {
+    height: 130px;
+  }
+  .map-detail .map-detail-body {
+    padding: 16px 16px 18px;
+  }
+  .map-detail h2 {
+    font-size: 20px;
+    margin: 4px 0 6px;
+  }
+  .map-detail-body > p {
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .map-experiences span {
+    font-size: 11px;
+    padding: 3px 7px;
+  }
+  .map-season {
+    padding-top: 14px;
+  }
+  .map-season-heading h3 {
+    font-size: 19px;
+  }
+  .map-season .season-best {
+    padding: 9px 12px;
+    margin-bottom: 10px;
+  }
+  .map-season .season-best strong {
+    font-size: 16px;
+  }
+  .map-season .season-best em {
+    font-size: 12px;
+  }
+  .map-season .season-months li {
+    height: 24px;
+    font-size: 10px;
+  }
+  .map-season .season-legend {
+    gap: 4px 12px;
+    font-size: 11px;
+  }
+  .map-season-notes summary,
+  .map-editorial summary {
+    font-size: 13px;
+    padding-block: 8px;
+  }
+  .map-detail small {
+    font-size: 11px;
+  }
+  /* the two links side by side, as small pills */
+  .map-season {
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+  }
+  .map-detail .primary-button,
+  .map-detail .map-read-guide {
+    display: inline-flex;
+    margin: 10px 4px 0 0;
+    padding: 8px 11px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    letter-spacing: -0.01em;
+  }
 }

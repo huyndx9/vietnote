@@ -579,8 +579,23 @@ function setupPostcards() {
   }));
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   const INTERVAL = 3200;
-  // row 1 col 1, row 2 col 2, row 1 col 3, row 2 col 4, row 2 col 1, row 1 col 2, ...
-  const ORDER = [0, 5, 2, 7, 4, 1, 6, 3].filter((i) => i < cards.length);
+  // Zig-zag through the grid as laid out now (2 x 4 on wide screens, 2 x 2 on
+  // phones): column +1 each turn, rows alternating, so a column never turns
+  // twice in a row. Wide: r1c1, r2c2, r1c3, r2c4, r2c1, r1c2, r2c3, r1c4.
+  function cardForStep(i) {
+    const visible = cards.filter((c) => c.offsetParent);
+    const xs = [...new Set(visible.map((c) => Math.round(c.offsetLeft)))].sort((a, b) => a - b);
+    const ys = [...new Set(visible.map((c) => Math.round(c.offsetTop)))].sort((a, b) => a - b);
+    const cols = xs.length,
+      rows = ys.length;
+    if (cols < 2 || rows < 2) return cards.indexOf(visible[i % visible.length]);
+    const col = i % cols,
+      row = (Math.floor(i / cols) + i) % rows;
+    const card = visible.find(
+      (c) => Math.round(c.offsetLeft) === xs[col] && Math.round(c.offsetTop) === ys[row],
+    );
+    return cards.indexOf(card || visible[i % visible.length]);
+  }
   let step = 0,
     slot = 0,
     timer = 0,
@@ -619,12 +634,8 @@ function setupPostcards() {
   async function turn() {
     if (busy) return;
     busy = true;
-    // Skip cards hidden on narrow screens (the second row).
-    for (let tries = 0; tries < ORDER.length; tries++) {
-      slot = ORDER[step % ORDER.length];
-      step++;
-      if (cards[slot].offsetParent) break;
-    }
+    slot = cardForStep(step);
+    step++;
     const card = cards[slot],
       next = queue.shift();
     await preload(next);
