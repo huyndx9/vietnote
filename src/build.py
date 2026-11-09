@@ -381,7 +381,7 @@ class Site:
                            image=image, meta=meta, title=h(x['title']), desc=h(x['desc']))
 
     def atlas(self, heading):
-        return self.render('atlas', heading=heading, total=len(self.destinations))
+        return self.render('atlas', heading=heading)
 
     # ---- pages ---------------------------------------------------------
     def build_listings(self):
@@ -507,7 +507,7 @@ class Site:
         names = ''.join(f'<span lang="vi">{h(d["vi"])}</span>' for d in self.destinations)
         main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(),
                            hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(),
-                           place_count=len(self.destinations), ticker=names + names)
+                           ticker=names + names)
         home = self.config['pages']['home']
         website = {'@type': 'WebSite', 'name': self.config['site_name'], 'url': self.public_url,
                    'description': home['description'], 'inLanguage': 'ko', 'publisher': self.publisher()}

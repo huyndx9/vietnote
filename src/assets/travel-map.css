@@ -27,27 +27,6 @@
   line-height: 1.9;
   margin: 0;
 }
-.map-intro-note {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  border-left: 1px solid var(--line);
-  padding-left: 30px;
-  font-size: 13px;
-  white-space: nowrap;
-}
-.map-intro-note > span {
-  font-family: var(--font-display);
-  font-size: 78px;
-  font-style: italic;
-  font-weight: 400;
-  line-height: 1.2;
-  color: var(--muted);
-}
-.map-intro-note small {
-  font-size: 11px;
-  color: var(--muted);
-}
 #travelMap {
   --north: #e0a400;
   --central: var(--coral);
@@ -492,9 +471,6 @@
   }
   .map-intro p {
     font-size: 13px;
-  }
-  .map-intro-note {
-    display: none;
   }
   .map-toolbar {
     align-items: stretch;
@@ -1249,10 +1225,6 @@
   .map-intro p {
     font-size: clamp(16px, 1vw, 21px);
   }
-  .map-intro-note > span {
-    font-size: clamp(78px, 5vw, 110px);
-  }
-  .map-intro-note,
   .map-toolbar .filter-chip {
     font-size: clamp(14px, 0.9vw, 18px);
   }
@@ -1373,7 +1345,6 @@
   font-weight: 500;
   color: var(--ink);
 }
-.map-intro-note small,
 .map-detail small,
 .map-places :is(button, a.map-place-link) small,
 .map-list-header .list-count,
