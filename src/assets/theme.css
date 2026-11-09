@@ -958,10 +958,6 @@ body {
     linear-gradient(180deg, var(--peg) 0%, var(--peg-dark) 100%);
   box-shadow: 0 3px 4px -1px color-mix(in srgb, var(--ink) 35%, transparent);
 }
-/* the twine's own piece above each note when notes stack in one column */
-.route-card::after {
-  content: none;
-}
 .route-photo {
   position: relative;
   display: block;
@@ -1021,29 +1017,102 @@ body {
 .route-body .textlink {
   margin-top: 10px;
 }
-@media (max-width: 900px) {
+/* the notes keep three to a row on every screen; on phones they shrink to fit */
+@media (max-width: 560px) {
   .route-grid {
-    padding-top: 0;
-    gap: 64px;
+    padding-top: 30px;
+    gap: 8px;
   }
   .route-grid::before {
-    display: none;
+    height: 34px;
   }
   .route-card {
-    margin-top: 40px;
+    padding: 5px 5px 10px;
+    background:
+      linear-gradient(transparent 17px, color-mix(in srgb, var(--sea) 10%, transparent) 18px) 0 0 /
+        100% 18px,
+      var(--paper-tint);
+    transform-origin: 50% -12px;
   }
-  .route-card::after {
-    content: "";
-    position: absolute;
-    left: -8%;
-    right: -8%;
-    top: -46px;
-    height: 40px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' preserveAspectRatio='none'%3E%3Cpath d='M0 4 Q150 54 300 4' fill='none' stroke='%239b6a3c' stroke-width='2.4' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")
-      center / 100% 100% no-repeat;
-    transform: rotate(calc(var(--tilt) * -1));
-    pointer-events: none;
+  .route-card::before {
+    top: -20px;
+    width: 10px;
+    height: 30px;
+    margin-left: -5px;
   }
+  .route-photo {
+    margin: 3px 3px 6px;
+    box-shadow: 0 0 0 3px var(--paper);
+  }
+  .route-length {
+    right: 4px;
+    bottom: 4px;
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+  .route-body {
+    padding: 2px 2px 0;
+    gap: 3px;
+  }
+  .route-body .meta {
+    font-size: 15px;
+    line-height: 1;
+  }
+  .route-body h3 {
+    font-size: 12.5px;
+    line-height: 1.3;
+  }
+  .route-days {
+    margin: 2px 0 4px;
+    gap: 2px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+  .route-body .textlink {
+    margin-top: auto;
+    padding: 5px 4px 3px;
+    font-size: 9.5px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    border-bottom-width: 2px;
+  }
+}
+/* pause control for the turning notes (pages.js) */
+.route-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 14px;
+}
+.route-pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+.route-pause:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.route-pause[hidden] {
+  display: none;
+}
+/* the two halves of a note being torn off (pages.js) */
+.route-shred {
+  position: absolute;
+  margin: 0;
+  pointer-events: none;
+  z-index: 3;
+  filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--paper) 90%, transparent));
+}
+.route-shred.bottom::before {
+  content: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .route-card {

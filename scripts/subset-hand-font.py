@@ -14,6 +14,7 @@ Run it after `python3 src/build.py` whenever a handwritten note changes:
 The build warns when a note uses a character missing from src/font-hand.txt.
 """
 import html
+import json
 import re
 import subprocess
 import tarfile
@@ -27,6 +28,7 @@ from fontTools.ttLib import TTFont
 root = Path(__file__).resolve().parent.parent
 PACKAGE = '@fontsource/nanum-pen-script@5.3.0'
 TARGET = root / 'src' / 'assets' / 'fonts' / 'nanum-pen-script'
+POOL = re.compile(r'<script type="application/json" id="routePool">(.*?)</script>', re.S)
 NOTE = re.compile(r'<(\w+)[^>]*class="[^"]*\b(?:hand|hero-hand|footer-hand)\b[^"]*"[^>]*>(.*?)</\1>', re.S)
 
 
@@ -35,6 +37,9 @@ def note_text():
     for page in (root / 'dist').rglob('*.html'):
         for _, inner in NOTE.findall(page.read_text(encoding='utf-8')):
             text += html.unescape(re.sub(r'<[^>]+>', '', inner))
+        # Route notes swapped in by pages.js write their city in the same hand.
+        for pool in POOL.findall(page.read_text(encoding='utf-8')):
+            text += ''.join(r['city'] for r in json.loads(pool))
     if not text:
         raise SystemExit('no handwritten notes found - run python3 src/build.py first')
     return text

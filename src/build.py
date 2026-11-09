@@ -160,25 +160,45 @@ class Site:
                 '<ol class="history-track" id="historyTrack" tabindex="0" aria-label="좌우로 넘겨 보세요">' + ''.join(cards) + '</ol>'
                 '<p class="history-note">전승과 기록된 역사를 구분해 소개해요. 연대와 해석은 학계와 자료에 따라 다를 수 있어요.</p></section>')
 
+    ROUTES_FIRST = ('hanoi-3days', 'danang-4days', 'phuquoc-4days')
+
+    def route_entry(self, x):
+        """One itinerary as the homepage note shows it (also the JSON pages.js swaps in)."""
+        stem = x['photo']
+        photo = self.photo(stem)
+        return {
+            'url': x['url'], 'title': x['title'], 'city': x['city'],
+            'length': f'{x["days"] - 1}박 {x["days"]}일',
+            'days': [sec['title'] for sec in x['sections'] if sec['title'].startswith('DAY')],
+            'src': self.url(f'assets/{stem}-640.webp'),
+            'srcset': ','.join(f'{self.url(f"assets/{stem}-{w}.webp")} {w}w' for w in photo['widths'] if w <= 960),
+            'alt': x['title'],
+        }
+
     def home_routes(self):
-        """Homepage strip of the three sample itineraries."""
-        order = ['hanoi-3days', 'danang-4days', 'phuquoc-4days']
-        by_id = {x['id']: x for x in self.items if x['category'] == 'itineraries'}
+        """Homepage notes on a twine: three itineraries on show, the rest in a pool
+        that pages.js tears the notes over to."""
+        itins = [x for x in self.items if x['category'] == 'itineraries']
+        by_id = {x['id']: x for x in itins}
         cards = []
-        for i in order:
-            x = by_id[i]
-            nights = x['days'] - 1
-            days = ''.join(f'<li>{h(sec["title"])}</li>' for sec in x['sections'])
+        for i in self.ROUTES_FIRST:
+            r = self.route_entry(by_id[i])
+            days = ''.join(f'<li>{h(t)}</li>' for t in r['days'])
             cards.append(
-                f'<article class="route-card"><a class="route-photo" href="{x["url"]}">{self.img(x["photo"], x["title"], "(max-width: 760px) 92vw, 31vw")}'
-                f'<span class="route-length">{nights}박 {x["days"]}일</span></a>'
-                f'<div class="route-body"><div class="meta hand">{h(x["city"])}</div><h3><a href="{x["url"]}">{h(x["title"])}</a></h3>'
-                f'<ol class="route-days">{days}</ol><a class="textlink" href="{x["url"]}">일정 자세히 보기 ↗</a></div></article>')
+                f'<article class="route-card"><a class="route-photo" href="{r["url"]}">'
+                f'{self.img(by_id[i]["photo"], r["alt"], "31vw")}'
+                f'<span class="route-length">{r["length"]}</span></a>'
+                f'<div class="route-body"><div class="meta hand">{h(r["city"])}</div><h3><a href="{r["url"]}">{h(r["title"])}</a></h3>'
+                f'<ol class="route-days">{days}</ol><a class="textlink" href="{r["url"]}">일정 자세히 보기 ↗</a></div></article>')
+        pool = [self.route_entry(x) for x in sorted(itins, key=lambda x: x['id']) if x['id'] not in self.ROUTES_FIRST]
+        pool_json = json.dumps(pool, ensure_ascii=False).replace('</', '<\\/')
         return ('<section class="section wrap home-routes" id="routes"><div class="section-head"><div>'
                 '<div class="section-no">02 / SUGGESTED ROUTES</div><h2 class="section-title serif">Ready-made journeys.</h2>'
                 '<div class="section-sub">처음이라면 이렇게 시작해 보세요. 쉬는 시간까지 넣어 둔 추천 일정이에요.</div></div>'
-                f'<a class="textlink" href="{self.url("itineraries/")}">전체 일정 ↗</a></div>'
-                '<div class="route-grid">' + ''.join(cards) + '</div></section>')
+                '<div class="route-actions"><button type="button" class="route-pause" aria-pressed="false" hidden>Ⅱ <span>멈추기</span></button>'
+                f'<a class="textlink" href="{self.url("itineraries/")}">전체 일정 ↗</a></div></div>'
+                '<div class="route-grid">' + ''.join(cards) + '</div>'
+                f'<script type="application/json" id="routePool">{pool_json}</script></section>')
 
     def photo_credits(self):
         items = ''.join(
@@ -608,6 +628,8 @@ class Site:
         notes = ''.join(html.unescape(re.sub(r'<[^>]+>', '', inner))
                         for page in self.out.rglob('*.html')
                         for _, inner in HAND_NOTE.findall(page.read_text(encoding='utf-8')))
+        # cities of the route notes pages.js swaps in (see home_routes)
+        notes += ''.join(x['city'] for x in self.items if x['category'] == 'itineraries')
         hand = set((SRC / 'font-hand.txt').read_text(encoding='utf-8'))
         missing = ''.join(sorted(set(notes) - hand - set(' \n')))
         if missing:
