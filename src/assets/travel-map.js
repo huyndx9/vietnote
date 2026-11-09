@@ -52,8 +52,19 @@
       [3, 94],
       [29, 120],
     ],
-    maxBoundsViscosity: 0.8,
+    // 1 = the map stops firmly at the edge instead of stretching and snapping back.
+    maxBoundsViscosity: 1,
   }).setView([16, 106], 5);
+  // A drag on the map must never turn into a page scroll, even in in-app
+  // browsers that ignore Leaflet's touch-action: none. Only moves are blocked,
+  // so taps on markers and buttons still work; two-finger pinch stays with Leaflet.
+  mapElement.addEventListener(
+    "touchmove",
+    (event) => {
+      if (event.cancelable) event.preventDefault();
+    },
+    { passive: false },
+  );
   const pins = map.getPane("markerPane");
   pins.id = "mapPins";
   map.createPane("countryLabels");
