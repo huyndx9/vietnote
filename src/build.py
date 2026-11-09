@@ -70,25 +70,24 @@ class Site:
         return self.templates[name].substitute(base=self.base, **values)
 
     def hero_slides(self):
-        """Hero slideshow images from photos.json; each carries its own credit."""
+        """Hero slideshow images from photos.json (credits are listed on the about page)."""
         slides = []
         for i, p in enumerate(x for x in self.photos if x.get('hero', True)):
             srcset = ','.join(f'{self.url("assets/" + p["stem"] + "-" + str(w) + ".webp")} {w}w' for w in p['widths'])
             first = i == 0
             src = self.url(f'assets/{p["stem"]}-{1440 if first else 960}.webp')
-            credit = f'사진: {p["author"]} / {p["source"]} · {p["license"]}'
             style = f' style="object-position:{p["position"]}"' if p.get('position') else ''
             extra = ' fetchpriority="high"' if first else ' aria-hidden="true" decoding="async" fetchpriority="low"'
             slides.append(
                 f'<img class="hero-slide{" is-active" if first else ""}" src="{src}" srcset="{srcset}" sizes="96vw" '
-                f'width="{p["width"]}" height="{p["height"]}" alt="{h(p["alt"])}" data-place="{h(p["place"])}" '
-                f'data-credit="{h(credit)}" data-credit-url="{h(p["url"])}"{extra}{style}>')
+                f'width="{p["width"]}" height="{p["height"]}" alt="{h(p["alt"])}" data-place="{h(p["place"])}"'
+                f'{extra}{style}>')
         return '\n'.join(slides)
 
     def hero_credit(self):
-        p = self.photos[0]
-        return (f'<span id="heroPlace">{h(p["place"])}</span><a class="hero-credit" id="heroCredit" href="{h(p["url"])}" '
-                f'target="_blank" rel="noopener noreferrer">사진: {h(p["author"])} / {h(p["source"])} · {h(p["license"])}</a>')
+        # Only the place name: photo credits are collected on the about page
+        # (#photo-credits, linked from every footer), which satisfies the CC BY licences.
+        return f'<span id="heroPlace">{h(self.photos[0]["place"])}</span>'
 
     def photo(self, stem):
         return next((p for p in self.photos if p['stem'] == stem), None)
@@ -105,14 +104,6 @@ class Site:
         style = f' style="object-position:{p["position"]}"' if p.get('position') else ''
         return (f'<img src="{self.url("assets/" + p["stem"] + "-" + str(mid) + ".webp")}" srcset="{srcset}" sizes="{sizes}" '
                 f'width="{p["width"]}" height="{p["height"]}" alt="{h(alt or p["alt"])}"{attrs}{style}>')
-
-    def photo_caption(self, ref):
-        """Author, source and licence line under a cover photo."""
-        p = self.photo(ref) if ref and '/' not in ref else None
-        if not p:
-            return ''
-        return (f'<p class="photo-caption">사진: <a href="{h(p["url"])}" target="_blank" rel="noopener noreferrer">{h(p["author"])} / {h(p["source"])}</a>'
-                f' · <a href="{h(p["license_url"])}" target="_blank" rel="noopener noreferrer">{h(p["license"])}</a></p>')
 
     def place_photo(self, place_id):
         return next((p['stem'] for p in self.photos if place_id in p.get('places', [])), None)
@@ -150,9 +141,8 @@ class Site:
             p = self.photo(c['photo']) if c.get('photo') else None
             figure = ''
             if p:
-                credit = f'사진: {h(p["author"])} · {h(p["license"])}'
                 figure = (f'<figure class="history-photo">{self.img(c["photo"], p["alt"], "(max-width: 760px) 82vw, (max-width: 1200px) 42vw, 30vw")}'
-                          f'<figcaption><a href="{h(p["url"])}" target="_blank" rel="noopener noreferrer">{credit}</a></figcaption></figure>')
+                          '</figure>')
             visit = ' · '.join(f'<a href="https://www.google.com/maps/search/?api=1&amp;query={quote(pl["query"])}" target="_blank" rel="noopener">{h(pl["name"])}</a>'
                                for pl in c['places'])
             guides = ''.join(f'<a class="history-guide" href="{places[g]["url"]}">{h(places[g]["title"])} 여행 가이드 ↗</a>'
@@ -439,7 +429,7 @@ class Site:
                             f'href="https://www.google.com/maps/search/?api=1&amp;query={query}">지도에서 위치 보기 ↗</a>')
             cover = ''
             if x['photo']:
-                cover = f'<div class="article-cover">{self.img(x["photo"], f"{x["title"]} 관련 풍경", "(max-width: 760px) 92vw, 80vw", lazy=False)}</div>' + self.photo_caption(x['photo'])
+                cover = f'<div class="article-cover">{self.img(x["photo"], f"{x["title"]} 관련 풍경", "(max-width: 760px) 92vw, 80vw", lazy=False)}</div>'
             related = [r for r in self.items if r['id'] != x['id'] and (
                 r['category'] == x['category'] or (r.get('city') and r.get('city') == x.get('city')))][:3]
             edited = date.fromisoformat(x['date'])
@@ -477,7 +467,7 @@ class Site:
                 image=photograph
                 srcset=','.join(f'{self.url("assets/"+image["stem"]+"-"+str(w)+".webp")} {w}w' for w in image['widths'])
                 cover=(f'<figure class="guide-cover"><img src="{self.url("assets/"+image["stem"]+"-1440.webp")}" srcset="{srcset}" sizes="92vw" width="{image["width"]}" height="{image["height"]}" alt="{h(image["alt"])}" loading="lazy">'
-                       f'<figcaption>사진: <a href="{h(image["url"])}" target="_blank" rel="noopener noreferrer">{h(image["author"])} / {h(image["source"])}</a> · <a href="{h(image["license_url"])}" target="_blank" rel="noopener noreferrer">{h(image["license"])}</a></figcaption></figure>')
+                       '</figure>')
             edited=date.fromisoformat(g['date'])
             main=self.render('place-guide',date_iso=edited.isoformat(),date=edited.strftime('%Y.%m.%d'),cover=cover,name_vi=h(p['vi']),short_name=h(p['title'].split(' · ')[0]),title=h(p['title']),teaser=h(p['teaser']),region=h(REGIONS[p['region']]),duration=h(g['duration']),gateway=h(g['gateway']),save_id=h(article['id']),maps_url='https://www.google.com/maps/search/?api=1&amp;query='+quote(p['vi']+' Vietnam'),toc=toc,sections=''.join(blocks),related=related)
             path=f'places/{p["id"]}/index.html'
