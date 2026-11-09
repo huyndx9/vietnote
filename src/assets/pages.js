@@ -288,22 +288,25 @@ function setupAI() {
       </button>
       <button type="button" class="ai-motion-toggle" aria-label="자동 재생 일시 정지" aria-pressed="false">Ⅱ</button>
     </div>
-    <section class="ai-panel" id="aiPanel" aria-label="베트남 여행 도우미" hidden>
-      <div class="ai-header">
-        <div><strong>베트남 여행 도우미</strong><small>VIETNOTE · AI 여행 도우미</small></div>
-        <button aria-label="도우미 닫기">×</button>
-      </div>
+    <section class="ai-panel" id="aiPanel" role="dialog" aria-label="베트남 여행 도우미" hidden>
+      <header class="ai-header">
+        <span class="ai-avatar" aria-hidden="true"></span>
+        <div class="ai-title"><strong>베트남 여행 도우미</strong><small>VIETNOTE · AI 여행 도우미</small></div>
+        <button type="button" class="ai-close" aria-label="도우미 닫기">×</button>
+      </header>
       <div class="ai-body">
-        <p class="ai-greeting">어떤 베트남 여행을 꿈꾸세요?<br>${endpoint ? "궁금한 것을 물어보세요." : "먼저 여행 노트에서 아이디어를 찾아보세요."}</p>
+        <p class="ai-greeting"><strong class="ai-hello" lang="vi">Xin chào!</strong> 어떤 베트남 여행을 꿈꾸세요?<br>${endpoint ? "궁금한 것을 편하게 물어보세요." : "먼저 여행 노트에서 아이디어를 찾아보세요."}</p>
         ${suggestions}
         <div class="ai-messages" role="log" aria-live="polite"></div>
-        ${endpoint ? '<p class="ai-disclaimer">AI 답변은 틀릴 수 있어요. 요금·운영 시간·입국 조건은 공식 안내를 확인해 주세요.</p>' : ""}
+      </div>
+      <footer class="ai-footer">
         <form class="ai-compose">${
           endpoint
-            ? '<input name="q" maxlength="1000" autocomplete="off" aria-label="질문 입력" placeholder="베트남 여행에 대해 물어보세요"><button type="submit">전송</button>'
-            : '<input disabled aria-label="AI 연결 후 질문 가능" placeholder="API 연결 후 질문할 수 있어요"><button type="submit" disabled>전송</button>'
+            ? '<input name="q" maxlength="1000" autocomplete="off" enterkeyhint="send" aria-label="질문 입력" placeholder="베트남 여행에 대해 물어보세요"><button type="submit" class="ai-send" aria-label="전송"><span aria-hidden="true">↑</span></button>'
+            : '<input disabled aria-label="AI 연결 후 질문 가능" placeholder="API 연결 후 질문할 수 있어요"><button type="submit" class="ai-send" aria-label="전송" disabled><span aria-hidden="true">↑</span></button>'
         }</form>
-      </div>
+        ${endpoint ? '<p class="ai-disclaimer">AI 답변은 틀릴 수 있어요. 요금·운영 시간·입국 조건은 공식 안내를 확인해 주세요.</p>' : ""}
+      </footer>
     </section>`;
   document.body.append(host);
   const launcher = host.querySelector(".ai-launcher"),
@@ -336,12 +339,16 @@ function setupAI() {
   function show(open) {
     panel.hidden = !open;
     dock.classList.toggle("is-open", open);
+    document.documentElement.classList.toggle("ai-open", open);
     launcher.setAttribute("aria-expanded", String(open));
-    if (open) panel.querySelector("button").focus();
+    if (open)
+      (
+        panel.querySelector(".ai-compose input:not(:disabled)") || panel.querySelector(".ai-close")
+      ).focus();
     else launcher.focus();
   }
   launcher.onclick = () => show(panel.hidden);
-  host.querySelector(".ai-header button").onclick = () => show(false);
+  host.querySelector(".ai-close").onclick = () => show(false);
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !panel.hidden) show(false);
   });
@@ -350,16 +357,26 @@ function setupAI() {
 function setupChat(host, endpoint) {
   const form = host.querySelector(".ai-compose"),
     input = form.elements.q,
-    send = form.querySelector("button"),
+    send = form.querySelector(".ai-send"),
+    scroller = host.querySelector(".ai-body"),
     log = host.querySelector(".ai-messages"),
     history = [];
-  let busy = false;
+  let controller = null; // AbortController of the reply being received
+  // Follow the reply as it grows, unless the reader has scrolled up to reread.
+  let follow = true;
+  scroller.addEventListener("scroll", () => {
+    follow = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 60;
+  });
+  function toBottom() {
+    if (follow) scroller.scrollTop = scroller.scrollHeight;
+  }
   function add(role, text) {
     const p = document.createElement("div");
     p.className = `ai-msg ai-msg-${role}`;
     p.textContent = text; // never innerHTML: replies are untrusted text
     log.append(p);
-    p.scrollIntoView({ block: "nearest" });
+    follow = true;
+    toBottom();
     return p;
   }
   // Minimal Markdown (### headings, - / 1. lists, **bold**) built as DOM
@@ -396,43 +413,112 @@ function setupChat(host, endpoint) {
       el.append(node);
     }
   }
+  // Reads "data: {...}" server-sent events and calls onText with each piece.
+  async function readStream(response, onText) {
+    const reader = response.body.getReader(),
+      decoder = new TextDecoder();
+    let buffer = "";
+    for (;;) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const lines = buffer.split("\n");
+      buffer = done ? "" : lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith("data:")) continue; // ": keep-alive" comments, blank lines
+        const payload = line.slice(5).trim();
+        if (payload === "[DONE]") return;
+        let event = null;
+        try {
+          event = JSON.parse(payload);
+        } catch {
+          continue;
+        }
+        const piece = event?.choices?.[0]?.delta?.content;
+        if (piece) onText(piece);
+      }
+      if (done) return;
+    }
+  }
+  function setBusy(busy) {
+    form.classList.toggle("is-busy", busy);
+    send.setAttribute("aria-label", busy ? "답변 멈추기" : "전송");
+    send.innerHTML = busy
+      ? '<span aria-hidden="true">■</span>'
+      : '<span aria-hidden="true">↑</span>';
+  }
   async function ask(question) {
     const q = question.trim();
-    if (!q || busy) return;
-    busy = true;
-    send.disabled = true;
+    if (!q || controller) return;
+    controller = new AbortController();
+    setBusy(true);
     host.querySelector(".ai-suggestions")?.remove();
     add("user", q);
     history.push({ role: "user", content: q });
-    const pending = add(
-      "assistant",
-      "답변을 준비하고 있어요… 자세한 일정은 30초쯤 걸릴 수 있어요.",
-    );
-    pending.classList.add("is-pending");
+    const reply = add("assistant", "");
+    reply.classList.add("is-pending");
+    reply.innerHTML =
+      '<span class="ai-typing" aria-label="답변을 준비하고 있어요"><i></i><i></i><i></i></span>';
+    let text = "",
+      frame = 0;
+    const paint = () => {
+      frame = 0;
+      renderReply(reply, text);
+      toBottom();
+    };
     try {
       const r = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-10) }),
+        body: JSON.stringify({ messages: history.slice(-10), stream: true }),
+        signal: controller.signal,
       });
-      const data = await r.json().catch(() => ({}));
-      if (!r.ok || !data.reply) throw new Error(data.error || r.status);
-      renderReply(pending, data.reply);
-      pending.scrollIntoView({ block: "start" });
-      history.push({ role: "assistant", content: data.reply });
-    } catch {
-      pending.textContent = "지금은 답변할 수 없어요. 잠시 후 다시 시도해 주세요.";
-      pending.classList.add("is-error");
-      history.pop(); // let the user ask the same question again
+      if (!r.ok) throw new Error(r.status);
+      if ((r.headers.get("Content-Type") || "").includes("text/event-stream") && r.body) {
+        await readStream(r, (piece) => {
+          if (!text) reply.classList.remove("is-pending");
+          text += piece;
+          // Redraw at most once per frame however fast the pieces arrive.
+          if (!frame) frame = requestAnimationFrame(paint);
+        });
+      } else {
+        const data = await r.json(); // a Worker deployed before streaming
+        text = data.reply || "";
+      }
+      if (!text) throw new Error("empty");
+      cancelAnimationFrame(frame);
+      paint();
+      history.push({ role: "assistant", content: text });
+    } catch (error) {
+      cancelAnimationFrame(frame);
+      if (error.name === "AbortError" && text) {
+        paint();
+        const note = document.createElement("p");
+        note.className = "ai-stopped";
+        note.textContent = "답변을 멈췄어요.";
+        reply.append(note);
+        history.push({ role: "assistant", content: text });
+      } else {
+        reply.textContent =
+          error.name === "AbortError"
+            ? "답변을 멈췄어요."
+            : "지금은 답변할 수 없어요. 잠시 후 다시 시도해 주세요.";
+        reply.classList.add("is-error");
+        history.pop(); // let the user ask the same question again
+      }
     } finally {
-      pending.classList.remove("is-pending");
-      busy = false;
-      send.disabled = false;
+      reply.classList.remove("is-pending");
+      controller = null;
+      setBusy(false);
+      toBottom();
       input.focus();
     }
   }
   form.onsubmit = (e) => {
     e.preventDefault();
+    if (controller) {
+      controller.abort(); // the send button doubles as "stop" while a reply streams
+      return;
+    }
     const q = input.value;
     input.value = "";
     ask(q);
