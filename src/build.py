@@ -520,6 +520,13 @@ class Site:
     def maps_search(query):
         return 'https://www.google.com/maps/search/?api=1&amp;query=' + quote(query)
 
+    def eat_map_url(self, e, base):
+        """Google Maps link for one eatery: the exact place when eats.json has its
+        place_id (the ChIJ... id), otherwise a search by name and town."""
+        if e.get('place_id'):
+            return (self.maps_search(e['name']) + '&amp;query_place_id=' + quote(e['place_id']))
+        return self.maps_search(e['name'] + ', ' + (e.get('address') or base['vi']))
+
     def eats_block(self, p, g):
         """Restaurants and cafes under a place guide: the place's own list, the list of
         the town people stay in (eats.json "nearby"), or map searches when there is none.
@@ -546,7 +553,8 @@ class Site:
                 f'<li class="eat-card eat-{kind}"><span class="eat-type">{label}</span>'
                 f'<strong lang="vi">{h(e["name"])}</strong><span class="eat-ko">{h(e["ko"])}</span>'
                 f'<p>{h(e["dish"])}</p><small>{h(e["area"])}</small>'
-                f'<a href="{self.maps_search(e["name"] + ", " + base["vi"])}" target="_blank" rel="noopener noreferrer" '
+                + (f'<small class="eat-address" lang="vi">{h(e["address"])}</small>' if e.get('address') else '') +
+                f'<a href="{self.eat_map_url(e, base)}" target="_blank" rel="noopener noreferrer" '
                 f'aria-label="{h(e["ko"])} 구글 지도에서 보기">지도에서 보기 ↗</a></li>'
                 for e in spots if e['type'] == kind)
             if cards:
@@ -566,7 +574,9 @@ class Site:
             schema = {'@type': 'ItemList', 'name': f'{name}의 맛집과 카페', 'itemListElement': [
                 {'@type': 'ListItem', 'position': i + 1, 'item': {
                     '@type': self.EAT_TYPES[e['type']][1], 'name': e['name'], 'alternateName': e['ko'],
-                    'address': {'@type': 'PostalAddress', 'addressLocality': p['vi'], 'addressCountry': 'VN'}}}
+                    'address': {'@type': 'PostalAddress', 'addressLocality': p['vi'], 'addressCountry': 'VN',
+                                **({'streetAddress': e['address']} if e.get('address') else {})},
+                    **({'hasMap': html.unescape(self.eat_map_url(e, p))} if e.get('place_id') else {})}}
                 for i, e in enumerate(spots)]}
         return html_, schema
 
