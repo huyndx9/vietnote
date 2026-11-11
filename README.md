@@ -117,7 +117,11 @@ Advisor. `robots.txt` sẽ có hiệu lực nếu sau này dùng tên miền ri�
 
 - **Quán ăn và cafe theo địa điểm**: `src/content/eats.json`. Mục `places` ghi danh sách quán
   theo id địa điểm (`type`: `food` hoặc `cafe`, `name` tên tiếng Việt, `ko` phiên âm tiếng Hàn,
-  `dish` món nên thử, `area` khu vực). Thêm quán vào đây là trang `places/<id>/` tự hiện khối
+  `dish` món nên thử, `area` khu vực). Hai trường tuỳ chọn: `place_id` (Place ID của Google,
+  dạng `ChIJ…`) để nút "지도에서 보기" mở đúng quán, và `address` (địa chỉ như Google ghi) hiện
+  trên thẻ cho khách đưa tài xế. Lấy Place ID: mở quán trên Google Maps, chia sẻ link, rồi tra
+  bằng công cụ Place ID Finder của Google (developers.google.com/maps/documentation/places/web-service/place-id).
+  Quán chưa có `place_id` thì link tìm theo tên + thành phố. Thêm quán vào đây là trang `places/<id>/` tự hiện khối
   "맛집과 카페" (kèm link Google Maps và JSON-LD `ItemList`), trang 음식과 카페 tự cập nhật mục
   "지역별 맛집·카페", và tìm kiếm tìm được theo tên quán. Mục `nearby` cho địa điểm không có quán
   riêng mượn danh sách của thành phố lưu trú (ví dụ Bà Nà → Đà Nẵng). Địa điểm chưa có dữ liệu
