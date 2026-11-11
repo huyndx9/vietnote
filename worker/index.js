@@ -36,7 +36,10 @@ function json(body, status, cors) {
 
 export default {
   async fetch(request, env) {
-    const allowed = (env.ALLOWED_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean);
+    const allowed = (env.ALLOWED_ORIGINS || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
     const origin = request.headers.get("Origin") || "";
     const okOrigin = allowed.includes(origin);
     const cors = {
@@ -69,6 +72,10 @@ export default {
       }));
     if (history.length === 0) return json({ error: "bad_request" }, 400, cors);
 
+    // stream: true (current site) relays DeepSeek's server-sent events as they
+    // arrive so the reply appears word by word; without it the whole reply is
+    // returned as JSON (pages built before streaming existed).
+    const stream = body.stream === true;
     let upstream;
     try {
       upstream = await fetch(DEEPSEEK_URL, {
@@ -82,6 +89,7 @@ export default {
           messages: [{ role: "system", content: SYSTEM_PROMPT }, ...history],
           max_tokens: 2500,
           temperature: 0.7,
+          stream,
         }),
       });
     } catch {
@@ -90,6 +98,18 @@ export default {
     if (!upstream.ok) {
       // 401 = wrong key, 402 = no balance, 429 = rate limited.
       return json({ error: "upstream_error", status: upstream.status }, 502, cors);
+    }
+    if (stream) {
+      // Lines are "data: {json}", "data: [DONE]" or ": keep-alive" comments.
+      return new Response(upstream.body, {
+        status: 200,
+        headers: {
+          ...cors,
+          "Content-Type": "text/event-stream; charset=utf-8",
+          "Cache-Control": "no-cache, no-transform",
+          "X-Accel-Buffering": "no",
+        },
+      });
     }
     const data = await upstream.json().catch(() => null);
     const reply = data?.choices?.[0]?.message?.content;

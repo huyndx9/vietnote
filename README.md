@@ -60,8 +60,16 @@ template. Không sửa trực tiếp file trong `dist/` hay `_site/`.
   `home.html` là phần thân trang chủ; `atlas.html` dùng chung cho trang bản đồ và trang chủ.
   Ký tự `$` trong template phải viết thành `$$`.
 - **Giao diện và chức năng**: `src/assets/base.css`, `pages.css`, `typography.css`,
-  `travel-map.css`, `pages.js`, `travel-map.js`. Giữ bản dễ đọc; trang tự gắn
+  `travel-map.css`, `theme.css`, `pages.js`, `travel-map.js`. Giữ bản dễ đọc; trang tự gắn
   `?v=<hash>` vào CSS/JS khi build nên trình duyệt luôn tải bản mới.
+- **Màu và kiểu giao diện (“Nắng Hội An”)**: bảng màu là các biến trong `:root` ở đầu
+  `base.css` (vàng nắng, xanh biển, đỏ cam đèn lồng, mực đêm…); không viết mã màu trực tiếp
+  trong quy tắc CSS mà dùng biến. `theme.css` nạp cuối cùng, chứa header, hero, dải chữ chạy,
+  footer, thẻ bưu thiếp, ảnh khung vòm và các thành phần chung. Màu vùng thống nhất:
+  Bắc vàng, Trung đỏ cam, Nam xanh biển. Chữ nhỏ trên nền màu dùng `--sea-band`/`--ink`
+  để đạt độ tương phản WCAG AA.
+- **Ảnh hero**: thứ tự slide theo thứ tự trong `photos.json` (ảnh có `"hero": false` bị bỏ
+  qua); ảnh đầu tiên cũng là ảnh được preload.
 
 ## Đường dẫn và GitHub Pages
 
@@ -80,11 +88,43 @@ Workflow `Publish GitHub Pages` build và triển khai mỗi khi push lên `main
 Trong Settings → Pages của repository, chọn **GitHub Actions**. Sau khi workflow
 chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote/ .
 
+## SEO và xem trước liên kết
+
+Build tự sinh các phần sau, không cần sửa tay:
+
+- `sitemap.xml` (mọi trang được lập chỉ mục, kèm `lastmod` lấy từ trường `date`) và `robots.txt`.
+- `<link rel="canonical">`, Open Graph và Twitter card cho từng trang, dựa trên `public_url` trong `src/content/site.json`.
+- JSON-LD: `WebSite` (trang chủ), `Article` (bài viết, lịch trình, hướng dẫn), `TouristDestination`
+  (42 trang địa điểm), `CollectionPage` (trang danh mục), `AboutPage` và `BreadcrumbList`.
+- Trang `notebook/` và `404.html` có `noindex` và không nằm trong sitemap.
+
+Mỗi trang có meta description riêng: trường `meta_description` trong các file nội dung,
+`description` của danh mục và mục `pages` trong `site.json`. Trang địa điểm dùng
+`meta_description` trong `place-guides.json` nếu có, nếu không sẽ ghép từ teaser và thời gian
+lưu trú. Build cảnh báo khi mô tả ngoài khoảng 40–160 ký tự hoặc bị trùng.
+
+Ảnh xem trước là JPEG 1200×630 trong `src/assets/og/`, tạo bằng `scripts/optimize-images.py`
+(cắt theo `position` của ảnh). Khi thêm ảnh mới vào `photos.json`, chạy lại script này.
+
+GitHub Pages của dự án nằm ở `/vietnote/`, nên công cụ tìm kiếm không đọc `robots.txt` tại
+`/vietnote/robots.txt` (chỉ đọc ở gốc tên miền). Hãy gửi
+`https://huyndx9.github.io/vietnote/sitemap.xml` trong Google Search Console và Naver Search
+Advisor. `robots.txt` sẽ có hiệu lực nếu sau này dùng tên miền riêng.
+
 ## Font và ảnh
 
 - Chữ thân bài dùng Pretendard (OFL-1.1), font ưu tiên tiếng Hàn và có đủ dấu tiếng
-  Việt; tiêu đề lớn dùng Playfair Display (OFL-1.1). Cả hai đã được cắt gọn trong
-  `src/assets/fonts/*-subset.woff2`.
+  Việt, đã cắt gọn trong `src/assets/fonts/Pretendard-subset.woff2`.
+- Phông hiển thị (OFL-1.1): Black Han Sans cho tiêu đề lớn tiếng Hàn, Bricolage Grotesque
+  cho logo và tiêu đề Latin, Nanum Pen Script cho dòng ghi chú viết tay. Chúng nằm trong
+  `src/assets/fonts/<tên phông>/`. Black Han Sans và Bricolage chia nhỏ theo dải Unicode
+  (`display-fonts.css`) nên mỗi trang chỉ tải phần chứa ký tự đang dùng; tạo lại bằng
+  `python3 scripts/vendor-display-fonts.py` (cần npm). Build cảnh báo nếu tiêu đề dùng âm tiết
+  mà Black Han Sans không có.
+- Nanum Pen Script chỉ chứa đúng các ký tự của dòng ghi chú viết tay (class `hand`,
+  `hero-hand`, `footer-hand`), khoảng 15 KB. Khi sửa hoặc thêm ghi chú viết tay, nếu build báo
+  `WARNING: handwriting font lacks …`, chạy `pip install fonttools brotli` rồi
+  `python3 src/build.py && python3 scripts/subset-hand-font.py && python3 src/build.py`.
 - Pretendard giữ 2.350 âm tiết Hangul thông dụng (KS X 1001) và mọi âm tiết đang dùng.
   Nếu build báo `WARNING: Pretendard subset lacks …`, chạy
   `pip install fonttools brotli` rồi `python3 scripts/subset-fonts.py`.
@@ -106,6 +146,15 @@ chạy thành công, kiểm tra trực tiếp https://huyndx9.github.io/vietnote
   năm hoặc phím mũi tên. Nội dung trong `src/content/history.json` (sửa chữ, đổi ảnh
   bằng stem trong photos.json, xóa một mục để bỏ chương).
 - Trang 여행지 liệt kê đủ 42 điểm đến của bản đồ (lọc Bắc/Trung/Nam, tìm kiếm).
+
+## Điện thoại ở chế độ "trang web cho máy tính"
+- Một số trình duyệt (Chrome có bật "데스크톱 사이트", trình duyệt trong ứng dụng) bỏ qua
+  thẻ viewport và dựng trang rộng khoảng 980px, nên điện thoại hiện bố cục máy tính bị thu nhỏ.
+- `src/desktop_mode.py` xử lý tự động: đoạn script trong `<head>` nhận ra màn hình cảm ứng
+  nhỏ đang hiển thị bố cục rộng, gắn class `rds` và phóng trang về đúng bề rộng màn hình;
+  lúc build, mỗi khối `@media` theo bề rộng được nhân bản theo bề rộng thiết bị, đơn vị
+  `vw`/`vh` đổi sang biến. Ở chế độ bình thường giao diện không thay đổi.
+- Khi viết CSS mới cứ dùng `@media (max-width: …)` và `vw`/`vh` như thường; build tự xử lý.
 
 ## Hành vi và giới hạn hiện tại
 

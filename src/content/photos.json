@@ -2,30 +2,6 @@
  "_note": "Photographs stored in this project. Licences checked via the Wikimedia Commons API on 2026-11-04. Hero slides appear in this order; CC BY photos must keep author, source and licence visible.",
  "photos": [
   {
-   "stem": "halong-haneul-trac",
-   "widths": [
-    640,
-    960,
-    1440,
-    1920,
-    2560
-   ],
-   "width": 3200,
-   "height": 2133,
-   "title": "하롱베이 · Hạ Long Bay",
-   "place": "HẠ LONG BAY, VIETNAM",
-   "alt": "하롱베이의 석회암 섬과 바다",
-   "author": "Haneul Trac",
-   "source": "Pexels",
-   "url": "https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/",
-   "license": "Pexels License",
-   "license_url": "https://www.pexels.com/license/",
-   "hero": true,
-   "places": [
-    "halong"
-   ]
-  },
-  {
    "stem": "hoian-chua-cau-night",
    "widths": [
     640,
@@ -37,7 +13,7 @@
    "width": 2560,
    "height": 1565,
    "title": "호이안 내원교 · Chùa Cầu, Hội An",
-   "place": "HỘI AN · CHÙA CẦU",
+   "place": "호이안 · 내원교",
    "alt": "보름달 아래 불을 밝힌 호이안 내원교와 노란 집들",
    "author": "Nguyen Phu Duc",
    "source": "Wikimedia Commons",
@@ -47,6 +23,30 @@
    "hero": true,
    "places": [
     "hoian"
+   ]
+  },
+  {
+   "stem": "halong-haneul-trac",
+   "widths": [
+    640,
+    960,
+    1440,
+    1920,
+    2560
+   ],
+   "width": 3200,
+   "height": 2133,
+   "title": "하롱베이 · Hạ Long Bay",
+   "place": "하롱베이",
+   "alt": "하롱베이의 석회암 섬과 바다",
+   "author": "Haneul Trac",
+   "source": "Pexels",
+   "url": "https://www.pexels.com/photo/breathtaking-view-of-ha-long-bay-in-vietnam-36551013/",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "hero": true,
+   "places": [
+    "halong"
    ]
   },
   {
@@ -62,7 +62,7 @@
    "height": 1440,
    "position": "40% center",
    "title": "호안끼엠 호수와 테훅 다리 · Hoàn Kiếm Lake",
-   "place": "HÀ NỘI · THE HUC BRIDGE",
+   "place": "하노이 · 테훅 다리",
    "alt": "노란 꽃 너머로 보이는 호안끼엠 호수의 붉은 테훅 다리",
    "author": "katiebordner",
    "source": "Wikimedia Commons",
@@ -83,7 +83,7 @@
    "width": 2560,
    "height": 1707,
    "title": "반족 폭포 · Thác Bản Giốc",
-   "place": "CAO BẰNG · BẢN GIỐC WATERFALL",
+   "place": "까오방 · 반족 폭포",
    "alt": "숲 사이로 여러 갈래 떨어지는 까오방 반족 폭포",
    "author": "Phương Huy",
    "source": "Wikimedia Commons",
@@ -107,7 +107,7 @@
    "height": 1440,
    "position": "60% center",
    "title": "롱비엔 다리 · Cầu Long Biên",
-   "place": "HÀ NỘI · LONG BIÊN BRIDGE",
+   "place": "하노이 · 롱비엔 다리",
    "alt": "푸른 하늘 아래 녹슨 철골이 이어지는 하노이 롱비엔 다리",
    "author": "Amenoc",
    "source": "Wikimedia Commons",
@@ -130,7 +130,7 @@
    "height": 1734,
    "position": "36% center",
    "title": "호안끼엠 호수의 거북탑 · Tháp Rùa",
-   "place": "HÀ NỘI · HOÀN KIẾM LAKE",
+   "place": "하노이 · 호안끼엠 호수",
    "alt": "해 질 녘 불을 밝힌 호안끼엠 호수의 거북탑",
    "author": "cloud.shepherd",
    "source": "Wikimedia Commons",
@@ -717,6 +717,600 @@
    "author": "Cuong Tran",
    "source": "Wikimedia Commons",
    "url": "https://commons.wikimedia.org/wiki/File:Landmark_81_viewed_from_Thu_Thiem.png",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "place-quynhon",
+   "hero": false,
+   "places": [
+    "quynhon"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "꾸이년 · Quy Nhơn",
+   "place": "",
+   "alt": "언덕 위에서 내려다본 꾸이년 끼꼬 해변",
+   "author": "Boconganh Phan",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ky_Co_-_Nhon_Ly_-_Quy_Nhon_-_Binh_Dinh_-_Viet_Nam.jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Ky_Co_-_Nhon_Ly_-_Quy_Nhon_-_Binh_Dinh_-_Viet_Nam.jpg"
+  },
+  {
+   "stem": "place-cantho",
+   "hero": false,
+   "places": [
+    "cantho"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "껀터 · 메콩델타 · Cần Thơ",
+   "place": "",
+   "alt": "배를 타고 둘러보는 껀터 까이랑 수상시장",
+   "author": "Vyacheslav Argenberg",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Can_Tho,_Vietnam,_Floating_Market,_Boats.jpg",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "stem": "place-condao",
+   "hero": false,
+   "places": [
+    "condao"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "꼰다오 · Côn Đảo",
+   "place": "",
+   "alt": "초록 산을 배경으로 한 꼰다오 반선 사원",
+   "author": "Phương Huy",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ch%C3%B9a_V%C3%A2n_S%C6%A1n_%E1%BB%9F_C%C3%B4n_%C4%90%E1%BA%A3o_(2).jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Ch%C3%B9a_V%C3%A2n_S%C6%A1n_%E1%BB%9F_C%C3%B4n_%C4%90%E1%BA%A3o_(2).jpg"
+  },
+  {
+   "stem": "place-catba",
+   "hero": false,
+   "places": [
+    "catba"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1282,
+   "title": "깟바섬 · Cát Bà",
+   "place": "",
+   "alt": "석회암 절벽 사이에 떠 있는 깟바섬의 수상 마을",
+   "author": "Jakub Hałun",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Cat_Ba_Island,_Vietnam,_20240131_1407_4670.jpg",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "stem": "place-mucangchai",
+   "hero": false,
+   "places": [
+    "mucangchai"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "무깡짜이 · Mù Cang Chải",
+   "place": "",
+   "alt": "황금빛으로 물든 무깡짜이의 계단식 논",
+   "author": "Doan Tuan danny_pham93",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Terraces_in_Che_Cu_Nha_commune,_Mu_Cang_Chai_(Unsplash).jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "place-maichau",
+   "hero": false,
+   "places": [
+    "maichau"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "마이쩌우 · Mai Châu",
+   "place": "",
+   "alt": "산 사이로 펼쳐진 마이쩌우 계곡과 마을",
+   "author": "Viethavvh",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Mai_Chau_2008.jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Mai_Chau_2008.jpg"
+  },
+  {
+   "stem": "place-babe",
+   "hero": false,
+   "places": [
+    "babe"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "바베 호수 · Hồ Ba Bể",
+   "place": "",
+   "alt": "바베 호수를 지나는 관광 보트",
+   "author": "Arian Zwegers",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ba_Be_lake,_local_bus_(6223604145).jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+   "stem": "place-dienbien",
+   "hero": false,
+   "places": [
+    "dienbien"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "디엔비엔푸 · Điện Biên Phủ",
+   "place": "",
+   "alt": "디엔비엔푸 외곽의 시냇가와 들판",
+   "author": "Adam Jones from Kelowna, BC, Canada",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Countryside_on_Edge_of_Town_-_Dien_Bien_Phu_-_Vietnam_(48159158386).jpg",
+   "license": "CC BY-SA 2.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  {
+   "stem": "place-mocchau",
+   "hero": false,
+   "places": [
+    "mocchau"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1281,
+   "title": "목쩌우 · Mộc Châu",
+   "place": "",
+   "alt": "안개 낀 목쩌우 고원의 차밭 언덕",
+   "author": "Linh Pham linharex",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:M%E1%BB%99c_Ch%C3%A2u_District,_Vietnam_(Unsplash).jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "place-donghoi",
+   "hero": false,
+   "places": [
+    "donghoi"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "동허이 · Đồng Hới",
+   "place": "",
+   "alt": "하늘에서 본 동허이 강 하구와 해변",
+   "author": "Genghiskhan",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Donghoi2.jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Donghoi2.jpg"
+  },
+  {
+   "stem": "place-quangtri",
+   "hero": false,
+   "places": [
+    "quangtri"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1600,
+   "height": 1003,
+   "title": "꽝찌 · 히엔르엉 다리 · Cầu Hiền Lương, Quảng Trị",
+   "place": "",
+   "alt": "벤하이강을 건너는 히엔르엉 다리",
+   "author": "Rolf Müller",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Benhairiver1.jpg",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  {
+   "stem": "place-bachma",
+   "hero": false,
+   "places": [
+    "bachma"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1080,
+   "title": "박마 국립공원 · Vườn quốc gia Bạch Mã",
+   "place": "",
+   "alt": "박마 국립공원 안의 오래된 프랑스식 별장",
+   "author": "Andre Hospers",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Bach_Ma_Natinal_Park_Franse_villa.jpg",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "stem": "place-bana",
+   "hero": false,
+   "places": [
+    "bana"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "바나힐 · 골든브리지 · Bà Nà Hills, Cầu Vàng",
+   "place": "",
+   "alt": "거대한 손이 받친 바나힐의 골든브리지",
+   "author": "lumoplank",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ba_Na_Hills_-_BaNa1519.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "place-myson",
+   "hero": false,
+   "places": [
+    "myson"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "미선 유적 · Thánh địa Mỹ Sơn",
+   "place": "",
+   "alt": "붉은 벽돌로 쌓은 미선 유적의 참파 사원",
+   "author": "Chainwit.",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:2024_-_M%E1%BB%B9_S%C6%A1n_Group_B,_C_and_D_-_img_01.jpg",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "stem": "place-lyson",
+   "hero": false,
+   "places": [
+    "lyson"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1233,
+   "title": "리선섬 · Lý Sơn",
+   "place": "",
+   "alt": "리선섬 해안 절벽과 맑은 바다",
+   "author": "minhphuc_99kdd",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Ly_Son_Islands_(14817868968).jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Ly_Son_Islands_(14817868968).jpg"
+  },
+  {
+   "stem": "place-mangden",
+   "hero": false,
+   "places": [
+    "mangden"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "망덴 · Măng Đen",
+   "place": "",
+   "alt": "소나무 숲 아래 물소가 풀을 뜯는 망덴 들판",
+   "author": "Đào Phúc Quang Vũ",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Cuoc-song-nguoi-dong-bao-tai-lang-kon-pring-thi-tran-mang-den-kon-tum-10.jpg",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  {
+   "stem": "place-buonmathuot",
+   "hero": false,
+   "places": [
+    "buonmathuot"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1283,
+   "title": "부온마투옷 · Buôn Ma Thuột",
+   "place": "",
+   "alt": "부온마투옷 근처의 드라이누르 폭포",
+   "author": "Sketyl none",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Dray_Nur_Waterfall_(49483462012).jpg",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+   "stem": "place-phuyen",
+   "hero": false,
+   "places": [
+    "phuyen"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "푸옌 · 겐다디아 · Gành Đá Đĩa, Phú Yên",
+   "place": "",
+   "alt": "육각형 현무암 기둥이 이어진 푸옌 겐다디아",
+   "author": "Việt Nguyễn",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Gh%E1%BB%81nh_%C4%91%C3%A1_%C4%91%C4%A9a_ph%C3%BA_y%C3%AAn.jpeg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "place-vinhhy",
+   "hero": false,
+   "places": [
+    "vinhhy"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "빈히만 · Vịnh Vĩnh Hy",
+   "place": "",
+   "alt": "두 곶 사이로 펼쳐진 빈히만",
+   "author": "Huy Phương",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:V%E1%BB%8Bnh_V%C4%A9nh_Hy,_Ninh_Ch%E1%BB%AF.jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:V%E1%BB%8Bnh_V%C4%A9nh_Hy,_Ninh_Ch%E1%BB%AF.jpg"
+  },
+  {
+   "stem": "place-vungtau",
+   "hero": false,
+   "places": [
+    "vungtau"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "붕따우 · Vũng Tàu",
+   "place": "",
+   "alt": "언덕과 바다가 만나는 붕따우 해안",
+   "author": "NDTK08",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Bai_Truoc_Vung_Tau.jpg",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0"
+  },
+  {
+   "stem": "place-tayninh",
+   "hero": false,
+   "places": [
+    "tayninh"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "떠이닌 · 바덴산 · Núi Bà Đen, Tây Ninh",
+   "place": "",
+   "alt": "저녁노을 아래 바덴산이 보이는 저우띠엥 호수",
+   "author": "Cuong Tran",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Dau_Tieng_Lake_-_50766650163.png",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Dau_Tieng_Lake_-_50766650163.png"
+  },
+  {
+   "stem": "place-bentre",
+   "hero": false,
+   "places": [
+    "bentre"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1280,
+   "title": "벤째 · Bến Tre",
+   "place": "",
+   "alt": "강가에 코코넛이 쌓인 벤째의 작업장",
+   "author": "Balon Greyjoy",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:20190924_coconut_pile-1.jpg",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+   "stem": "place-chaudoc",
+   "hero": false,
+   "places": [
+    "chaudoc"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1011,
+   "title": "쩌우독 · Châu Đốc",
+   "place": "",
+   "alt": "쩌우독 강변 산책로와 하우강",
+   "author": "trungydang",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:B%E1%BB%9D_s%C3%B4ng_Ch%C3%A2u_%C4%90%E1%BB%91c,_ch%C3%A2u_Ph%C3%BA_B,An_giang_-_panoramio.jpg",
+   "license": "CC BY 3.0",
+   "license_url": "https://creativecommons.org/licenses/by/3.0"
+  },
+  {
+   "stem": "place-hatien",
+   "hero": false,
+   "places": [
+    "hatien"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "하띠엔 · Hà Tiên",
+   "place": "",
+   "alt": "어선이 떠 있는 하띠엔 해변",
+   "author": "Kien Mike",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Bi%E1%BB%83n_H%C3%A0_Ti%C3%AAn_(52351874122).jpg",
+   "license": "Public domain",
+   "license_url": "https://commons.wikimedia.org/wiki/File:Bi%E1%BB%83n_H%C3%A0_Ti%C3%AAn_(52351874122).jpg"
+  },
+  {
+   "stem": "place-namdu",
+   "hero": false,
+   "places": [
+    "namdu"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1080,
+   "title": "남주 군도 · Quần đảo Nam Du",
+   "place": "",
+   "alt": "야자수 숲 아래 남주 군도의 해변",
+   "author": "trungydang",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Bai_Cay_Men,Dao_nam_du.Xa_An_S%C6%A1n,huyen_Ki%C3%AAn_H%E1%BA%A3i,_t%E1%BB%89nh_Ki%C3%AAn_Giang,_Vi%E1%BB%87t_Nam,02-07-2016-Dyt_-_panoramio.jpg",
+   "license": "CC BY 3.0",
+   "license_url": "https://creativecommons.org/licenses/by/3.0"
+  },
+  {
+   "stem": "place-camau",
+   "hero": false,
+   "places": [
+    "camau"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1440,
+   "title": "까마우 · 무이까마우 · Mũi Cà Mau",
+   "place": "",
+   "alt": "바다와 맹그로브 숲이 만나는 까마우곶",
+   "author": "Colalumbu",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:Muicamau.jpg",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  {
+   "stem": "place-puluong",
+   "hero": false,
+   "places": [
+    "puluong"
+   ],
+   "widths": [
+    640,
+    960,
+    1440
+   ],
+   "width": 1920,
+   "height": 1080,
+   "title": "푸루옹 · Pù Luông",
+   "place": "",
+   "alt": "논 사이로 길이 이어지는 푸루옹 계곡",
+   "author": "Thái Nhi",
+   "source": "Wikimedia Commons",
+   "url": "https://commons.wikimedia.org/wiki/File:CacvandongvienMarathonoPuLuong.jpg",
    "license": "CC0 1.0",
    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
   }

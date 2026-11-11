@@ -1,7 +1,25 @@
 <main id="home">
-<section class="hero"><div class="hero-slides" aria-label="베트남 여행 풍경">
+<section class="hero" aria-label="VIETNOTE 소개">
+<div class="hero-slides" aria-label="베트남 여행 풍경">
 $hero_slides
-</div><div class="hero-controls" aria-label="슬라이드 조작"><div class="hero-dots"></div><button class="hero-pause" type="button" aria-label="자동 재생 일시 정지">Ⅱ</button></div><div class="hero-content"><div class="eyebrow">VIETNOTE — A TRAVEL & CULTURE JOURNAL</div><h1 class="serif">Vietnam</h1><div class="hero-korean">베트남을 발견하는 새로운 시선</div></div><div class="hero-bottom"><span class="hero-caption">$hero_credit</span><a class="scroll-circle" href="#travel-map" aria-label="아래로 이동">↓</a><span>SCROLL TO EXPLORE</span></div></section>
+</div>
+<div class="hero-content">
+<p class="hero-hand">오늘은 어디로 떠나 볼까요?</p>
+<p class="hero-hello">HELLO, VIỆT NAM</p>
+<h1 class="hero-title">베트남,<br>천천히</h1>
+<form class="hero-search" role="search" onsubmit="event.preventDefault();openSearch(document.getElementById('heroSearch').value)">
+<label class="visually-hidden" for="heroSearch">여행지 검색</label>
+<input id="heroSearch" placeholder="도시, 음식, 여행지를 찾아보세요" autocomplete="off">
+<button type="submit">찾기</button>
+</form>
+</div>
+<div class="hero-controls" aria-label="슬라이드 조작">
+<div class="hero-dots"></div>
+<button class="hero-pause" type="button" aria-label="자동 재생 일시 정지">Ⅱ</button>
+</div>
+<p class="hero-caption">$hero_credit</p>
+</section>
+<div class="hero-ticker" aria-hidden="true"><div class="hero-ticker-track">$ticker</div></div>
 $atlas
 
 <details class="history-disclosure" id="intro">
@@ -14,10 +32,50 @@ $atlas
 $history
 </div>
 </details>
-<section class="section wrap" id="destinations"><div class="section-head"><div><div class="section-no">01 / DESTINATIONS</div><h2 class="section-title serif">Explore Vietnam.</h2><div class="section-sub">베트남의 도시와 자연, 그곳에 담긴 이야기를 만나보세요.</div></div><a class="textlink" href="${base}destinations/">EXPLORE ALL ↗</a></div><div class="destinations"><article class="destination" onclick="location.href='${base}destinations/hanoi/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_hanoi</div><div class="meta">01 / NORTH</div><h3 class="serif">Hanoi</h3><p>하노이 · 오래된 도시의 새로운 발견</p></article><article class="destination" onclick="location.href='${base}destinations/hoian/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_hoian</div><div class="meta">02 / CENTRAL</div><h3 class="serif">Hoi An</h3><p>호이안 · 시간이 머무는 거리</p></article><article class="destination" onclick="location.href='${base}destinations/danang/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_danang</div><div class="meta">03 / CENTRAL</div><h3 class="serif">Da Nang</h3><p>다낭 · 바다와 도시의 경계</p></article><article class="destination" onclick="location.href='${base}destinations/phuquoc/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_phuquoc</div><div class="meta">04 / SOUTH</div><h3 class="serif">Phu Quoc</h3><p>푸꾸옥 · 천천히 머물고 싶은 섬</p></article></div></section>
+<section class="home-band" id="destinations">
+<svg class="band-wave" viewBox="0 0 1200 46" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 L0 22 C150 0 300 0 450 18 C600 36 750 40 900 22 C1020 8 1110 6 1200 16 L1200 46 Z"/></svg>
+<div class="home-band-inner">
+<div class="section-head">
+<div>
+<div class="section-no">01 / DESTINATIONS</div>
+<h2 class="section-title band-title">어디로 갈까요? <span class="hand">도시마다 다른 베트남</span></h2>
+<div class="section-sub">베트남의 도시와 자연, 그곳에 담긴 이야기를 만나보세요.</div>
+</div>
+<div class="band-actions"><button type="button" class="postcard-pause" aria-pressed="false" hidden>Ⅱ <span>멈추기</span></button><a class="band-link" href="${base}destinations/">여행지 전체 보기 ↗</a></div>
+</div>
+<script type="application/json" id="postcardPool">$postcard_pool</script>
+<div class="postcards">
+<a class="postcard" href="${base}destinations/hanoi/">
+<span class="postcard-photo">$img_hanoi</span>
+<span class="postcard-stamp" lang="vi">Hà Nội</span>
+<span class="postcard-body"><span class="region-tag north">북부</span><strong>하노이</strong><span>오래된 도시의 새로운 발견</span></span>
+<span class="postcard-go" aria-hidden="true">↗</span>
+</a>
+<a class="postcard" href="${base}destinations/hoian/">
+<span class="postcard-photo">$img_hoian</span>
+<span class="postcard-stamp" lang="vi">Hội An</span>
+<span class="postcard-body"><span class="region-tag central">중부</span><strong>호이안</strong><span>시간이 머무는 거리</span></span>
+<span class="postcard-go" aria-hidden="true">↗</span>
+</a>
+<a class="postcard" href="${base}destinations/danang/">
+<span class="postcard-photo">$img_danang</span>
+<span class="postcard-stamp" lang="vi">Đà Nẵng</span>
+<span class="postcard-body"><span class="region-tag central">중부</span><strong>다낭</strong><span>바다와 도시의 경계</span></span>
+<span class="postcard-go" aria-hidden="true">↗</span>
+</a>
+<a class="postcard" href="${base}destinations/phuquoc/">
+<span class="postcard-photo">$img_phuquoc</span>
+<span class="postcard-stamp" lang="vi">Phú Quốc</span>
+<span class="postcard-body"><span class="region-tag south">남부</span><strong>푸꾸옥</strong><span>천천히 머물고 싶은 섬</span></span>
+<span class="postcard-go" aria-hidden="true">↗</span>
+</a>
+$wide_postcards
+</div>
+</div>
+</section>
 $routes
-<section class="section wrap" id="journal"><div class="section-head"><div><div class="section-no">04 / THE EDITOR'S SELECTION</div><h2 class="section-title serif">Stories worth telling.</h2></div></div><div class="editorial"><div class="photo">$img_story</div><div><div class="meta">LOCAL LIFE / FEATURE STORY</div><h3 class="serif">관광지가 아닌,<br>베트남의 진짜<br>일상을 만나다.</h3><p>낯선 골목에서 마시는 커피 한 잔, 아침 시장의 소리, 오래된 거리의 작은 풍경. 여행 안내서에 없는 베트남을 발견해 보세요.</p><button class="textlink" style="background:none;border-top:0;border-left:0;border-right:0;margin-top:20px" onclick="location.href='${base}articles/story/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()">READ THE STORY ↗</button></div></div></section>
-<section class="notebook" id="guide"><div class="wrap notebook-layout"><div><div class="section-no">05 / THE TRAVEL NOTEBOOK</div><h2 class="section-title serif">Before<br>You Go.</h2><p class="section-sub">여행 준비부터 현지 생활 정보까지.<br>베트남을 더 편하게 여행하기 위한 작은 노트.</p><form class="searchbox" onsubmit="event.preventDefault();openSearch(document.getElementById('homeSearch').value)"><span>⌕</span><input id="homeSearch" aria-label="여행 정보 검색" placeholder="어떤 여행 정보가 궁금하세요?"><button>검색</button></form><div class="section-sub">예: 비자, 환전, 다낭, 음식, 교통</div></div><div class="guide-grid"><button class="guide" onclick="location.href='${base}articles/visa/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">✈</div><strong>입국 및 비자</strong><small>Visa & Entry</small></button><button class="guide" onclick="location.href='${base}articles/money/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">₫</div><strong>환전 및 물가</strong><small>Money & Budget</small></button><button class="guide" onclick="location.href='${base}articles/transport/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">↗</div><strong>교통 가이드</strong><small>Getting Around</small></button><button class="guide" onclick="location.href='${base}articles/weather/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">☼</div><strong>날씨 및 계절</strong><small>Weather & Seasons</small></button><button class="guide" onclick="location.href='${base}articles/safety/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">◇</div><strong>안전 및 주의사항</strong><small>Travel Essentials</small></button><button class="guide" onclick="location.href='${base}articles/language/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">文</div><strong>베트남어 표현</strong><small>Useful Phrases</small></button></div></div></section>
-<section class="section wrap" id="culture"><div class="section-head"><div><div class="section-no">06 / CULTURE & TASTE</div><h2 class="section-title serif">A taste of Vietnam.</h2><div class="section-sub">음식과 문화 속에서 발견하는 베트남의 매력.</div></div><a class="textlink" href="${base}food/">DISCOVER MORE ↗</a></div><div class="stories"><article class="story" onclick="location.href='${base}articles/pho/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_pho</div><div class="meta">FOOD / VIETNOTE</div><h3>베트남 쌀국수, 지역마다 다른 맛과 이야기</h3></article><article class="story" onclick="location.href='${base}articles/coffee/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_coffee</div><div class="meta">CULTURE / VIETNOTE</div><h3>베트남의 하루는 커피 한 잔에서 시작된다</h3></article><article class="story" onclick="location.href='${base}articles/lantern/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_lantern</div><div class="meta">LOCAL STORIES / VIETNOTE</div><h3>호이안의 밤을 밝히는 작은 이야기들</h3></article></div></section>
-<section class="journey" id="journey"><div class="wrap journey-inner"><div><div class="eyebrow">07 / THE JOURNEY</div><h2 class="serif">North to<br><i>South.</i></h2><p>북쪽의 오래된 거리에서 남쪽의 따뜻한 바다까지.<br>당신만의 베트남 여행을 시작해 보세요.</p></div><svg class="route" viewBox="0 0 430 290" role="img" aria-label="하노이에서 사이공까지 이어지는 여행 경로"><path d="M60 25 C160 10 120 110 230 100 S320 170 220 205 S270 255 370 270" fill="none" stroke="#e5bda8" stroke-width="2" stroke-dasharray="5 7"/><g fill="#f1d0bd" font-size="13"><circle cx="60" cy="25" r="5"/><text x="75" y="29">HANOI</text><circle cx="230" cy="100" r="5"/><text x="245" y="103">HUE</text><circle cx="220" cy="205" r="5"/><text x="130" y="210">DA NANG</text><circle cx="370" cy="270" r="5"/><text x="292" y="254">SAIGON</text></g></svg></div></section>
+<section class="section wrap" id="journal"><div class="section-head"><div><div class="section-no">04 / THE EDITOR'S SELECTION</div><h2 class="section-title serif">Stories worth telling.</h2></div></div><div class="editorial"><div class="photo">$img_story</div><div><div class="meta">현지의 일상 / 특집</div><h3 class="serif">관광지가 아닌,<br>베트남의 진짜<br>일상을 만나다.</h3><p>낯선 골목에서 마시는 커피 한 잔, 아침 시장의 소리, 오래된 거리의 작은 풍경. 여행 안내서에 없는 베트남을 발견해 보세요.</p><button class="textlink" style="background:none;border-top:0;border-left:0;border-right:0;margin-top:20px" onclick="location.href='${base}articles/story/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()">이야기 읽기 ↗</button></div></div></section>
+<section class="notebook" id="guide"><div class="wrap notebook-layout"><div><div class="section-no">05 / THE TRAVEL NOTEBOOK</div><h2 class="section-title serif">Before<br>You Go.</h2><p class="section-sub">여행 준비부터 현지 생활 정보까지.<br>베트남을 더 편하게 여행하기 위한 작은 노트.</p><form class="searchbox" onsubmit="event.preventDefault();openSearch(document.getElementById('homeSearch').value)"><span>⌕</span><input id="homeSearch" aria-label="여행 정보 검색" placeholder="어떤 여행 정보가 궁금하세요?"><button>검색</button></form><div class="section-sub">예: 비자, 환전, 다낭, 음식, 교통</div></div><div class="guide-grid"><button class="guide" onclick="location.href='${base}articles/visa/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">✈</div><strong>입국 및 비자</strong><small>입국 조건 확인</small></button><button class="guide" onclick="location.href='${base}articles/money/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">₫</div><strong>환전 및 물가</strong><small>환전과 결제 준비</small></button><button class="guide" onclick="location.href='${base}articles/transport/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">↗</div><strong>교통 가이드</strong><small>공항·도시 간 이동</small></button><button class="guide" onclick="location.href='${base}articles/weather/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">☼</div><strong>날씨 및 계절</strong><small>지역별 날씨</small></button><button class="guide" onclick="location.href='${base}articles/safety/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">◇</div><strong>안전 및 주의사항</strong><small>기본 안전 수칙</small></button><button class="guide" onclick="location.href='${base}articles/language/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="symbol">文</div><strong>베트남어 표현</strong><small>바로 쓰는 문장</small></button></div></div></section>
+<section class="section wrap" id="culture"><div class="section-head"><div><div class="section-no">06 / CULTURE & TASTE</div><h2 class="section-title serif">A taste of Vietnam.</h2><div class="section-sub">음식과 문화 속에서 발견하는 베트남의 매력.</div></div><a class="textlink" href="${base}food/">더 보기 ↗</a></div><div class="stories"><article class="story" onclick="location.href='${base}articles/pho/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_pho</div><div class="meta">음식 / VIETNOTE</div><h3>베트남 쌀국수, 지역마다 다른 맛과 이야기</h3></article><article class="story" onclick="location.href='${base}articles/coffee/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_coffee</div><div class="meta">문화 / VIETNOTE</div><h3>베트남의 하루는 커피 한 잔에서 시작된다</h3></article><article class="story" onclick="location.href='${base}articles/lantern/'" tabindex="0" role="link" onkeydown="if(event.key==='Enter')this.click()"><div class="photo">$img_lantern</div><div class="meta">현지 이야기 / VIETNOTE</div><h3>호이안의 밤을 밝히는 작은 이야기들</h3></article></div></section>
+
 </main>

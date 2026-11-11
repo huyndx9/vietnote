@@ -1,9 +1,33 @@
 :root {
-  --bg: #f8f6f1;
-  --ink: #252823;
-  --muted: #77786f;
-  --accent: #a65443;
-  --line: #dfddd5;
+  /* VIETNOTE "Hội An sunshine" palette. Text colours meet WCAG AA on --paper and --sky. */
+  --sun: #ffc533; /* Hội An walls: big headlines on photos, buttons with --ink text */
+  --sun-soft: #fff4cf;
+  --sea: #00a39a; /* sea: decoration, region "south" */
+  --sea-band: #007c75; /* coloured bands that carry small white text */
+  --sea-deep: #00756f; /* accent text and links on light backgrounds */
+  --coral: #ff5b45; /* lanterns: badges, hearts, region "central" */
+  --coral-deep: #c4321f; /* coral text on light backgrounds */
+  --sky: #e6f6f8;
+  --sky-2: #bfe9ec;
+  --mist: #f3fafb;
+  --paper: #ffffff;
+  --ink: #0f2e3a;
+  --muted: #4a6570;
+  --line: #d6e6ea;
+  /* When-to-go months: light green marks the months to go */
+  --month-good: #9fe39a;
+  --month-good-soft: #e8f8e4;
+  --month-good-ink: #2f7a35;
+  --month-hot: #ffc533;
+  --month-cool: #d3e6f7;
+  --month-rain: #56707e;
+  --month-storm: #d63c2a;
+  /* names used throughout the stylesheets */
+  --bg: var(--paper);
+  --accent: var(--sea-deep);
+  --font-hand: "Nanum Pen Script", "Pretendard", cursive;
+  --font-headline: "Black Han Sans", "Pretendard", sans-serif;
+  --font-latin: "Bricolage Grotesque", "Pretendard", sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -35,140 +59,26 @@ img {
   display: block;
 }
 .serif {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: var(--font-display);
 }
 .wrap {
   max-width: 1440px;
   margin: auto;
   padding: 0 5.5%;
 }
-.topbar {
-  height: 76px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-.logo {
-  font-size: 25px;
-  font-weight: 700;
-  letter-spacing: -1.5px;
-}
-.logo span {
-  color: var(--accent);
-}
-.nav {
-  display: flex;
-  gap: 33px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-.nav a:hover,
 .textlink:hover {
   color: var(--accent);
-}
-.navright {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-}
-.iconbtn {
-  border: 0;
-  background: none;
-  color: inherit;
-  font-size: 22px;
-  padding: 7px;
-}
-.menu-btn {
-  display: none;
-}
-.hero {
-  margin: 0 2.1%;
-  height: min(810px, 85vh);
-  min-height: 570px;
-  position: relative;
-  overflow: hidden;
-  background: #526c67;
-}
-.hero:before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(7, 18, 18, 0.04),
-    rgba(9, 21, 18, 0) 35%,
-    rgba(9, 20, 19, 0.16)
-  );
-  z-index: 1;
-}
-.hero-img {
-  position: absolute;
-  inset: 0;
-  background-image: url("halong-haneul-trac-1440.webp");
-  background-size: cover;
-  background-position: center 52%;
-  transform: scale(1.03);
-  animation: slowzoom 12s ease-out both;
 }
 @keyframes slowzoom {
   to {
     transform: scale(1);
   }
 }
-.hero-content {
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 24px;
-}
 .eyebrow {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-}
-.hero h1 {
-  font-size: clamp(90px, 17vw, 265px);
-  font-weight: 400;
-  line-height: 1;
-  margin: 8px 0 18px;
-  letter-spacing: -0.07em;
-  text-shadow: 0 2px 35px #0003;
-}
-.hero-korean {
-  font-size: clamp(14px, 1.5vw, 20px);
-  font-weight: 300;
-  letter-spacing: 0.14em;
-  text-shadow: 0 1px 9px #163a3a99;
-}
-.hero-bottom {
-  position: absolute;
-  bottom: 34px;
-  left: 4%;
-  right: 4%;
-  z-index: 2;
-  color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  font-size: 10px;
-  letter-spacing: 0.17em;
-}
-.scroll-circle {
-  width: 45px;
-  height: 45px;
-  border: 1px solid #ffffffaa;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
 }
 .intro {
   text-align: center;
@@ -226,40 +136,16 @@ img {
   border-bottom: 1px solid currentColor;
   padding-bottom: 7px;
 }
-.destinations {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr 1fr 1fr;
-  gap: 17px;
-}
-.destination {
-  cursor: pointer;
-}
 .photo {
   overflow: hidden;
-  background: #d4d1c7;
+  background: var(--line);
   position: relative;
 }
 .photo img {
   transition: transform 0.6s;
 }
-.destination:hover img,
 .story:hover img {
   transform: scale(1.045);
-}
-.destination .photo {
-  height: 360px;
-}
-.destination:nth-child(2) .photo {
-  height: 300px;
-  margin-top: 60px;
-}
-.destination:nth-child(3) .photo {
-  height: 330px;
-  margin-top: 30px;
-}
-.destination:nth-child(4) .photo {
-  height: 290px;
-  margin-top: 70px;
 }
 .meta {
   font-size: 10px;
@@ -267,16 +153,6 @@ img {
   color: var(--accent);
   margin-top: 18px;
   text-transform: uppercase;
-}
-.destination h3 {
-  font-size: 27px;
-  font-weight: 400;
-  margin: 7px 0;
-}
-.destination p {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 0;
 }
 .editorial {
   display: grid;
@@ -299,7 +175,7 @@ img {
   font-size: 14px;
 }
 .notebook {
-  background: #eae7de;
+  background: var(--line);
   padding: 110px 0;
 }
 .notebook-layout {
@@ -310,7 +186,7 @@ img {
 }
 .searchbox {
   display: flex;
-  background: #fff;
+  background: var(--paper);
   margin: 32px 0 16px;
   align-items: center;
   padding: 7px 8px 7px 18px;
@@ -327,7 +203,7 @@ img {
 .searchbox button {
   border: 0;
   background: var(--accent);
-  color: #fff;
+  color: var(--paper);
   padding: 14px 20px;
   font-size: 12px;
 }
@@ -338,14 +214,14 @@ img {
 }
 .guide {
   padding: 24px;
-  background: #f8f6f1;
-  border: 1px solid #e2ded5;
+  background: var(--mist);
+  border: 1px solid var(--line);
   min-height: 138px;
   transition: background 0.2s;
   text-align: left;
 }
 .guide:hover {
-  background: #fff;
+  background: var(--paper);
 }
 .guide .symbol {
   font-size: 24px;
@@ -379,84 +255,10 @@ img {
 .story:first-child h3 {
   font-size: 25px;
 }
-.journey {
-  margin-top: 85px;
-  position: relative;
-  min-height: 480px;
-  background: #1c3530;
-  color: white;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
-.journey:before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("hagiang-golden-terraces-1920.webp")
-    center/cover;
-  opacity: 0.22;
-}
-.journey-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 30px;
-}
-.journey h2 {
-  font-size: clamp(48px, 6vw, 90px);
-  font-weight: 400;
-  margin: 15px 0;
-}
-.journey p {
-  font-size: 14px;
-  line-height: 2;
-  color: #ddd;
-}
-.route {
-  width: min(430px, 45%);
-  height: 290px;
-}
-.footer {
-  padding: 80px 0 35px;
-}
-.footer-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 30px;
-  padding-bottom: 80px;
-}
-.footer h2 {
-  font-size: clamp(50px, 10vw, 140px);
-  font-weight: 600;
-  letter-spacing: -0.09em;
-  line-height: 1;
-  margin: 0;
-}
-.footer h2 span {
-  color: var(--accent);
-}
-.footer-links {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  font-size: 12px;
-}
-.footer-bottom {
-  border-top: 1px solid var(--line);
-  padding-top: 25px;
-  display: flex;
-  justify-content: space-between;
-  color: var(--muted);
-  font-size: 11px;
-}
 .overlay {
   position: fixed;
   inset: 0;
-  background: #161b17b8;
+  background: color-mix(in srgb, var(--ink) 72%, transparent);
   z-index: 50;
   display: none;
   align-items: center;
@@ -508,21 +310,7 @@ img {
   color: var(--muted);
   font-size: 13px;
 }
-.mobilemenu {
-  display: none;
-}
 @media (max-width: 900px) {
-  .nav {
-    gap: 14px;
-  }
-  .destinations {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .destination .photo,
-  .destination:nth-child(n) .photo {
-    height: 340px;
-    margin-top: 0;
-  }
   .editorial {
     grid-template-columns: 1fr 1fr;
     gap: 30px;
@@ -548,36 +336,6 @@ img {
   .wrap {
     padding: 0 6%;
   }
-  .topbar {
-    height: 65px;
-  }
-  .nav {
-    display: none;
-  }
-  .menu-btn {
-    display: block;
-  }
-  .hero {
-    margin: 0 10px;
-    min-height: 540px;
-    height: 78svh;
-  }
-  .hero-img {
-    background-position: 55% center;
-  }
-  .hero h1 {
-    font-size: clamp(75px, 19vw, 130px);
-    letter-spacing: -0.08em;
-  }
-  .hero .eyebrow {
-    font-size: 8px;
-  }
-  .hero-korean {
-    font-size: 13px;
-  }
-  .hero-bottom {
-    bottom: 23px;
-  }
   .intro {
     padding: 75px 20px;
   }
@@ -589,19 +347,6 @@ img {
   }
   .section-title {
     font-size: 43px;
-  }
-  .destinations {
-    gap: 14px;
-  }
-  .destination .photo,
-  .destination:nth-child(n) .photo {
-    height: 220px;
-  }
-  .destination h3 {
-    font-size: 23px;
-  }
-  .destination p {
-    font-size: 11px;
   }
   .editorial {
     grid-template-columns: 1fr;
@@ -629,51 +374,8 @@ img {
   .story:first-child h3 {
     font-size: 17px;
   }
-  .journey {
-    min-height: 520px;
-    margin-top: 40px;
-  }
-  .journey-inner {
-    flex-direction: column;
-    align-items: start;
-  }
-  .route {
-    width: 100%;
-    height: 210px;
-  }
-  .footer-top {
-    flex-direction: column;
-    padding-bottom: 55px;
-  }
-  .footer-bottom {
-    gap: 15px;
-    flex-direction: column;
-  }
   .modal {
     padding: 28px 20px;
-  }
-  .mobilemenu {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    z-index: 45;
-    padding: 25px;
-    display: none;
-    flex-direction: column;
-    gap: 30px;
-  }
-  .mobilemenu.open {
-    display: flex;
-  }
-  .mobilemenu a {
-    font-size: 28px;
-    font-family: "Playfair Display", serif;
-  }
-  .mobilemenu button {
-    align-self: flex-end;
-    border: 0;
-    background: none;
-    font-size: 30px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -685,78 +387,10 @@ img {
     transition: none !important;
   }
 }
-.hero-img {
-  background-position: center 60%;
-}
-.hero:before {
-  background: linear-gradient(
-    180deg,
-    rgba(16, 48, 63, 0.04),
-    transparent 50%,
-    rgba(12, 32, 42, 0.2)
-  );
-}
-.hero-content {
-  justify-content: flex-start;
-  padding-top: clamp(42px, 7vh, 78px);
-}
-.hero-content .eyebrow {
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  font-weight: 500;
-  text-shadow: 0 1px 10px #22465755;
-}
-.hero h1 {
-  font-size: clamp(110px, 14.5vw, 218px);
-  letter-spacing: -0.055em;
-  line-height: 1.03;
-  margin: 14px 0 19px;
-  font-weight: 400;
-  text-shadow: 0 2px 22px #183f4b18;
-}
-.hero-korean {
-  font-size: clamp(14px, 1.3vw, 18px);
-  letter-spacing: 0.07em;
-  font-weight: 400;
-  line-height: 1.8;
-  text-shadow: 0 1px 8px #24495966;
-}
-.hero-bottom {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-}
 .photo-credit {
   font-size: 10px;
   opacity: 0.8;
 }
 .photo-credit:hover {
   text-decoration: underline;
-}
-@media (max-width: 650px) {
-  .hero-img {
-    background-position: 48% center;
-  }
-  .hero-content {
-    padding: 60px 18px 20px;
-  }
-  .hero-content .eyebrow {
-    font-size: 8px;
-    letter-spacing: 0.15em;
-  }
-  .hero h1 {
-    font-size: clamp(80px, 20vw, 130px);
-    margin: 18px 0 15px;
-    letter-spacing: -0.05em;
-  }
-  .hero-korean {
-    font-size: 13px;
-    letter-spacing: 0.02em;
-  }
-  .hero-bottom {
-    font-size: 8px;
-    letter-spacing: 0.06em;
-  }
-  .hero-bottom > span:last-child {
-    display: none;
-  }
 }
