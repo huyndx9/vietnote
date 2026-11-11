@@ -340,9 +340,8 @@ function setupAI() {
   host.innerHTML = `
     <div class="ai-mascot-dock">
       <button type="button" class="ai-launcher" aria-label="AI에게 물어보기" title="AI에게 물어보기" aria-expanded="false" aria-controls="aiPanel">
-        <span class="ai-mascot" aria-hidden="true"></span>
+        <span class="ai-mascot" aria-hidden="true"><span class="ai-mascot-frame"></span><span class="ai-mascot-frame is-next"></span></span>
       </button>
-      <button type="button" class="ai-motion-toggle" aria-label="자동 재생 일시 정지" aria-pressed="false">Ⅱ</button>
     </div>
     <section class="ai-panel" id="aiPanel" role="dialog" aria-label="베트남 여행 도우미" hidden>
       <header class="ai-header">
@@ -367,35 +366,13 @@ function setupAI() {
   document.body.append(host);
   const launcher = host.querySelector(".ai-launcher"),
     panel = host.querySelector(".ai-panel");
-  const dock = host.querySelector(".ai-mascot-dock"),
-    motionToggle = host.querySelector(".ai-motion-toggle"),
-    reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let motionPaused = reducedMotion.matches;
-  function syncMotion() {
-    dock.classList.toggle("is-paused", motionPaused);
-    motionToggle.textContent = motionPaused ? "▶" : "Ⅱ";
-    motionToggle.setAttribute("aria-pressed", String(motionPaused));
-    motionToggle.setAttribute(
-      "aria-label",
-      motionPaused ? "자동 재생 시작" : "자동 재생 일시 정지",
-    );
-  }
-  motionToggle.onclick = () => {
-    motionPaused = !motionPaused;
-    syncMotion();
-  };
-  reducedMotion.addEventListener("change", (event) => {
-    motionPaused = event.matches;
-    syncMotion();
-  });
-  document.addEventListener("visibilitychange", () =>
-    dock.classList.toggle("is-away", document.hidden),
-  );
-  syncMotion();
+  const dock = host.querySelector(".ai-mascot-dock");
+  const mascot = animateMascot(dock);
   function show(open) {
     panel.hidden = !open;
     dock.classList.toggle("is-open", open);
     document.documentElement.classList.toggle("ai-open", open);
+    mascot.sync();
     launcher.setAttribute("aria-expanded", String(open));
     if (open)
       (
@@ -409,6 +386,54 @@ function setupAI() {
     if (e.key === "Escape" && !panel.hidden) show(false);
   });
   if (endpoint) setupChat(host, endpoint);
+}
+// Plays the 6 × 4 pose sheet. Each pose fades over the previous one, so the
+// mascot moves smoothly instead of snapping between drawings.
+function animateMascot(dock) {
+  const [base, next] = dock.querySelectorAll(".ai-mascot-frame"),
+    reduce = window.matchMedia("(prefers-reduced-motion: reduce)"),
+    // [frame, ms on screen]: thumbs-up, thinking, scratching (twice), reading, cheering.
+    sequence = [
+      [0, 900], [1, 200], [2, 200], [3, 200], [4, 200], [5, 700],
+      [6, 200], [7, 200], [8, 200], [9, 200], [10, 220], [11, 220], [10, 220], [11, 320],
+      [12, 200], [13, 200], [14, 200], [15, 200], [16, 200], [17, 200],
+      [18, 1000], [19, 220], [20, 700], [21, 220], [22, 220], [23, 700],
+    ],
+    FADE = 160;
+  let step = 0,
+    timer = 0,
+    fadeTimer = 0;
+  const position = (frame) => `${(frame % 6) * 20}% ${Math.floor(frame / 6) * 33.333333}%`;
+  const running = () => !reduce.matches && !document.hidden && !dock.classList.contains("is-open");
+  function show(frame) {
+    next.style.backgroundPosition = position(frame);
+    next.classList.add("is-visible");
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(() => {
+      base.style.backgroundPosition = next.style.backgroundPosition;
+      next.classList.remove("is-visible");
+    }, FADE);
+  }
+  function tick() {
+    step = (step + 1) % sequence.length;
+    show(sequence[step][0]);
+    timer = setTimeout(tick, sequence[step][1]);
+  }
+  function sync() {
+    clearTimeout(timer);
+    timer = 0;
+    dock.classList.toggle("is-still", reduce.matches);
+    if (reduce.matches) {
+      step = 0;
+      base.style.backgroundPosition = position(0);
+    }
+    if (running()) timer = setTimeout(tick, sequence[step][1]);
+  }
+  base.style.backgroundPosition = position(0);
+  reduce.addEventListener("change", sync);
+  document.addEventListener("visibilitychange", sync);
+  sync();
+  return { sync };
 }
 function setupChat(host, endpoint) {
   const form = host.querySelector(".ai-compose"),

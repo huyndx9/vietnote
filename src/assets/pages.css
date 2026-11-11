@@ -439,121 +439,37 @@ form textarea {
   -webkit-tap-highlight-color: transparent;
 }
 .ai-mascot {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
-  background: url("chatbot-poses-v2.webp") 0 0 / 600% 400% no-repeat;
   filter: drop-shadow(
     0 5px 5px color-mix(in srgb, var(--ink) 13%, transparent)
   );
   transform-origin: 50% 95%;
-  animation:
-    mascot-poses 6s step-end infinite,
-    mascot-breathe 3s ease-in-out infinite;
+  animation: mascot-breathe 3.2s ease-in-out infinite;
+  transition: filter 0.2s ease;
+}
+.ai-mascot-frame {
+  position: absolute;
+  inset: 0;
+  background: url("chatbot-poses-v2.webp") 0 0 / 600% 400% no-repeat;
+}
+/* The next pose fades in over the current one (timing lives in pages.js). */
+.ai-mascot-frame.is-next {
+  opacity: 0;
+}
+.ai-mascot-frame.is-next.is-visible {
+  opacity: 1;
+  transition: opacity 0.16s ease-out;
 }
 .ai-launcher:hover .ai-mascot {
   filter: drop-shadow(
     0 7px 8px color-mix(in srgb, var(--ink) 27%, transparent)
   );
 }
-.ai-motion-toggle {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--ink) 8%, transparent);
-  font-size: 12px;
-  cursor: pointer;
-}
-.ai-mascot-dock:is(.is-paused, .is-away, .is-open) .ai-mascot {
+.ai-mascot-dock:is(.is-open, .is-still) .ai-mascot {
   animation-play-state: paused;
-}
-.ai-mascot-dock.is-open .ai-motion-toggle {
-  visibility: hidden;
-}
-/* 24 sequential frames in a 6 × 4 sheet. Move every 150 ms, with short
-   holds for thinking, reading and discovery; repeat the scratch once. */
-@keyframes mascot-poses {
-  0%,
-  100% {
-    background-position: 0 0;
-  }
-  2.5% {
-    background-position: 20% 0;
-  }
-  5% {
-    background-position: 40% 0;
-  }
-  7.5% {
-    background-position: 60% 0;
-  }
-  10% {
-    background-position: 80% 0;
-  }
-  12.5% {
-    background-position: 100% 0;
-  }
-  22.5% {
-    background-position: 0 33.333333%;
-  }
-  25% {
-    background-position: 20% 33.333333%;
-  }
-  27.5% {
-    background-position: 40% 33.333333%;
-  }
-  30% {
-    background-position: 60% 33.333333%;
-  }
-  32.5%,
-  37.5% {
-    background-position: 80% 33.333333%;
-  }
-  35%,
-  40% {
-    background-position: 100% 33.333333%;
-  }
-  42.5% {
-    background-position: 0 66.666667%;
-  }
-  45% {
-    background-position: 20% 66.666667%;
-  }
-  47.5% {
-    background-position: 40% 66.666667%;
-  }
-  50% {
-    background-position: 60% 66.666667%;
-  }
-  52.5% {
-    background-position: 80% 66.666667%;
-  }
-  55% {
-    background-position: 100% 66.666667%;
-  }
-  57.5% {
-    background-position: 0 100%;
-  }
-  72.5% {
-    background-position: 20% 100%;
-  }
-  75% {
-    background-position: 40% 100%;
-  }
-  85% {
-    background-position: 60% 100%;
-  }
-  87.5% {
-    background-position: 80% 100%;
-  }
-  90% {
-    background-position: 100% 100%;
-  }
 }
 @keyframes mascot-breathe {
   0%,
@@ -562,11 +478,6 @@ form textarea {
   }
   50% {
     transform: translateY(-2px) rotate(0.4deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ai-mascot-dock.is-paused .ai-mascot {
-    animation: none;
   }
 }
 .is-error) {
