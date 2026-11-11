@@ -1,0 +1,98 @@
+{
+  "nearby": {
+    "bana": "danang",
+    "myson": "hoian",
+    "bachma": "hue",
+    "catba": "halong"
+  },
+  "places": {
+    "hanoi": [
+      {"type": "food", "name": "Phở Thìn Lò Đúc", "ko": "퍼 틴 로둑", "dish": "볶은 소고기를 올린 퍼 보", "area": "호안끼엠 호수 남쪽 · 로둑 거리"},
+      {"type": "food", "name": "Phở Gia Truyền Bát Đàn", "ko": "퍼 자쭈옌 밧단", "dish": "맑은 육수의 퍼 보", "area": "구시가지 · 밧단 거리"},
+      {"type": "food", "name": "Bún Chả Hương Liên", "ko": "분짜 흐엉리엔", "dish": "숯불 돼지고기 분짜", "area": "하이바쯩 · 레반흐우 거리"},
+      {"type": "cafe", "name": "Cafe Giảng", "ko": "카페 장", "dish": "에그커피(cà phê trứng)", "area": "구시가지 · 응우옌흐우후언 거리"},
+      {"type": "cafe", "name": "Cafe Đinh", "ko": "카페 딘", "dish": "에그커피, 호수 쪽 창가 자리", "area": "호안끼엠 호수 북쪽 · 딘띠엔호앙 거리"}
+    ],
+    "halong": [
+      {"type": "food", "name": "Nhà hàng Cua Vàng", "ko": "꾸어방 식당", "dish": "게 전골과 해산물", "area": "바이짜이 · 판쭈찐 거리"},
+      {"type": "food", "name": "Chợ Hạ Long 1", "ko": "하롱 1 시장", "dish": "손으로 다져 튀긴 짜믁(오징어 어묵)", "area": "홍가이 지구"}
+    ],
+    "ninhbinh": [
+      {"type": "food", "name": "Nhà hàng Thăng Long", "ko": "탕롱 식당", "dish": "염소 요리와 껌짜이(누룽지)", "area": "짱안 가는 길 · 쯔엉옌"},
+      {"type": "cafe", "name": "Chookie's Hideaway", "ko": "추키스", "dish": "커피와 베이커리, 가벼운 식사", "area": "땀꼭 마을"}
+    ],
+    "hue": [
+      {"type": "food", "name": "Quán Hạnh", "ko": "꾸안 한", "dish": "반코아이·넴루이 등 후에 음식 한 상", "area": "신시가지 · 포득찐 거리"},
+      {"type": "food", "name": "Bánh Bèo Nậm Lọc Bà Đỏ", "ko": "바도 반베오", "dish": "반베오·반남·반록", "area": "황성 동쪽 · 응우옌빈키엠 거리"},
+      {"type": "food", "name": "Bún Bò Huế Mệ Kéo", "ko": "메께오 분보후에", "dish": "분보후에", "area": "동바 시장 북쪽 · 박당 거리"},
+      {"type": "cafe", "name": "Cà Phê Muối", "ko": "까페 무오이", "dish": "소금 커피(cà phê muối)", "area": "신시가지 · 응우옌르엉방 거리"},
+      {"type": "cafe", "name": "Chè Hẻm", "ko": "쩨 헴", "dish": "후에식 쩨(달콤한 디저트)", "area": "신시가지 · 훙브엉 거리 골목"}
+    ],
+    "danang": [
+      {"type": "food", "name": "Mì Quảng Bà Mua", "ko": "미꽝 바무어", "dish": "미꽝", "area": "하이쩌우 · 쩐빈쫑 거리"},
+      {"type": "food", "name": "Bánh Xèo Bà Dưỡng", "ko": "반쎄오 바즈엉", "dish": "반쎄오와 넴루이", "area": "하이쩌우 · 호앙지에우 거리 골목"},
+      {"type": "food", "name": "Bún Chả Cá 109", "ko": "분짜까 109", "dish": "분짜까(어묵 쌀국수)", "area": "하이쩌우 · 응우옌찌타인 거리"},
+      {"type": "food", "name": "Hải Sản Bé Mặn", "ko": "베만 해산물", "dish": "골라서 조리해 먹는 해산물", "area": "미케비치 북쪽 해안도로"},
+      {"type": "cafe", "name": "Cộng Cà Phê Bạch Đằng", "ko": "꽁 카페 박당점", "dish": "코코넛 커피", "area": "한강변 · 박당 거리"},
+      {"type": "cafe", "name": "43 Factory Coffee Roaster", "ko": "43 팩토리 커피", "dish": "스페셜티 커피", "area": "안트엉 · 응오티시 거리"}
+    ],
+    "hoian": [
+      {"type": "food", "name": "Bánh Mì Phượng", "ko": "반미 프엉", "dish": "반미", "area": "구시가지 동쪽 · 판쩌우찐 거리"},
+      {"type": "food", "name": "Madam Khánh – The Bánh Mì Queen", "ko": "마담 칸 반미", "dish": "반미", "area": "구시가지 북쪽 · 쩐까오번 거리"},
+      {"type": "food", "name": "Cao Lầu Thanh", "ko": "까오러우 타인", "dish": "까오러우", "area": "구시가지 북쪽 · 타이피엔 거리"},
+      {"type": "food", "name": "Cơm Gà Bà Buội", "ko": "껌가 바부오이", "dish": "호이안식 닭고기 밥", "area": "구시가지 · 판쩌우찐 거리"},
+      {"type": "cafe", "name": "Reaching Out Tea House", "ko": "리칭아웃 티하우스", "dish": "조용히 즐기는 차와 커피", "area": "구시가지 · 쩐푸 거리"},
+      {"type": "cafe", "name": "Faifo Coffee", "ko": "파이포 커피", "dish": "구시가지 지붕이 보이는 옥상 자리", "area": "구시가지 · 쩐푸 거리"},
+      {"type": "cafe", "name": "Mót Hội An", "ko": "못 호이안", "dish": "연잎을 띄운 허브차", "area": "구시가지 · 쩐푸 거리"}
+    ],
+    "quynhon": [
+      {"type": "food", "name": "Bánh Xèo Tôm Nhảy Gia Vỹ", "ko": "자비 반쎄오 똠냐이", "dish": "새우를 올린 작은 반쎄오", "area": "시내 · 지엔홍 거리"}
+    ],
+    "nhatrang": [
+      {"type": "food", "name": "Nem Nướng Đặng Văn Quyên", "ko": "당반꾸옌 넴느엉", "dish": "넴느엉(구운 돼지고기 쌈)", "area": "담 시장 근처 · 란옹 거리"},
+      {"type": "food", "name": "Bún Cá Nguyên Loan", "ko": "응우옌로안 분까", "dish": "분짜까·해파리 쌀국수", "area": "시내 · 응오자뜨 거리"},
+      {"type": "food", "name": "Lạc Cảnh", "ko": "락까인", "dish": "숯불 소고기 구이", "area": "담 시장 북쪽 · 응우옌빈키엠 거리"},
+      {"type": "cafe", "name": "Rainforest", "ko": "레인포레스트", "dish": "나무 집 분위기의 카페", "area": "시내 · 보쯔 거리"}
+    ],
+    "dalat": [
+      {"type": "food", "name": "Bánh Căn Lệ", "ko": "반깐 레", "dish": "반깐(작은 쌀 팬케이크)", "area": "시내 · 예르생 거리 골목"},
+      {"type": "food", "name": "Lẩu Gà Lá É Tao Ngộ", "ko": "따오응오 닭 전골", "dish": "허브 잎을 넣은 닭 전골", "area": "시외버스터미널 근처 · 3/4 거리"},
+      {"type": "food", "name": "Bánh Mì Xíu Mại Hoàng Diệu", "ko": "호앙지에우 반미 씨우마이", "dish": "미트볼 국물에 찍어 먹는 반미", "area": "시내 서쪽 · 호앙지에우 거리"},
+      {"type": "food", "name": "Kem Bơ Thanh Thảo", "ko": "타인타오 아보카도 아이스크림", "dish": "아보카도 아이스크림(kem bơ)", "area": "시내 · 응우옌반쪼이 거리"},
+      {"type": "cafe", "name": "Cà Phê Tùng", "ko": "까페 뚱", "dish": "오래된 분위기의 커피", "area": "달랏 시장 위 · 호아빈 구역"},
+      {"type": "cafe", "name": "An Cafe", "ko": "안 카페", "dish": "정원 계단 자리의 커피와 차", "area": "시내 · 3/2 거리"}
+    ],
+    "muine": [
+      {"type": "food", "name": "Nhà hàng Cây Bàng", "ko": "꺼이방 식당", "dish": "해산물", "area": "응우옌딘찌에우 거리 해변 쪽"},
+      {"type": "food", "name": "Bờ Kè Mũi Né", "ko": "보께 해산물 거리", "dish": "바닷가 해산물 노점 식당", "area": "응우옌딘찌에우 거리 방파제"}
+    ],
+    "saigon": [
+      {"type": "food", "name": "Phở Hòa Pasteur", "ko": "퍼 호아 파스퇴르", "dish": "남부식 퍼", "area": "3군 · 파스퇴르 거리"},
+      {"type": "food", "name": "Bánh Mì Huỳnh Hoa", "ko": "반미 후인호아", "dish": "속이 두툼한 반미", "area": "1군 · 레티리엥 거리"},
+      {"type": "food", "name": "Cơm Tấm Ba Ghiền", "ko": "껌땀 바기엔", "dish": "큼직한 돼지갈비 껌땀", "area": "푸뉴언 · 당반응으 거리"},
+      {"type": "food", "name": "Phở Lệ", "ko": "퍼 레", "dish": "남부식 퍼 보", "area": "5군 · 응우옌짜이 거리"},
+      {"type": "cafe", "name": "The Workshop Coffee", "ko": "더 워크숍 커피", "dish": "스페셜티 커피", "area": "1군 · 응오득께 거리"},
+      {"type": "cafe", "name": "Cà Phê Vợt Phan Đình Phùng", "ko": "판딘풍 까페 벗", "dish": "천 필터로 내리는 옛 방식 커피", "area": "푸뉴언 · 판딘풍 거리 골목"},
+      {"type": "cafe", "name": "The Cafe Apartments", "ko": "카페 아파트", "dish": "층마다 다른 카페가 모인 건물", "area": "1군 · 응우옌후에 보행자 거리 42번지"}
+    ],
+    "cantho": [
+      {"type": "food", "name": "Nem Nướng Thanh Vân", "ko": "타인번 넴느엉", "dish": "넴느엉", "area": "닌끼에우 · 호아빈 대로"},
+      {"type": "food", "name": "Bánh Cống Cô Út", "ko": "꼬웃 반꽁", "dish": "반꽁(새우 녹두 튀김)", "area": "닌끼에우 · 리뜨쫑 거리 골목"},
+      {"type": "food", "name": "Pizza Hủ Tiếu Sáu Hoài", "ko": "사우호아이 후띠우", "dish": "튀긴 후띠우 ‘피자’와 후띠우", "area": "까이랑 수상시장 근처 · 로봉꿍 거리"}
+    ],
+    "phuquoc": [
+      {"type": "food", "name": "Bún Quậy Kiến Xây", "ko": "끼엔써이 분꽤이", "dish": "분꽤이(직접 소스를 저어 먹는 국수)", "area": "즈엉동 · 박당 거리"},
+      {"type": "food", "name": "Quán Ra Khơi", "ko": "꾸안 라커이", "dish": "청어 샐러드와 해산물", "area": "즈엉동 · 30/4 거리"},
+      {"type": "cafe", "name": "Chuồn Chuồn Bistro & Sky Bar", "ko": "쭈온쭈온 비스트로", "dish": "언덕 위에서 보는 노을과 음료", "area": "즈엉동 · 쩐흥다오 거리 언덕"}
+    ],
+    "vungtau": [
+      {"type": "food", "name": "Bánh Khọt Gốc Vú Sữa", "ko": "곡부스어 반콧", "dish": "반콧(새우를 올린 작은 쌀 팬케이크)", "area": "시내 · 응우옌쯔엉또 거리"},
+      {"type": "food", "name": "Lẩu Cá Đuối Hoàng Minh", "ko": "호앙민 가오리 전골", "dish": "가오리 전골", "area": "시내 · 쯔엉꽁딘 거리"},
+      {"type": "food", "name": "Bánh Bông Lan Trứng Muối Gốc Cột Điện", "ko": "곡꼿디엔 소금 달걀 카스텔라", "dish": "소금 달걀 카스텔라(포장 간식)", "area": "시내 · 응우옌쯔엉또 거리"}
+    ],
+    "buonmathuot": [
+      {"type": "cafe", "name": "Arul House", "ko": "아룰 하우스", "dish": "에데족 전통 가옥에서 마시는 커피와 지역 음식", "area": "아꼬동 마을 · 쩐녓주엇 거리"},
+      {"type": "cafe", "name": "Bảo tàng Thế giới Cà phê", "ko": "세계 커피 박물관", "dish": "전시를 보고 마시는 커피", "area": "떤러이 · 응우옌딘찌에우 거리"}
+    ]
+  }
+}

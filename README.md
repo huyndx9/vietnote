@@ -7,7 +7,7 @@ Bản công khai: https://huyndx9.github.io/vietnote/
 
 - Trang chủ Magazine Style với ảnh thật vịnh Hạ Long và bản đồ du lịch ngay sau ảnh hero.
 - Các trang chính: điểm đến, lịch trình, ăn uống, góc người địa phương, hướng dẫn,
-  bản đồ, giới thiệu, sổ tay; 17 bài hiện có và 42 cẩm nang địa điểm có đường dẫn riêng.
+  bản đồ, cộng đồng, giới thiệu, sổ tay; 17 bài hiện có và 42 cẩm nang địa điểm có đường dẫn riêng.
 - Bản đồ Leaflet với 42 điểm đến, lọc theo miền và sở thích, tìm kiếm không dấu.
 - Tìm kiếm tiếng Hàn/Anh, lọc miền/thành phố, lưu yêu thích, chia sẻ,
   liên kết Google Maps, sao chép câu tiếng Việt.
@@ -18,7 +18,8 @@ Bản công khai: https://huyndx9.github.io/vietnote/
 src/
   build.py              Script build (chỉ dùng thư viện chuẩn Python 3)
   content/              Nội dung: site.json, destinations.json, articles.json,
-                        guides.json, itineraries.json, map-destinations.json
+                        guides.json, itineraries.json, map-destinations.json,
+                        eats.json (quán ăn/cafe), community.json
   templates/            HTML theo cú pháp string.Template ($ten hoặc ${ten})
   assets/               CSS/JS viết tay (bản dễ đọc), font, ảnh, thư viện vendor
   photos/               Ảnh gốc lớn (không triển khai)
@@ -95,7 +96,8 @@ Build tự sinh các phần sau, không cần sửa tay:
 - `sitemap.xml` (mọi trang được lập chỉ mục, kèm `lastmod` lấy từ trường `date`) và `robots.txt`.
 - `<link rel="canonical">`, Open Graph và Twitter card cho từng trang, dựa trên `public_url` trong `src/content/site.json`.
 - JSON-LD: `WebSite` (trang chủ), `Article` (bài viết, lịch trình, hướng dẫn), `TouristDestination`
-  (42 trang địa điểm), `CollectionPage` (trang danh mục), `AboutPage` và `BreadcrumbList`.
+  (42 trang địa điểm), `CollectionPage` (trang danh mục), `FAQPage` (cộng đồng), `ItemList` quán ăn/cafe,
+  `AboutPage` và `BreadcrumbList`.
 - Trang `notebook/` và `404.html` có `noindex` và không nằm trong sitemap.
 
 Mỗi trang có meta description riêng: trường `meta_description` trong các file nội dung,
@@ -110,6 +112,36 @@ GitHub Pages của dự án nằm ở `/vietnote/`, nên công cụ tìm kiếm 
 `/vietnote/robots.txt` (chỉ đọc ở gốc tên miền). Hãy gửi
 `https://huyndx9.github.io/vietnote/sitemap.xml` trong Google Search Console và Naver Search
 Advisor. `robots.txt` sẽ có hiệu lực nếu sau này dùng tên miền riêng.
+
+## Liên kết giữa các trang, quán ăn và cafe
+
+- **Quán ăn và cafe theo địa điểm**: `src/content/eats.json`. Mục `places` ghi danh sách quán
+  theo id địa điểm (`type`: `food` hoặc `cafe`, `name` tên tiếng Việt, `ko` phiên âm tiếng Hàn,
+  `dish` món nên thử, `area` khu vực). Thêm quán vào đây là trang `places/<id>/` tự hiện khối
+  "맛집과 카페" (kèm link Google Maps và JSON-LD `ItemList`), trang 음식과 카페 tự cập nhật mục
+  "지역별 맛집·카페", và tìm kiếm tìm được theo tên quán. Mục `nearby` cho địa điểm không có quán
+  riêng mượn danh sách của thành phố lưu trú (ví dụ Bà Nà → Đà Nẵng). Địa điểm chưa có dữ liệu
+  hiện danh sách món và nút tìm trên Google Maps. Không ghi giá, giờ mở cửa hay số nhà; hãy kiểm
+  tra quán còn hoạt động trước khi thêm.
+- **Liên kết chéo**: trường `guides` (danh sách id địa điểm) trong `itineraries.json`,
+  `articles.json`, `destinations.json` nối bài viết với cẩm nang địa điểm theo cả hai chiều:
+  bài viết hiện thẻ địa điểm và dòng "함께 보기"; trang địa điểm hiện khối "READ NEXT" gồm các
+  lịch trình/bài viết có nhắc tới nó. Build báo lỗi nếu id không tồn tại.
+
+## Trang cộng đồng (커뮤니티)
+
+`community/` gồm câu hỏi thường gặp (`src/content/community.json`, có JSON-LD `FAQPage`, mỗi
+câu trả lời dẫn về bài hướng dẫn tương ứng), quy tắc chung và khu thảo luận. Cấu hình trong mục
+`community` của `site.json`:
+
+- `channels`: danh sách `{ "label", "url", "note" }` (ví dụ KakaoTalk open chat, Naver Cafe,
+  Instagram). Để trống thì không hiện.
+- `giscus`: điền `repo`, `repo_id`, `category`, `category_id` lấy từ https://giscus.app sau khi
+  bật Discussions cho repository và cài ứng dụng giscus. Khi còn trống, trang hiện "게시판은 준비
+  중이에요". Người bình luận cần tài khoản GitHub.
+
+Mã xác minh Google Search Console / Naver Search Advisor: điền vào `verification.google` /
+`verification.naver` trong `site.json`; build chèn thẻ meta vào trang chủ.
 
 ## Font và ảnh
 

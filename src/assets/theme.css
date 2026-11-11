@@ -1934,3 +1934,270 @@ body {
     letter-spacing: -0.01em;
   }
 }
+
+/* ---------- restaurants and cafes under a place guide ---------- */
+.place-eats,
+.eats-directory,
+.community-section {
+  margin-top: 70px;
+  padding-top: 40px;
+  border-top: 1px solid var(--line);
+}
+.place-eats {
+  scroll-margin-top: 28px;
+}
+.place-eats h2,
+.eats-directory h2,
+.community-section h2 {
+  font: 400 clamp(26px, 3vw, 40px) / 1.3 var(--font-headline);
+  margin: 14px 0 12px;
+}
+.place-eats h3 {
+  font-size: 15px;
+  color: var(--sea-deep);
+  margin: 30px 0 12px;
+}
+.eats-lead,
+.eats-note,
+.eats-directory > p {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.9;
+}
+.eats-lead a {
+  color: var(--sea-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.eats-note {
+  font-size: 13px;
+  margin-top: 22px;
+}
+.eats-list,
+.eats-dishes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.eats-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+.eat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+}
+.eat-card.eat-cafe {
+  background: var(--mist);
+}
+.eat-type {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--sun);
+  color: var(--ink);
+}
+.eat-cafe .eat-type {
+  background: var(--sea-band);
+  color: var(--paper);
+}
+.eat-card strong {
+  font-size: 18px;
+  line-height: 1.4;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+.eat-ko,
+.eat-card small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.eat-card p {
+  margin: 8px 0 2px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.eat-card a {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sea-deep);
+}
+.eats-dishes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+.eats-dishes li {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--sun-soft);
+  font-size: 14px;
+}
+.eats-search,
+.community-next {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.see-also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 26px 0 0;
+  font-size: 14px;
+}
+.see-also strong {
+  margin-right: 4px;
+}
+.see-also a {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  color: var(--sea-deep);
+  font-weight: 600;
+  text-decoration: none;
+}
+.see-also a:hover {
+  border-color: var(--sun);
+  background: var(--sun-soft);
+}
+.eats-places {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+.eats-places a {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  padding: 18px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+}
+.eats-places a:hover {
+  border-color: var(--sun);
+  background: var(--sun-soft);
+}
+.eats-places strong {
+  font-size: 19px;
+  margin-top: 6px;
+}
+.eats-places span,
+.eats-places em {
+  font-size: 13px;
+  font-style: normal;
+  color: var(--muted);
+}
+
+/* ---------- community page ---------- */
+.faq {
+  border-bottom: 1px solid var(--line);
+  max-width: 860px;
+}
+.faq summary {
+  cursor: pointer;
+  padding: 18px 34px 18px 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+  list-style: none;
+  position: relative;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: "+";
+  position: absolute;
+  right: 6px;
+  top: 16px;
+  font-size: 22px;
+  color: var(--sea-deep);
+}
+.faq[open] summary::after {
+  content: "–";
+}
+.faq p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.9;
+}
+.faq .see-also {
+  margin-bottom: 22px;
+}
+.community-channels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 30px;
+}
+.channel {
+  display: grid;
+  gap: 6px;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--sun-soft);
+}
+.channel span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.community-board {
+  max-width: 860px;
+}
+.community-pending {
+  padding: 26px;
+  border-radius: var(--radius-md);
+  background: var(--mist);
+  border: 1.5px dashed var(--sky-2);
+}
+.community-pending p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.9;
+}
+.community-pending a {
+  color: var(--sea-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.community-rules ul {
+  max-width: 760px;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 2;
+  font-size: 15px;
+}
+@media (max-width: 650px) {
+  .place-eats,
+  .eats-directory,
+  .community-section {
+    margin-top: 48px;
+    padding-top: 30px;
+  }
+  .eats-list {
+    grid-template-columns: 1fr;
+  }
+  .eats-places {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

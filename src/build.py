@@ -248,11 +248,20 @@ class Site:
         self.guide_notes = load_json('place-guides.json')
         if set(self.guide_notes) != {p['id'] for p in self.destinations}:
             raise ValueError('Every atlas destination must have a complete guide')
+        eats = load_json('eats.json')
+        self.eats, self.eats_nearby = eats['places'], eats['nearby']
+        place_ids = {p['id'] for p in self.destinations}
+        unknown = (set(self.eats) | set(self.eats_nearby) | set(self.eats_nearby.values())) - place_ids
+        if unknown or not set(self.eats_nearby.values()) <= set(self.eats):
+            raise ValueError(f'eats.json refers to unknown places: {sorted(unknown)}')
+        for x in self.items:
+            if not set(x.get('guides', [])) <= place_ids:
+                raise ValueError(f'{x["id"]}: "guides" must list atlas destination ids')
         self.place_articles=[]
         for p in self.destinations:
             p['url']=self.url(f"places/{p['id']}/")
             sections=guide_sections(p,self.guide_notes[p['id']])
-            self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=self.place_photo(p['id']),vi=p['vi'],region=REGIONS[p['region']],city=p['title'],keywords=p['vi'],url=p['url'],sections=sections))
+            self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=self.place_photo(p['id']),vi=p['vi'],region=REGIONS[p['region']],city=p['title'],keywords=' '.join([p['vi']]+[e[k] for e in self.eats.get(p['id'],[]) for k in ('name','ko')]),url=p['url'],sections=sections))
         public = []
         for x in self.items + self.place_articles:
             entry = {k: x[k] for k in keys if k in x}
@@ -290,6 +299,7 @@ class Site:
         `image` a photos.json stem for link previews; `schema` JSON-LD objects."""
         nav = ''.join(f'<a href="{self.url(c + "/")}">{h(v["label"])}</a>' for c, v in self.categories.items())
         nav += f'<a href="{"#travel-map" if home else self.url("map/")}">여행 지도</a>'
+        nav += f'<a href="{self.url("community/")}">커뮤니티</a>'
         styles = MAP_STYLES if atlas else ()
         scripts = COMMON_SCRIPTS + (MAP_SCRIPTS if atlas else ())
         preload = ''
@@ -354,7 +364,11 @@ class Site:
             ('name', 'twitter:image:alt', image_alt)]
         if og_type == 'article' and lastmod:
             meta.append(('property', 'article:modified_time', lastmod))
-        lines = [f'<link rel="canonical" href="{h(url)}">']
+        lines = [f'<link rel="canonical" href="{h(url)}">', '<meta name="robots" content="max-image-preview:large">']
+        if path == 'index.html':  # Search Console / Naver Search Advisor ownership codes from site.json
+            names = {'google': 'google-site-verification', 'naver': 'naver-site-verification'}
+            lines += [f'<meta name="{names[k]}" content="{h(v)}">'
+                      for k, v in self.config.get('verification', {}).items() if v and k in names]
         lines += [f'<meta {kind}="{key}" content="{h(value)}">' for kind, key, value in meta]
         for data in schema:
             text = json.dumps(dict({'@context': 'https://schema.org'}, **data), ensure_ascii=False)
@@ -421,7 +435,8 @@ class Site:
                 for i, v in enumerate(options))
             main = self.render('listing', label=h(info['label']), heading=h(info['en']),
                                subtitle=h(info['subtitle']), filters=filters,
-                               cards='\n'.join(self.card(x) for x in items))
+                               cards='\n'.join(self.card(x) for x in items),
+                               extra=self.eats_directory() if cat == 'food' else '')
             path = f'{cat}/index.html'
             listing = {'@type': 'CollectionPage', 'name': info['label'], 'description': info['description'],
                        'url': self.canonical(path), 'inLanguage': 'ko', 'isPartOf': self.canonical('index.html'),
@@ -456,10 +471,19 @@ class Site:
             if x['photo']:
                 cover = f'<div class="article-cover">{self.img(x["photo"], f"{x["title"]} 관련 풍경", "(max-width: 760px) 92vw, 80vw", lazy=False)}</div>'
             # Itineraries link first to the guides of the places they visit.
-            related = [a for g in x.get('guides', []) for a in self.place_articles if a['id'] == 'place-' + g]
-            related += [r for r in self.items if r['id'] != x['id'] and r not in related and (
-                r['category'] == x['category'] or (r.get('city') and r.get('city') == x.get('city')))]
-            related = related[:3]
+            places = [a for g in x.get('guides', []) for a in self.place_articles if a['id'] == 'place-' + g][:3]
+            related = places + [r for r in self.items if r['id'] != x['id'] and (
+                r['category'] == x['category'] or (r.get('city') and r.get('city') == x.get('city')))][:3]
+            # Text links to the guides (and their restaurants and cafes) of the places this note covers.
+            by_id = {p['id']: p for p in self.destinations}
+            links = []
+            for g in x.get('guides', []):
+                name = h(by_id[g]['title'].split(' · ')[0])
+                links.append(f'<a href="{by_id[g]["url"]}">{name} 여행 가이드</a>')
+                if g in self.eats:
+                    links.append(f'<a href="{by_id[g]["url"]}#eats">{name}의 맛집과 카페</a>')
+            if links:
+                extras += '<p class="see-also"><strong>함께 보기</strong>' + ''.join(links) + '</p>'
             edited = date.fromisoformat(x['date'])
             main = self.render(
                 'article', id=h(x['id']), label=h(label), category_url=self.url(x['category'] + '/'),
@@ -489,6 +513,86 @@ class Site:
                 f'<ol class="season-months" aria-label="{h(r["label"])} 월별 날씨">{months}</ol>'
                 f'<ul class="season-legend">{keys}</ul></div>')
 
+    # ---- restaurants and cafes (src/content/eats.json) -------------------
+    EAT_TYPES = {'food': ('맛집', 'Restaurant'), 'cafe': ('카페', 'CafeOrCoffeeShop')}
+
+    @staticmethod
+    def maps_search(query):
+        return 'https://www.google.com/maps/search/?api=1&amp;query=' + quote(query)
+
+    def eats_block(self, p, g):
+        """Restaurants and cafes under a place guide: the place's own list, the list of
+        the town people stay in (eats.json "nearby"), or map searches when there is none.
+        Returns the HTML and the JSON-LD ItemList (None without an own list)."""
+        name = p['title'].split(' · ')[0]
+        by_id = {d['id']: d for d in self.destinations}
+        base = by_id[self.eats_nearby[p['id']]] if p['id'] not in self.eats and p['id'] in self.eats_nearby else p
+        spots = self.eats.get(base['id'], [])
+        base_name = base['title'].split(' · ')[0]
+        dishes = ''.join(f'<li>{h(d)}</li>' for d in g['food'])
+        head = f'<div class="section-no">EAT &amp; DRINK / {h(p["vi"])}</div>'
+        searches = (f'<a class="action-button" href="{self.maps_search("quán ăn ngon " + p["vi"])}" target="_blank" rel="noopener noreferrer">구글 지도에서 {h(name)} 식당 찾기 ↗</a>'
+                    f'<a class="action-button" href="{self.maps_search("quán cà phê " + p["vi"])}" target="_blank" rel="noopener noreferrer">{h(name)} 카페 찾기 ↗</a>')
+        notes = ''.join(f'<a href="{x["url"]}">{h(x["title"])}</a>' for x in self.items if x['category'] == 'food')
+        more = (f'<p class="see-also"><strong>음식 노트</strong>{notes}'
+                f'<a href="{self.url("food/")}#eats-directory">지역별 맛집·카페 전체</a></p>')
+        if not spots:
+            return (f'<section class="place-eats" id="eats">{head}<h2>{h(name)}에서 먹어 볼 것</h2>'
+                    f'<p class="eats-lead">이 지역에서 찾아볼 메뉴예요. 추천할 가게는 확인되는 대로 이곳에 더해 둘게요.</p>'
+                    f'<ul class="eats-dishes">{dishes}</ul><div class="eats-search">{searches}</div>{more}</section>'), None
+        groups = ''
+        for kind, (label, _) in self.EAT_TYPES.items():
+            cards = ''.join(
+                f'<li class="eat-card eat-{kind}"><span class="eat-type">{label}</span>'
+                f'<strong lang="vi">{h(e["name"])}</strong><span class="eat-ko">{h(e["ko"])}</span>'
+                f'<p>{h(e["dish"])}</p><small>{h(e["area"])}</small>'
+                f'<a href="{self.maps_search(e["name"] + ", " + base["vi"])}" target="_blank" rel="noopener noreferrer" '
+                f'aria-label="{h(e["ko"])} 구글 지도에서 보기">지도에서 보기 ↗</a></li>'
+                for e in spots if e['type'] == kind)
+            if cards:
+                groups += f'<h3>{label}</h3><ul class="eats-list">{cards}</ul>'
+        if base is p:
+            title = f'{h(name)}의 맛집과 카페'
+            lead = f'{h(name)}에서 이름이 알려진 식당과 카페를 골랐어요. 가게 이름은 현지 표기 그대로 적었으니 기사님이나 지도 앱에 보여 주세요.'
+        else:
+            title = f'가까운 {h(base_name)}의 맛집과 카페'
+            lead = (f'{h(name)} 여행은 보통 {h(base_name)}에 머물며 다녀와요. 식사와 카페는 '
+                    f'<a href="{base["url"]}">{h(base_name)} 여행 가이드</a>의 목록을 함께 보세요.')
+        html_ = (f'<section class="place-eats" id="eats">{head}<h2>{title}</h2><p class="eats-lead">{lead}</p>{groups}'
+                 f'<p class="eats-note">직접 다녀온 후기가 아닌 편집 추천이에요. 이전·휴업·가격은 바뀔 수 있으니 방문 전 지도에서 영업 여부를 확인하세요.</p>'
+                 f'<div class="eats-search">{searches}</div>{more}</section>')
+        schema = None
+        if base is p:
+            schema = {'@type': 'ItemList', 'name': f'{name}의 맛집과 카페', 'itemListElement': [
+                {'@type': 'ListItem', 'position': i + 1, 'item': {
+                    '@type': self.EAT_TYPES[e['type']][1], 'name': e['name'], 'alternateName': e['ko'],
+                    'address': {'@type': 'PostalAddress', 'addressLocality': p['vi'], 'addressCountry': 'VN'}}}
+                for i, e in enumerate(spots)]}
+        return html_, schema
+
+    def eats_directory(self):
+        """Food listing: every place guide that has restaurants and cafes."""
+        links = []
+        for p in self.destinations:
+            spots = self.eats.get(p['id'])
+            if not spots:
+                continue
+            counts = ' · '.join(f'{label} {n}' for kind, (label, _) in self.EAT_TYPES.items()
+                                if (n := sum(e['type'] == kind for e in spots)))
+            links.append(f'<a href="{p["url"]}#eats"><small class="region-tag {p["region"]}">{h(REGIONS[p["region"]])}</small>'
+                         f'<strong>{h(p["title"].split(" · ")[0])}</strong><span lang="vi">{h(p["vi"])}</span><em>{counts}</em></a>')
+        return ('<section class="eats-directory" id="eats-directory"><div class="section-no">WHERE TO EAT</div>'
+                '<h2>지역별 맛집·카페</h2><p>여행지 가이드마다 그 지역의 식당과 카페를 정리해 두었어요. 도시를 골라 보세요.</p>'
+                '<div class="eats-places">' + ''.join(links) + '</div></section>')
+
+    def place_notes(self, p):
+        """Notes that go with a place guide: itineraries and articles that list it in
+        "guides", topped up with the practical guides."""
+        tagged = [x for x in self.items if p['id'] in x.get('guides', [])]
+        tagged.sort(key=lambda x: x['category'] != 'itineraries')
+        basics = [x for i in ('transport', 'money', 'visa') for x in self.items if x['id'] == i]
+        return (tagged + basics)[:max(3, min(len(tagged), 6))]
+
     def build_place_guides(self):
         for p,article in zip(self.destinations,self.place_articles):
             g=self.guide_notes[p['id']]
@@ -512,7 +616,9 @@ class Site:
                 cover=(f'<figure class="guide-cover"><img src="{self.url("assets/"+image["stem"]+"-1440.webp")}" srcset="{srcset}" sizes="92vw" width="{image["width"]}" height="{image["height"]}" alt="{h(image["alt"])}" loading="lazy">'
                        '</figure>')
             edited=date.fromisoformat(g['date'])
-            main=self.render('place-guide',date_iso=edited.isoformat(),date=edited.strftime('%Y.%m.%d'),cover=cover,name_vi=h(p['vi']),short_name=h(p['title'].split(' · ')[0]),title=h(p['title']),teaser=h(p['teaser']),region=h(REGIONS[p['region']]),duration=h(g['duration']),gateway=h(g['gateway']),save_id=h(article['id']),maps_url='https://www.google.com/maps/search/?api=1&amp;query='+quote(p['vi']+' Vietnam'),toc=toc,sections=''.join(blocks),related=related)
+            eats,eats_schema=self.eats_block(p,g)
+            notes='\n'.join(self.card(x) for x in self.place_notes(p))
+            main=self.render('place-guide',eats=eats,notes=notes,date_iso=edited.isoformat(),date=edited.strftime('%Y.%m.%d'),cover=cover,name_vi=h(p['vi']),short_name=h(p['title'].split(' · ')[0]),title=h(p['title']),teaser=h(p['teaser']),region=h(REGIONS[p['region']]),duration=h(g['duration']),gateway=h(g['gateway']),save_id=h(article['id']),maps_url='https://www.google.com/maps/search/?api=1&amp;query='+quote(p['vi']+' Vietnam'),toc=toc,sections=''.join(blocks),related=related)
             path=f'places/{p["id"]}/index.html'
             description=g.get('meta_description') or (
                 f'{p["title"]} 여행 가이드 · {p["teaser"]} 추천 체류 {g["duration"]}, 가는 법과 숙소·음식·예산·안전 정보까지 정리했어요.')
@@ -523,7 +629,8 @@ class Site:
             if photograph:
                 place['image']=self.share_image(photograph['stem'])[0]
             self.page(path,p['title']+' 여행 가이드',main,description,og_type='article',image=self.place_photo(p['id']),
-                      lastmod=g['date'],schema=[place,self.breadcrumbs(('여행 지도','map/index.html'),(p['title'],path))])
+                      lastmod=g['date'],schema=[place,*([eats_schema] if eats_schema else []),
+                              self.breadcrumbs(('여행지','destinations/index.html'),(p['title'],path))])
 
     def build_static_pages(self):
         pages = self.config['pages']
@@ -536,12 +643,50 @@ class Site:
                            'url': self.canonical('about/index.html'), 'inLanguage': 'ko',
                            'mainEntity': {'@type': 'Person', 'name': self.config['author']}},
                           self.breadcrumbs((about['title'], 'about/index.html'))])
+        self.build_community(pages['community'])
         atlas = pages['map']
         self.page('map/index.html', atlas['title'], self.render('map', atlas=self.atlas('h1')),
                   atlas['description'], atlas=True,
                   schema=[self.breadcrumbs((atlas['title'], 'map/index.html'))])
         self.page('404.html', pages['404']['title'], self.render('not-found'), pages['404']['description'],
                   index=False)
+
+    def build_community(self, page):
+        """Community page: reader questions with links into the site, the channels and
+        discussion board named in site.json "community" (both optional)."""
+        data = load_json('community.json')
+        settings = self.config.get('community', {})
+        faq = ''.join(
+            f'<details class="faq"><summary>{h(f["q"])}</summary><p>{h(f["a"])}</p><p class="see-also">'
+            + ''.join(f'<a href="{self.url(l["href"])}">{h(l["label"])}</a>' for l in f['links']) + '</p></details>'
+            for f in data['faq'])
+        for f in data['faq']:
+            for l in f['links']:
+                if not (self.out / l['href'] / 'index.html').exists() and l['href'] != 'map/':
+                    raise ValueError(f'community.json links to a missing page: {l["href"]}')
+        channels = ''.join(
+            f'<a class="channel" href="{h(c["url"])}" target="_blank" rel="noopener noreferrer"><strong>{h(c["label"])} ↗</strong>'
+            f'<span>{h(c.get("note", ""))}</span></a>' for c in settings.get('channels', []) if c.get('url'))
+        gc = settings.get('giscus', {})
+        keys = ('repo', 'repo_id', 'category', 'category_id')
+        if all(gc.get(k) for k in keys):
+            attrs = ' '.join(f'data-{k.replace("_", "-")}="{h(gc[k])}"' for k in keys)
+            board = (f'<div class="community-board"><script src="https://giscus.app/client.js" {attrs} data-mapping="specific" '
+                     'data-term="VIETNOTE 커뮤니티" data-strict="1" data-reactions-enabled="1" data-emit-metadata="0" '
+                     'data-input-position="top" data-theme="light" data-lang="ko" data-loading="lazy" crossorigin="anonymous" async></script></div>')
+        else:
+            board = ('<div class="community-board community-pending"><strong>게시판은 준비 중이에요.</strong>'
+                     '<p>질문과 여행 이야기를 남길 수 있는 공간을 준비하고 있어요. 그동안 바뀐 정보나 궁금한 점은 '
+                     f'<a href="{self.url("about/")}#feedback">정보 수정 제안</a>에 메모해 둘 수 있어요.</p></div>')
+        rules = ''.join(f'<li>{h(r)}</li>' for r in data['rules'])
+        main = self.render('community', faq=faq, board=board, rules=rules,
+                           channels=f'<div class="community-channels">{channels}</div>' if channels else '')
+        path = 'community/index.html'
+        schema = {'@type': 'FAQPage', 'inLanguage': 'ko', 'url': self.canonical(path), 'mainEntity': [
+            {'@type': 'Question', 'name': f['q'], 'acceptedAnswer': {'@type': 'Answer', 'text': f['a']}}
+            for f in data['faq']]}
+        self.page(path, page['title'], main, page['description'], lastmod=data['date'],
+                  schema=[schema, self.breadcrumbs((page['title'], path))])
 
     # The four postcards written in home.html, and four more shown on wide screens.
     POSTCARDS_IN_TEMPLATE = ('hanoi', 'hoian', 'danang', 'phuquoc')
@@ -653,7 +798,7 @@ class Site:
         self.check_font_coverage()
         print(f'Built {self.out.relative_to(ROOT)}/ with base path {self.base}: '
               f'{len(self.items)} detail pages, {len(self.place_articles)} place guides, {len(self.categories)} listings, '
-              f'home, map, notebook, about and 404.')
+              f'home, map, community, notebook, about and 404.')
 
 
 def normalise_base(value):

@@ -70,6 +70,23 @@
     "404": {
       "title": "페이지를 찾을 수 없습니다",
       "description": "요청하신 VIETNOTE 페이지를 찾을 수 없습니다."
+    },
+    "community": {
+      "title": "여행자 커뮤니티",
+      "description": "베트남 여행을 준비하는 분들이 자주 묻는 질문과 답을 모았습니다. 비자, 환전, 날씨, 이동, 음식 주문까지 확인하고 여행 이야기를 함께 나눠요."
     }
+  },
+  "community": {
+    "channels": [],
+    "giscus": {
+      "repo": "",
+      "repo_id": "",
+      "category": "",
+      "category_id": ""
+    }
+  },
+  "verification": {
+    "google": "",
+    "naver": ""
   }
 }
