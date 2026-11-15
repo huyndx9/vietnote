@@ -193,7 +193,7 @@ class Site:
         pool = [self.route_entry(x) for x in sorted(itins, key=lambda x: x['id']) if x['id'] not in self.ROUTES_FIRST]
         pool_json = json.dumps(pool, ensure_ascii=False).replace('</', '<\\/')
         return ('<section class="section wrap home-routes" id="routes"><div class="section-head"><div>'
-                '<div class="section-no">02 / SUGGESTED ROUTES</div><h2 class="section-title serif">Ready-made journeys.</h2>'
+                '<div class="section-no">03 / SUGGESTED ROUTES</div><h2 class="section-title serif">Ready-made journeys.</h2>'
                 '<div class="section-sub">처음이라면 이렇게 시작해 보세요. 쉬는 시간까지 넣어 둔 추천 일정이에요.</div></div>'
                 '<div class="route-actions"><button type="button" class="route-pause" aria-pressed="false" hidden>Ⅱ <span>멈추기</span></button>'
                 f'<a class="textlink" href="{self.url("itineraries/")}">전체 일정 ↗</a></div></div>'
@@ -406,7 +406,14 @@ class Site:
                            image=image, meta=meta, title=h(x['title']), desc=h(x['desc']))
 
     def atlas(self, heading):
-        return self.render('atlas', heading=heading)
+        # Key figures beside the atlas heading, counted from the content files.
+        figures = ((len(self.destinations), '여행지', self.url('destinations/')),
+                   (sum(x['category'] == 'itineraries' for x in self.items), '추천 일정', self.url('itineraries/')),
+                   (sum(x['category'] == 'guides' for x in self.items), '준비 가이드', self.url('guides/')))
+        stats = '<ul class="atlas-stats">' + ''.join(
+            f'<li><a href="{h(url)}"><strong>{n}</strong><span>{label}</span></a></li>'
+            for n, label, url in figures) + '</ul>'
+        return self.render('atlas', heading=heading, stats=stats)
 
     # ---- pages ---------------------------------------------------------
     def build_listings(self):

@@ -1934,3 +1934,202 @@ body {
     letter-spacing: -0.01em;
   }
 }
+
+/* ---------- hero: shortcuts under the search box ---------- */
+.hero-quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 560px;
+}
+.hero-quick-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--paper);
+  margin-right: 4px;
+}
+.hero-quick a {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--paper) 55%, transparent);
+  background: color-mix(in srgb, var(--ink) 38%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--paper);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.hero-quick a:hover,
+.hero-quick a:focus-visible {
+  background: var(--sun);
+  border-color: var(--sun);
+  color: var(--ink);
+}
+
+/* ---------- atlas: key figures beside the heading ---------- */
+.atlas-stats {
+  display: flex;
+  gap: clamp(20px, 3vw, 48px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: none;
+}
+.atlas-stats a {
+  display: grid;
+  gap: 4px;
+  padding-left: 16px;
+  border-left: 3px solid var(--sun);
+  color: var(--ink);
+}
+.atlas-stats li:nth-child(2) a {
+  border-color: var(--coral);
+}
+.atlas-stats li:nth-child(3) a {
+  border-color: var(--sea);
+}
+.atlas-stats strong {
+  font: 800 clamp(34px, 3.4vw, 52px) / 1 var(--font-latin);
+  letter-spacing: -0.03em;
+}
+.atlas-stats span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.atlas-stats a:hover strong {
+  color: var(--sea-deep);
+}
+
+/* ---------- homepage: culture stories as three even cards ---------- */
+.stories {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+  align-items: stretch;
+}
+.story {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 20px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius-md) + 8px);
+  background: var(--paper);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.story:hover,
+.story:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 40px -26px color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.story .photo,
+.story:first-child .photo {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+.story .photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.story .meta,
+.story h3,
+.story p,
+.story-go {
+  margin-inline: 10px;
+}
+.story h3,
+.story:first-child h3 {
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.45;
+}
+.story p {
+  margin-block: 8px 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.story-go {
+  margin-top: auto;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sea-deep);
+}
+
+/* ---------- footer: grouped link columns ---------- */
+.footer-links {
+  grid-template-columns: repeat(3, minmax(110px, auto));
+  gap: 28px clamp(28px, 4vw, 64px);
+}
+.footer-col {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.footer-col h2 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--sun);
+}
+
+@media (max-width: 1000px) {
+  .stories {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .story:first-child {
+    grid-column: span 2;
+  }
+  .story:first-child .photo {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+}
+@media (max-width: 900px) {
+  .map-intro {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media (max-width: 650px) {
+  .hero-quick {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-right: calc(-1 * clamp(22px, 4vw, 64px));
+    padding-right: 22px;
+  }
+  .hero-quick::-webkit-scrollbar {
+    display: none;
+  }
+  .hero-quick a {
+    flex: none;
+  }
+  .hero-quick-label {
+    display: none;
+  }
+  .atlas-stats {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .atlas-stats a {
+    padding-left: 12px;
+  }
+  .atlas-stats strong {
+    font-size: 30px;
+  }
+  .story .photo,
+  .story:first-child .photo {
+    height: auto;
+  }
+  .footer-links {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
