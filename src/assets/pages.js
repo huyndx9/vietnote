@@ -64,12 +64,16 @@ function card(x) {
     ? ` <span class="region-tag ${regionClass[x.region] || ""}">${esc(x.region)}</span>`
     : "";
   const stamp = x.vi && x.photo ? `<span class="postcard-stamp" lang="vi">${esc(x.vi)}</span>` : "";
+  const facts = (x.duration
+    ? `<dl class="card-duration"><dt>추천 체류</dt><dd>${esc(x.duration)}</dd></dl>` : "") +
+    (x.experiences?.length
+      ? `<ul class="card-experiences" aria-label="추천 경험">${x.experiences.slice(0, 3).map((v) => `<li>${esc(v)}</li>`).join("")}</ul>` : "");
   return (
     `<article class="browse-card">` +
     `<div class="card-image"><a href="${x.url}" tabindex="-1" aria-hidden="true">${image}</a>${stamp}` +
     `<button class="save-button" data-save="${x.id}" aria-label="여행 노트에 저장">♡</button></div>` +
     `<div class="meta">${categoryNames[x.category]}${region}</div>` +
-    `<h2><a href="${x.url}">${esc(x.title)}</a></h2><p>${esc(x.desc)}</p>` +
+    `<h2><a href="${x.url}">${esc(x.title)}</a></h2><p>${esc(x.desc)}</p>${facts}` +
     `<span class="card-go" aria-hidden="true">↗</span></article>`
   );
 }
@@ -208,7 +212,7 @@ function searchItems(q, items = content) {
   const ranked = items.map((x) => {
     const fields = [
       [foldText(x.title), 6], [foldText([x.city, x.keywords, categoryNames[x.category]].join(" ")), 5],
-      [foldText(x.desc), 3], [foldText(x.sections.flat().join(" ")), 1],
+      [foldText([x.desc, x.duration, ...(x.experiences || [])].join(" ")), 3], [foldText(x.sections.flat().join(" ")), 1],
     ];
     let matched = 0, score = 0;
     for (const g of groups) {
