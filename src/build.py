@@ -610,11 +610,9 @@ class Site:
     def build_home(self):
         atlas = ('<section class="page-wrap map-page home-map" id="travel-map" aria-label="베트남 여행 지도">'
                  + self.atlas('h2') + '</section>')
-        # Vietnamese place names scrolling under the hero; the list is written twice for a seamless loop.
-        names = ''.join(f'<span lang="vi">{h(d["vi"])}</span>' for d in self.destinations)
         main = self.render('home', atlas=atlas, **self.home_images(), hero_slides=self.hero_slides(),
                            hero_credit=self.hero_credit(), routes=self.home_routes(), history=self.home_history(),
-                           ticker=names + names, postcard_pool=self.postcard_pool(),
+                           postcard_pool=self.postcard_pool(),
                            wide_postcards=self.wide_postcards())
         home = self.config['pages']['home']
         website = {'@type': 'WebSite', 'name': self.config['site_name'], 'url': self.public_url,
