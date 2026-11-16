@@ -29,6 +29,8 @@ function saveStore(key, value) {
     return false;
   }
 }
+let plannerBusy = false;
+const plannerKey = "vietnote.itinerary";
 let saved = readStore("vietnote.saved", []);
 if (!Array.isArray(saved)) saved = [];
 function toast(message) {
@@ -84,6 +86,7 @@ function renderNotebook() {
   document.getElementById("notebookEmpty").hidden = items.length > 0;
   syncSave();
   renderFeedback();
+  syncPlanner();
 }
 document.addEventListener("click", async (e) => {
   const save = e.target.closest("[data-save]");
@@ -1127,3 +1130,79 @@ setupHeroSlideshow();
   });
   setActive(0);
 })();
+
+
+// Notebook planner shares the site's existing AI proxy; keys stay on the Worker.
+function plannerPlaces() {
+  const selected = content.filter((x) => saved.includes(x.id) && x.category === "destinations");
+  // A city may have an early article and a complete atlas guide; use the guide.
+  const guides = selected.filter((x) => x.id.startsWith("place-"));
+  return selected.filter((x) => x.id.startsWith("place-") || !guides.some((g) => g.id === "place-" + x.id));
+}
+function plannerSignature(items) { return items.map((x) => x.id).sort().join("|"); }
+function syncPlanner() {
+  const form = document.getElementById("plannerForm");
+  if (!form) return;
+  const items = plannerPlaces();
+  const endpoint = document.querySelector('meta[name="vietnote-ai"]')?.content;
+  document.getElementById("plannerSelection").textContent = items.length
+    ? `${items.length}개 여행지: ${items.map((x) => x.vi || x.city || x.title).join(" · ")}`
+    : "여행지 카드의 ♡를 눌러 저장해 주세요. 음식·준비 글은 참고용이며 방문 장소에는 포함하지 않아요.";
+  form.querySelector('button[type="submit"]').disabled = plannerBusy || !items.length || !endpoint;
+  if (!endpoint && !plannerBusy) document.getElementById("plannerStatus").textContent = "AI 연결 후 일정을 작성할 수 있어요.";
+  const plan = readStore(plannerKey, null);
+  if (plan && typeof plan.text === "string") {
+    document.getElementById("plannerResult").hidden = false;
+    document.getElementById("plannerText").textContent = plan.text;
+    const stale = plan.signature !== plannerSignature(items);
+    document.getElementById("plannerSummary").textContent = `${plan.days}일 · ${plan.paceLabel} · ${plan.names || ""}${stale ? " — 저장한 여행지가 바뀌었어요. 다시 작성해 주세요." : ""}`;
+  }
+}
+function setupPlanner() {
+  const form = document.getElementById("plannerForm");
+  if (!form) return;
+  syncPlanner();
+  document.getElementById("plannerCopy").onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(document.getElementById("plannerText").textContent);
+      toast("일정을 복사했습니다.");
+    } catch { toast("일정 본문을 선택해 복사해 주세요."); }
+  };
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+    if (plannerBusy || !form.reportValidity()) return;
+    const items = plannerPlaces();
+    const endpoint = document.querySelector('meta[name="vietnote-ai"]')?.content;
+    if (!items.length || !endpoint) return;
+    const days = Number(form.elements.days.value), pace = form.elements.pace.value;
+    const paceLabel = form.elements.pace.selectedOptions[0].textContent;
+    const status = document.getElementById("plannerStatus");
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 150000);
+    plannerBusy = true;
+    form.setAttribute("aria-busy", "true");
+    syncPlanner();
+    status.textContent = "동선과 이동 시간을 고려해 일정을 작성하고 있어요…";
+    try {
+      const places = items.map((x) => ({ id: x.id, title: x.title, desc: x.desc, region: x.region || "", duration: x.duration || "", experiences: x.experiences || [], ...(x.planning || {}) }));
+      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ task: "itinerary", days, pace, places }), signal: controller.signal });
+      if (!response.ok) throw new Error("request_failed");
+      const data = await response.json();
+      if (typeof data.reply !== "string" || !data.reply.trim()) throw new Error("empty_reply");
+      const plan = { text: data.reply, days, paceLabel, names: items.map((x) => x.vi || x.city || x.title).join(" · "), signature: plannerSignature(items) };
+      // Always show the result, even if browser storage is unavailable.
+      document.getElementById("plannerResult").hidden = false;
+      document.getElementById("plannerText").textContent = plan.text;
+      document.getElementById("plannerSummary").textContent = `${days}일 · ${paceLabel} · ${plan.names}`;
+      const stored = saveStore(plannerKey, plan);
+      status.textContent = stored ? "일정을 작성해 이 브라우저에 저장했어요." : "일정을 작성했어요. 보관하려면 복사해 주세요.";
+      if (plan.signature !== plannerSignature(plannerPlaces())) status.textContent += " 저장한 여행지가 바뀌었으니 다시 작성해 주세요.";
+    } catch (error) {
+      status.textContent = error.name === "AbortError" ? "응답이 오래 걸려 중단했어요. 잠시 후 다시 시도해 주세요." : "일정을 작성하지 못했어요. 기존 일정은 유지됩니다. 잠시 후 다시 시도해 주세요.";
+    } finally {
+      clearTimeout(timeout); plannerBusy = false;
+      form.removeAttribute("aria-busy"); syncPlanner();
+    }
+  };
+}
+setupPlanner();

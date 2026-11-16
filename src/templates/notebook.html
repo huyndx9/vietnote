@@ -5,6 +5,18 @@
     <p>마음에 든 도시, 이야기, 일정을 한곳에 모아 두세요.</p>
   </div>
   <div class="storage-note">이 브라우저에 저장됩니다. 다른 기기와 동기화되지 않으며, 브라우저 데이터를 지우면 삭제됩니다.</div>
+  <section class="notebook-planner" aria-labelledby="plannerTitle">
+    <h2 id="plannerTitle">저장한 여행지로 AI 일정 만들기</h2>
+    <p id="plannerSelection"></p>
+    <form id="plannerForm">
+      <label>여행 일수 <input name="days" type="number" min="1" max="14" value="4" required></label>
+      <label>여행 속도 <select name="pace"><option value="relaxed">여유롭게</option><option value="balanced" selected>균형 있게</option><option value="active">알차게</option></select></label>
+      <button class="action-button" type="submit">AI 일정 작성</button>
+    </form>
+    <p class="planner-note">작성 버튼을 누르면 저장한 여행지 정보와 여행 일수·속도를 AI에 보내요. 항공·영업 시간과 이동편은 예약 전 확인해 주세요.</p>
+    <p id="plannerStatus" role="status" aria-live="polite"></p>
+    <div id="plannerResult" hidden><h3>나의 AI 여행 일정</h3><p id="plannerSummary"></p><div id="plannerText"></div><button class="action-button" id="plannerCopy" type="button">일정 복사</button></div>
+  </section>
   <div id="notebookItems" class="browse-grid"></div>
   <div id="notebookEmpty" class="empty-state" hidden>
     <h2>아직 비어 있는 여행 노트</h2>

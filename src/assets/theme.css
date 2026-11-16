@@ -2304,3 +2304,15 @@ body {
 .guide-choice dd { margin: 5px 0 0; font-size: 15px; line-height: 1.8; }
 .guide-choice dd a { text-decoration: underline; text-underline-offset: 3px; }
 .guide-choice small { display: block; color: var(--muted); }
+
+.notebook-planner { margin: 28px 0 36px; padding-block: 24px; border-block: 1px solid var(--line); }
+.notebook-planner h2 { font-size: 21px; margin-top: 0; }
+.notebook-planner form { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; }
+.notebook-planner label { display: grid; gap: 8px; font-size: 14px; }
+.notebook-planner input, .notebook-planner select { min-height: 44px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font: inherit; }
+.notebook-planner input { width: 100px; }
+.notebook-planner button:disabled { opacity: .5; cursor: not-allowed; }
+.planner-note, #plannerSummary { font-size: 13px; color: var(--muted); line-height: 1.7; }
+#plannerSelection { overflow-wrap: anywhere; line-height: 1.7; }
+#plannerResult { max-width: 800px; margin-top: 24px; }
+#plannerText { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9; margin-bottom: 20px; }

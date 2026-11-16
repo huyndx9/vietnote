@@ -228,3 +228,16 @@ Cloudflare, triển khai Worker, lưu key, ghi URL vào `ai_endpoint` của
   `ai_endpoint` trong `site.json`.
 - Nên đặt hạn mức chi tiêu trong tài khoản DeepSeek; kiểm tra Origin không chặn được
   người gọi Worker trực tiếp.
+
+## AI lập lịch trình từ sổ tay
+
+Trong `notebook/`, lưu các thẻ điểm đến, chọn 1–14 ngày và nhịp độ rồi bấm
+**AI 일정 작성**. Các bài ẩm thực/hướng dẫn vẫn nằm trong sổ tay nhưng không được
+coi là điểm đến. Bản thành phố và cẩm nang cùng địa điểm được gộp khi gửi AI.
+Kết quả có thể sao chép và lưu tại trình duyệt; đổi các thẻ đã lưu sẽ có nhắc viết lại.
+
+Dùng cùng `VIETNOTE_AI_ENDPOINT` và Worker DeepSeek đã cấu hình. Worker nhận
+`task: "itinerary"` cùng `days`, `pace`, `places`, giới hạn 42 điểm và giữ riêng
+ngữ cảnh lập lịch trình để không bị cắt theo giới hạn 1.000 ký tự của chat.
+Chạy `node scripts/test-ai-planner.mjs` để kiểm tra hợp đồng Worker bằng phản hồi
+mô phỏng; bài kiểm tra không gọi DeepSeek và không cần API key thật.

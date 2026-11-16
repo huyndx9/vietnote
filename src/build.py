@@ -244,7 +244,7 @@ class Site:
 
     def write_data_scripts(self):
         """Browser copies of the content used by search, notebook and atlas."""
-        keys = ('id', 'title', 'category', 'desc', 'photo', 'photo_alt', 'region', 'city', 'keywords', 'days', 'url', 'vi', 'duration', 'experiences', 'audience', 'effort')
+        keys = ('id', 'title', 'category', 'desc', 'photo', 'photo_alt', 'region', 'city', 'keywords', 'days', 'url', 'vi', 'duration', 'experiences', 'audience', 'effort', 'planning')
         self.destinations = load_json('map-destinations.json')
         self.guide_notes = load_json('place-guides.json')
         if set(self.guide_notes) != {p['id'] for p in self.destinations}:
@@ -254,6 +254,7 @@ class Site:
             p['url']=self.url(f"places/{p['id']}/")
             sections=guide_sections(p,self.guide_notes[p['id']])
             self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=self.place_photo(p['id']),vi=p['vi'],region=REGIONS[p['region']],city=p['title'],keywords=p['vi'],url=p['url'],sections=sections))
+            self.place_articles[-1]['planning'] = dict(lat=p['lat'], lon=p['lon'], gateway=self.guide_notes[p['id']]['gateway'], transport=self.guide_notes[p['id']]['transport'])
             self.place_articles[-1].update(duration=self.guide_notes[p['id']]['duration'],
                                            experiences=p['experiences'],
                                            audience=self.guide_notes[p['id']]['choice']['audience'],
