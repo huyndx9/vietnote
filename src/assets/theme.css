@@ -2326,3 +2326,17 @@ body {
   .travel-prep .guide { min-height: 88px; padding: 16px 0; }
   .travel-prep .guide:nth-last-child(2) { border-bottom: 1px solid var(--line); }
 }
+
+/* Two quiet planning lines replace the destination card's experience badges. */
+.card-fit { margin: 0 8px; font-size: 12px; line-height: 1.6; }
+.card-fit > div { display: flex; flex-wrap: wrap; gap: 2px 8px; margin-top: 3px; }
+.card-fit dt { color: var(--muted); }
+.card-fit dd { margin: 0; color: var(--ink); }
+.guide-choice { margin: 24px 0; border-block: 1px solid var(--line); }
+.guide-choice summary { padding: 18px 0; cursor: pointer; font-weight: 600; }
+.guide-choice summary:focus-visible { outline: 2px solid var(--sea-band); outline-offset: 3px; }
+.guide-choice dl { margin: 0 0 20px; }
+.guide-choice dt { font-size: 13px; color: var(--muted); margin-top: 16px; }
+.guide-choice dd { margin: 5px 0 0; font-size: 15px; line-height: 1.8; }
+.guide-choice dd a { text-decoration: underline; text-underline-offset: 3px; }
+.guide-choice small { display: block; color: var(--muted); }

@@ -244,7 +244,7 @@ class Site:
 
     def write_data_scripts(self):
         """Browser copies of the content used by search, notebook and atlas."""
-        keys = ('id', 'title', 'category', 'desc', 'photo', 'photo_alt', 'region', 'city', 'keywords', 'days', 'url', 'vi', 'duration', 'experiences')
+        keys = ('id', 'title', 'category', 'desc', 'photo', 'photo_alt', 'region', 'city', 'keywords', 'days', 'url', 'vi', 'duration', 'experiences', 'audience', 'effort')
         self.destinations = load_json('map-destinations.json')
         self.guide_notes = load_json('place-guides.json')
         if set(self.guide_notes) != {p['id'] for p in self.destinations}:
@@ -255,7 +255,9 @@ class Site:
             sections=guide_sections(p,self.guide_notes[p['id']])
             self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=self.place_photo(p['id']),vi=p['vi'],region=REGIONS[p['region']],city=p['title'],keywords=p['vi'],url=p['url'],sections=sections))
             self.place_articles[-1].update(duration=self.guide_notes[p['id']]['duration'],
-                                           experiences=p['experiences'])
+                                           experiences=p['experiences'],
+                                           audience=self.guide_notes[p['id']]['choice']['audience'],
+                                           effort=self.guide_notes[p['id']]['choice']['effort'])
         public = []
         for x in self.items + self.place_articles:
             entry = {k: x[k] for k in keys if k in x}
@@ -410,9 +412,10 @@ class Site:
         facts = ''
         if x.get('duration'):
             facts += f'<dl class="card-duration"><dt>추천 체류</dt><dd>{h(x["duration"])}</dd></dl>'
-        if x.get('experiences'):
-            facts += '<ul class="card-experiences" aria-label="추천 경험">' + ''.join(
-                f'<li>{h(v)}</li>' for v in x['experiences'][:3]) + '</ul>'
+        if x.get('audience'):
+            facts += '<dl class="card-fit">' + ''.join(
+                f'<div><dt>{label}</dt><dd>{h(x[key])}</dd></div>'
+                for key, label in (('audience', '추천 취향'), ('effort', '활동 정도'))) + '</dl>'
         return self.render('card', id=h(x['id']), url=h(x['url']), city=h(x.get('city', '')), stamp=stamp,
                            image=image, meta=meta, title=h(x['title']), desc=h(x['desc']), facts=facts)
 
@@ -517,6 +520,18 @@ class Site:
                 if section['id']=='phrases':
                     phrases=[('이곳으로 가 주세요',f'Cho tôi đến {p["vi"]}.'),('고수를 빼 주세요','Không cho rau mùi.'),('맵지 않게 해 주세요','Không cay.'),('얼마인가요?','Bao nhiêu tiền?'),('도와주세요','Làm ơn giúp tôi.'),('감사합니다','Cảm ơn.')]
                     body+='<div class="phrase-cards">'+''.join(f'<button class="phrase" data-copy="{h(vi)}"><span>{h(ko)}</span><strong>{h(vi)}</strong><small>눌러서 복사하기</small></button>' for ko,vi in phrases)+'</div>'
+                if section['id'] == 'first-look':
+                    choice = g['choice']
+                    names = {v['id']: v['title'] for v in self.destinations}
+                    alternative = choice['alternative']
+                    pairing = choice['pairing']
+                    body += (f'<details class="guide-choice"><summary>나에게 맞는 여행지일까요?</summary>'
+                             f'<dl><dt>추천 취향 · 활동</dt><dd>{h(choice["audience"])} · {h(choice["effort"])}</dd>'
+                             f'<dt>미리 고려할 점</dt><dd>{h(choice["consideration"])}</dd>'
+                             f'<dt>다른 여행지와 비교</dt><dd>{h(choice["comparison"])} '
+                             f'<a href="{self.url("places/" + alternative + "/")}">{h(names[alternative])} →</a></dd>'
+                             f'<dt>함께 계획하기</dt><dd><a href="{self.url("places/" + pairing + "/")}">{h(names[pairing])} →</a>'
+                             f'<small>이동 시간을 별도로 확인해 여유 있는 일정으로 연결하세요.</small></dd></dl></details>')
                 blocks.append(f'<section id="{section["id"]}"><h2>{h(section["title"])}</h2>{body}</section>')
             neighbors=sorted((r for r in self.destinations if r['id']!=p['id']),key=lambda r:(r['region']!=p['region'],(r['lat']-p['lat'])**2+(r['lon']-p['lon'])**2))[:3]
             related=''.join(f'<a href="{r["url"]}"><small>{h(REGIONS[r["region"]])}</small><strong>{h(r["title"])}</strong><p>{h(r["teaser"])}</p><span>여행 가이드 읽기 ↗</span></a>' for r in neighbors)

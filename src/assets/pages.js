@@ -66,8 +66,7 @@ function card(x) {
   const stamp = x.vi && x.photo ? `<span class="postcard-stamp" lang="vi">${esc(x.vi)}</span>` : "";
   const facts = (x.duration
     ? `<dl class="card-duration"><dt>추천 체류</dt><dd>${esc(x.duration)}</dd></dl>` : "") +
-    (x.experiences?.length
-      ? `<ul class="card-experiences" aria-label="추천 경험">${x.experiences.slice(0, 3).map((v) => `<li>${esc(v)}</li>`).join("")}</ul>` : "");
+    (x.audience ? `<dl class="card-fit"><div><dt>추천 취향</dt><dd>${esc(x.audience)}</dd></div><div><dt>활동 정도</dt><dd>${esc(x.effort)}</dd></div></dl>` : "");
   return (
     `<article class="browse-card">` +
     `<div class="card-image"><a href="${x.url}" tabindex="-1" aria-hidden="true">${image}</a>${stamp}` +
