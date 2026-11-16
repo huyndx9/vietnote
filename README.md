@@ -181,7 +181,7 @@ Mỗi thẻ bản đồ dẫn tới `places/<id>/`. Trang được dựng từ
 cho khách Hàn nằm trong `src/place_guides.py`, giao diện trong
 `src/templates/place-guide.html`. Build kiểm tra mỗi địa điểm đều có cẩm nang.
 
-Các bài có 13 phần, mục lục, lưu sổ tay, chia sẻ, câu tiếng Việt để sao chép,
+Các cẩm nang có 10 phần theo từng điểm đến và một mục hướng dẫn chung, mục lục, lưu sổ tay, chia sẻ, câu tiếng Việt để sao chép,
 liên kết Google Maps và địa điểm liên quan. Nội dung là hướng dẫn biên tập;
 không khẳng định đã trực tiếp đến thăm hoặc cung cấp giá/giờ mở cửa trực tiếp.
 Khi bổ sung địa điểm, cập nhật cả hai file JSON và kiểm tra nguồn thông tin.

@@ -514,10 +514,8 @@ class Site:
             blocks=[]
             for section in article['sections']:
                 body=''.join(f'<p>{h(text)}</p>' for text in section['body'].split('\n\n'))
-                if section['id']=='weather':
-                    body=self.season_strip(p['region'])+body
                 if section['id']=='phrases':
-                    phrases=[('이 주소로 가 주세요','Cho tôi đến địa chỉ này.'),('고수를 빼 주세요','Không cho rau mùi.'),('맵지 않게 해 주세요','Không cay.'),('얼마인가요?','Bao nhiêu tiền?'),('도와주세요','Làm ơn giúp tôi.'),('감사합니다','Cảm ơn.')]
+                    phrases=[('이곳으로 가 주세요',f'Cho tôi đến {p["vi"]}.'),('고수를 빼 주세요','Không cho rau mùi.'),('맵지 않게 해 주세요','Không cay.'),('얼마인가요?','Bao nhiêu tiền?'),('도와주세요','Làm ơn giúp tôi.'),('감사합니다','Cảm ơn.')]
                     body+='<div class="phrase-cards">'+''.join(f'<button class="phrase" data-copy="{h(vi)}"><span>{h(ko)}</span><strong>{h(vi)}</strong><small>눌러서 복사하기</small></button>' for ko,vi in phrases)+'</div>'
                 blocks.append(f'<section id="{section["id"]}"><h2>{h(section["title"])}</h2>{body}</section>')
             neighbors=sorted((r for r in self.destinations if r['id']!=p['id']),key=lambda r:(r['region']!=p['region'],(r['lat']-p['lat'])**2+(r['lon']-p['lon'])**2))[:3]
