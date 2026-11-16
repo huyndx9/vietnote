@@ -233,7 +233,8 @@ class Site:
             items.append(dict(d, category='destinations', title=f"{d['city']} · {d['name_en']}",
                               keywords=f"{d['name_en']} {d['city']}"))
         items += load_json('articles.json')
-        items += [dict(g, category='guides', photo=g.get('photo')) for g in load_json('guides.json')]
+        items += [dict(g, category='guides', photo=self.url(f'assets/illustrations/{g["illustration"]}.webp')
+                       if g.get('illustration') else g.get('photo')) for g in load_json('guides.json')]
         items += [dict(i, category='itineraries') for i in load_json('itineraries.json')]
         for x in items:
             folder = 'destinations' if x['category'] == 'destinations' else 'articles'
@@ -243,7 +244,7 @@ class Site:
 
     def write_data_scripts(self):
         """Browser copies of the content used by search, notebook and atlas."""
-        keys = ('id', 'title', 'category', 'desc', 'photo', 'region', 'city', 'keywords', 'days', 'url', 'vi', 'duration', 'experiences')
+        keys = ('id', 'title', 'category', 'desc', 'photo', 'photo_alt', 'region', 'city', 'keywords', 'days', 'url', 'vi', 'duration', 'experiences')
         self.destinations = load_json('map-destinations.json')
         self.guide_notes = load_json('place-guides.json')
         if set(self.guide_notes) != {p['id'] for p in self.destinations}:
@@ -329,6 +330,8 @@ class Site:
 
     def share_image(self, stem):
         """Absolute URL of the 1200x630 JPEG made by scripts/optimize-images.py."""
+        if stem and stem.startswith(self.url('assets/illustrations/')):
+            return self.public_url + stem.removeprefix(self.base), '여행 준비 일러스트'
         stem = stem if stem and self.photo(stem) else self.config['default_image']
         if not (ASSETS / 'og' / f'{stem}.jpg').exists():
             raise FileNotFoundError(f'src/assets/og/{stem}.jpg missing - run scripts/optimize-images.py')
@@ -395,7 +398,7 @@ class Site:
 
     def card(self, x):
         if x['photo']:
-            image = self.img(x['photo'], f'{x["title"]} 관련 풍경', '(max-width: 760px) 92vw, (max-width: 1100px) 46vw, 30vw')
+            image = self.img(x['photo'], x.get('photo_alt', f'{x["title"]} 관련 풍경'), '(max-width: 760px) 92vw, (max-width: 1100px) 46vw, 30vw')
         elif x.get('vi'):
             image = f'<div class="guide-art place-art"><span>{h(x["title"].split(" · ")[0].replace(" 여행 가이드", ""))}</span></div>'
         else:

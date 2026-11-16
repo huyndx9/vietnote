@@ -58,7 +58,7 @@ function syncSave() {
 const regionClass = { 북부: "north", 중부: "central", 남부: "south" };
 function card(x) {
   const image = x.photo
-    ? `<img loading="lazy" src="${x.photo}" alt="${esc(x.title)} 관련 풍경">`
+    ? `<img loading="lazy" src="${x.photo}" alt="${esc(x.photo_alt || x.title + " 관련 풍경")}">`
     : '<div class="guide-art">✦</div>';
   const region = x.region
     ? ` <span class="region-tag ${regionClass[x.region] || ""}">${esc(x.region)}</span>`
