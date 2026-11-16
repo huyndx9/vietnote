@@ -446,7 +446,7 @@
     if (e.key === "Escape" && !preview.hidden) {
       e.preventDefault();
       hidePreview();
-    }
+    } else if (e.key === "Escape" && !pinCard.hidden) hidePinCard();
   });
   window.addEventListener(
     "scroll",
@@ -469,6 +469,73 @@
     true,
   );
   window.addEventListener("resize", hidePreview);
+  // Touch screens have no hover, so tapping a pin opens a card on the map itself
+  // (photo, teaser and a link to the guide) instead of only updating the panel below.
+  const pinCard = document.getElementById("mapPinCard");
+  let pinCardPlace = null;
+  const tappedByFinger = (e) =>
+    e.pointerType ? e.pointerType !== "mouse" : matchMedia("(hover: none)").matches;
+  function hidePinCard() {
+    pinCard.hidden = true;
+    pinCardPlace = null;
+  }
+  function showPinCard(p) {
+    const link = document.createElement("a");
+    link.className = "map-pin-card-link";
+    link.href = p.url;
+    link.setAttribute("aria-label", p.title + " 여행 가이드 읽기");
+    const photo = document.createElement("span");
+    photo.className = "map-pin-card-photo " + p.region;
+    if (p.photo) {
+      const image = document.createElement("img");
+      image.src = p.photo;
+      image.alt = "";
+      image.onerror = () => {
+        image.remove();
+        photo.textContent = shortName(p);
+      };
+      photo.append(image);
+    } else photo.textContent = shortName(p);
+    const body = document.createElement("span");
+    body.className = "map-pin-card-body";
+    const label = document.createElement("small");
+    label.textContent = regionNames[p.region] + " · " + categoryNames[p.category];
+    const title = document.createElement("strong");
+    title.textContent = p.title;
+    const text = document.createElement("span");
+    text.className = "map-pin-card-text";
+    text.textContent = p.teaser;
+    const hint = document.createElement("span");
+    hint.className = "map-pin-card-hint";
+    hint.textContent = "여행 가이드 읽기 ↗";
+    body.append(label, title, text, hint);
+    link.append(photo, body);
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "map-pin-card-close";
+    close.setAttribute("aria-label", "닫기");
+    close.textContent = "×";
+    close.onclick = hidePinCard;
+    pinCard.replaceChildren(link, close);
+    pinCard.dataset.region = p.region;
+    pinCard.hidden = false;
+    pinCardPlace = p.id;
+    // Keep the tapped pin clear of the card: nudge the map up if it sits underneath.
+    const marker = destinationMarkers.get(p.id);
+    if (marker) {
+      const y = map.latLngToContainerPoint(marker.getLatLng()).y,
+        limit = mapElement.clientHeight - pinCard.offsetHeight - 54;
+      if (y > limit) map.panBy([0, y - limit]);
+    }
+    // The card sits at the bottom of the map; make sure that part is on screen.
+    pinCard.scrollIntoView({
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "nearest",
+    });
+  }
+  L.DomEvent.disableClickPropagation(pinCard);
+  map.on("click", hidePinCard);
+  window.addEventListener("resize", hidePinCard);
   function seasonCard(p) {
     const climate = seasons.regions.find((r) => r.id === p.region);
     const node = (tag, className, text) => {
@@ -614,6 +681,7 @@
   }
   function render() {
     hidePreview();
+    hidePinCard();
     const visible = places.filter(matches);
     markerLayer.clearLayers();
     destinationMarkers.clear();
@@ -648,6 +716,7 @@
         el.onclick = (e) => {
           e.stopPropagation();
           show(p);
+          if (tappedByFinger(e)) showPinCard(p);
         };
         el.onkeydown = (e) => {
           if (e.key === "Enter" || e.key === " ") {

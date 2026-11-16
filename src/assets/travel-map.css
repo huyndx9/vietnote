@@ -1429,3 +1429,129 @@
   font-weight: 500;
   color: var(--muted);
 }
+
+/* Tapped-pin card: opens on the map itself on touch screens. */
+.map-stage {
+  position: relative;
+}
+.map-pin-card {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 38px;
+  z-index: 460;
+  max-width: 440px;
+  margin-inline: auto;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow:
+    0 14px 40px color-mix(in srgb, var(--ink) 22%, transparent),
+    0 2px 8px color-mix(in srgb, var(--ink) 8%, transparent);
+  overflow: hidden;
+  animation: map-pin-card-in 0.2s ease-out;
+}
+.map-pin-card[hidden] {
+  display: none;
+}
+.map-pin-card-link {
+  display: flex;
+  align-items: stretch;
+  color: inherit;
+  text-decoration: none;
+}
+.map-pin-card-photo {
+  flex: 0 0 34%;
+  min-height: 118px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  text-align: center;
+  font: italic 17px var(--font-display);
+  background: linear-gradient(135deg, var(--sun-soft), var(--sky-2));
+}
+.map-pin-card-photo.central {
+  background: linear-gradient(135deg, var(--sun-soft), var(--line));
+}
+.map-pin-card-photo.south {
+  background: linear-gradient(135deg, var(--sky), var(--sky-2));
+}
+.map-pin-card-photo img {
+  display: block;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  margin: -8px;
+  object-fit: cover;
+}
+.map-pin-card-body {
+  display: block;
+  min-width: 0;
+  flex: 1;
+  padding: 12px 40px 12px 14px;
+}
+.map-pin-card-body small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--coral-deep);
+}
+.map-pin-card-body strong {
+  display: block;
+  margin: 2px 0 4px;
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+.map-pin-card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  word-break: keep-all;
+}
+.map-pin-card-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sea-deep);
+}
+.map-pin-card-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.map-pin-card-close:focus-visible,
+.map-pin-card-link:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: -3px;
+}
+@keyframes map-pin-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-pin-card {
+    animation: none;
+  }
+}
