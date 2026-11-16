@@ -1175,14 +1175,21 @@ function syncPicks() {
 }
 // The card's photo flies into the planner (or the floating bar when the planner is off screen).
 function flyToPlanner(cardEl, id) {
-  const chip = document.querySelector(`[data-chip="${CSS.escape(id)}"]`);
   const zone = document.getElementById("plannerSelection");
   const tray = document.getElementById("planTray");
   const onScreen = (el) => {
     const r = el.getBoundingClientRect();
     return r.width > 0 && r.bottom > 0 && r.top < innerHeight;
   };
-  const target = chip && zone && onScreen(zone) ? chip : tray && !tray.hidden ? tray : null;
+  // Check on screen now, not from the last observer report: a scroll and a tap can
+  // land in the same frame, before the observer has run.
+  const zoneOnScreen = !!zone && onScreen(zone);
+  if (!zoneOnScreen && tray) {
+    tray.dataset.plannerVisible = "false";
+    syncPlanner();
+  }
+  const chip = document.querySelector(`[data-chip="${CSS.escape(id)}"]`);
+  const target = zoneOnScreen && chip ? chip : tray && !tray.hidden ? tray : null;
   const land = () => {
     if (chip) {
       chip.style.visibility = "";
@@ -1318,7 +1325,7 @@ function setupPlanner() {
     new IntersectionObserver(([entry]) => {
       tray.dataset.plannerVisible = String(entry.isIntersecting);
       syncPlanner();
-    }).observe(document.querySelector(".planner-card"));
+    }).observe(document.getElementById("plannerSelection"));
   }
   document.addEventListener("click", (e) => {
     const pick = e.target.closest("[data-pick]");
