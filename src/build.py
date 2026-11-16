@@ -233,7 +233,7 @@ class Site:
             items.append(dict(d, category='destinations', title=f"{d['city']} · {d['name_en']}",
                               keywords=f"{d['name_en']} {d['city']}"))
         items += load_json('articles.json')
-        items += [dict(g, category='guides', photo=None) for g in load_json('guides.json')]
+        items += [dict(g, category='guides', photo=g.get('photo')) for g in load_json('guides.json')]
         items += [dict(i, category='itineraries') for i in load_json('itineraries.json')]
         for x in items:
             folder = 'destinations' if x['category'] == 'destinations' else 'articles'

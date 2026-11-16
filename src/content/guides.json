@@ -1,6 +1,7 @@
 [
   {
     "id": "visa",
+    "photo": "saigon-landmark81-thuthiem",
     "title": "입국과 비자, 출발 전 확인할 것",
     "icon": "✈",
     "desc": "대한민국 여권은 45일까지 무비자. 더 머문다면 e-비자(최대 90일)를 미리 신청하세요.",
@@ -27,6 +28,7 @@
   },
   {
     "id": "money",
+    "photo": "place-cantho",
     "title": "환전과 예산을 준비하는 방법",
     "icon": "₫",
     "desc": "0을 하나 빼고 반으로: 동(VND)을 원화로 어림하는 법부터 환전·카드·현금 팁까지.",
@@ -53,6 +55,7 @@
   },
   {
     "id": "transport",
+    "photo": "hanoi-long-bien-bridge",
     "title": "공항부터 숙소까지, 이동 준비",
     "icon": "↗",
     "desc": "공항에서 시내로, 도시 안에서, 도시 사이로: 그랩·택시·유심까지 한 번에 정리.",
@@ -79,6 +82,7 @@
   },
   {
     "id": "weather",
+    "photo": "sapa-rice-terraces",
     "title": "날씨에 맞춰 여행 계획하기",
     "icon": "☼",
     "desc": "지역마다 다른 날씨에 맞춰 일정과 짐을 유연하게.",
@@ -101,6 +105,7 @@
   },
   {
     "id": "safety",
+    "photo": "hoian-old-town-bicycle",
     "title": "편안한 여행을 위한 기본 준비",
     "icon": "◇",
     "desc": "오토바이 날치기, 길 건너기, 긴급 전화번호까지: 편안한 여행을 위한 기본 준비.",
@@ -127,6 +132,7 @@
   },
   {
     "id": "language",
+    "photo": "vietnamese-phin-coffee",
     "title": "여행에서 바로 보여 주는 베트남어",
     "icon": "文",
     "desc": "인사, 식당, 택시에서 화면으로 바로 보여 주는 문장.",
