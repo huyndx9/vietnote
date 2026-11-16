@@ -243,7 +243,7 @@ class Site:
 
     def write_data_scripts(self):
         """Browser copies of the content used by search, notebook and atlas."""
-        keys = ('id', 'title', 'category', 'desc', 'photo', 'region', 'city', 'keywords', 'days', 'url', 'vi')
+        keys = ('id', 'title', 'category', 'desc', 'photo', 'region', 'city', 'keywords', 'days', 'url', 'vi', 'duration', 'experiences')
         self.destinations = load_json('map-destinations.json')
         self.guide_notes = load_json('place-guides.json')
         if set(self.guide_notes) != {p['id'] for p in self.destinations}:
@@ -253,6 +253,8 @@ class Site:
             p['url']=self.url(f"places/{p['id']}/")
             sections=guide_sections(p,self.guide_notes[p['id']])
             self.place_articles.append(dict(id='place-'+p['id'],title=p['title']+' 여행 가이드',category='destinations',desc=p['teaser'],photo=self.place_photo(p['id']),vi=p['vi'],region=REGIONS[p['region']],city=p['title'],keywords=p['vi'],url=p['url'],sections=sections))
+            self.place_articles[-1].update(duration=self.guide_notes[p['id']]['duration'],
+                                           experiences=p['experiences'])
         public = []
         for x in self.items + self.place_articles:
             entry = {k: x[k] for k in keys if k in x}
@@ -402,8 +404,14 @@ class Site:
         if x.get('region'):
             meta += f' <span class="region-tag {REGION_CLASS.get(x["region"], "")}">{h(x["region"])}</span>'
         stamp = f'<span class="postcard-stamp" lang="vi">{h(x["vi"])}</span>' if x.get('vi') and x['photo'] else ''
+        facts = ''
+        if x.get('duration'):
+            facts += f'<dl class="card-duration"><dt>추천 체류</dt><dd>{h(x["duration"])}</dd></dl>'
+        if x.get('experiences'):
+            facts += '<ul class="card-experiences" aria-label="추천 경험">' + ''.join(
+                f'<li>{h(v)}</li>' for v in x['experiences'][:3]) + '</ul>'
         return self.render('card', id=h(x['id']), url=h(x['url']), city=h(x.get('city', '')), stamp=stamp,
-                           image=image, meta=meta, title=h(x['title']), desc=h(x['desc']))
+                           image=image, meta=meta, title=h(x['title']), desc=h(x['desc']), facts=facts)
 
     def atlas(self, heading):
         return self.render('atlas', heading=heading)
