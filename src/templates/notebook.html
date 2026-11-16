@@ -11,11 +11,11 @@
         <span class="planner-badge" aria-hidden="true">AI</span>
         <div>
           <h2 id="plannerTitle">저장한 여행지로 AI 일정 만들기</h2>
-          <p class="planner-lead">♡로 저장한 여행지를 묶어 하루하루의 동선으로 정리해 드려요.</p>
+          <p class="planner-lead">저장한 여행지 중 가고 싶은 곳을 골라 담으면 하루하루의 동선으로 정리해 드려요.</p>
         </div>
       </header>
       <div class="planner-places">
-        <h3 class="planner-label">내가 저장한 여행지</h3>
+        <h3 class="planner-label">일정에 담을 여행지</h3>
         <div id="plannerSelection" class="planner-chips"></div>
       </div>
       <form id="plannerForm">
@@ -41,6 +41,10 @@
     </div>
     <div id="plannerResult" hidden><h3>나의 AI 여행 일정</h3><p id="plannerSummary"></p><div id="plannerText"></div><button class="action-button" id="plannerCopy" type="button">일정 복사</button></div>
   </section>
+  <div class="notebook-grid-head" id="notebookGridHead" hidden>
+    <h2>저장한 여행지와 글</h2>
+    <p>여행지 카드의 <b>＋ 일정에 담기</b>를 누르면 위의 일정 만들기 칸으로 옮겨져요. 다시 누르면 빠져요.</p>
+  </div>
   <div id="notebookItems" class="browse-grid"></div>
   <div id="notebookEmpty" class="empty-state" hidden>
     <h2>아직 비어 있는 여행 노트</h2>
