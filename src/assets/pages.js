@@ -1145,9 +1145,25 @@ function syncPlanner() {
   if (!form) return;
   const items = plannerPlaces();
   const endpoint = document.querySelector('meta[name="vietnote-ai"]')?.content;
-  document.getElementById("plannerSelection").textContent = items.length
-    ? `${items.length}개 여행지: ${items.map((x) => x.vi || x.city || x.title).join(" · ")}`
-    : "여행지 카드의 ♡를 눌러 저장해 주세요. 음식·준비 글은 참고용이며 방문 장소에는 포함하지 않아요.";
+  const selection = document.getElementById("plannerSelection");
+  selection.replaceChildren();
+  if (items.length) {
+    const count = document.createElement("span");
+    count.className = "planner-count";
+    count.textContent = `${items.length}개`;
+    selection.append(count);
+    for (const x of items) {
+      const chip = document.createElement("span");
+      chip.className = "planner-chip";
+      chip.textContent = x.vi || x.city || x.title;
+      selection.append(chip);
+    }
+  } else {
+    const empty = document.createElement("span");
+    empty.className = "planner-empty";
+    empty.textContent = "여행지 카드의 ♡를 눌러 저장해 주세요. 음식·준비 글은 참고용이며 방문 장소에는 포함하지 않아요.";
+    selection.append(empty);
+  }
   form.querySelector('button[type="submit"]').disabled = plannerBusy || !items.length || !endpoint;
   if (!endpoint && !plannerBusy) document.getElementById("plannerStatus").textContent = "AI 연결 후 일정을 작성할 수 있어요.";
   const plan = readStore(plannerKey, null);
@@ -1162,6 +1178,14 @@ function setupPlanner() {
   const form = document.getElementById("plannerForm");
   if (!form) return;
   syncPlanner();
+  // − / + buttons around the day count (the field still accepts typing).
+  form.querySelectorAll("[data-step]").forEach((button) => {
+    button.onclick = () => {
+      const input = form.elements.days;
+      const next = (Number(input.value) || 1) + Number(button.dataset.step);
+      input.value = Math.min(Number(input.max), Math.max(Number(input.min), next));
+    };
+  });
   document.getElementById("plannerCopy").onclick = async () => {
     try {
       await navigator.clipboard.writeText(document.getElementById("plannerText").textContent);
@@ -1175,7 +1199,7 @@ function setupPlanner() {
     const endpoint = document.querySelector('meta[name="vietnote-ai"]')?.content;
     if (!items.length || !endpoint) return;
     const days = Number(form.elements.days.value), pace = form.elements.pace.value;
-    const paceLabel = form.elements.pace.selectedOptions[0].textContent;
+    const paceLabel = form.querySelector('input[name="pace"]:checked').closest("label").querySelector(".pace-name").textContent;
     const status = document.getElementById("plannerStatus");
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 150000);
