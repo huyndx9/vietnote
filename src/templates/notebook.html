@@ -6,17 +6,45 @@
   </div>
   <div class="storage-note">이 브라우저에 저장됩니다. 다른 기기와 동기화되지 않으며, 브라우저 데이터를 지우면 삭제됩니다.</div>
   <section class="notebook-planner" aria-labelledby="plannerTitle">
-    <h2 id="plannerTitle">저장한 여행지로 AI 일정 만들기</h2>
-    <p id="plannerSelection"></p>
-    <form id="plannerForm">
-      <label>여행 일수 <input name="days" type="number" min="1" max="14" value="4" required></label>
-      <label>여행 속도 <select name="pace"><option value="relaxed">여유롭게</option><option value="balanced" selected>균형 있게</option><option value="active">알차게</option></select></label>
-      <button class="action-button" type="submit">AI 일정 작성</button>
-    </form>
-    <p class="planner-note">작성 버튼을 누르면 저장한 여행지 정보와 여행 일수·속도를 AI에 보내요. 항공·영업 시간과 이동편은 예약 전 확인해 주세요.</p>
-    <p id="plannerStatus" role="status" aria-live="polite"></p>
+    <div class="planner-card">
+      <header class="planner-head">
+        <span class="planner-badge" aria-hidden="true">AI</span>
+        <div>
+          <h2 id="plannerTitle">저장한 여행지로 AI 일정 만들기</h2>
+          <p class="planner-lead">저장한 여행지 중 가고 싶은 곳을 골라 담으면 하루하루의 동선으로 정리해 드려요.</p>
+        </div>
+      </header>
+      <div class="planner-places">
+        <h3 class="planner-label">일정에 담을 여행지</h3>
+        <div id="plannerSelection" class="planner-chips"></div>
+      </div>
+      <form id="plannerForm">
+        <div class="planner-field">
+          <span class="planner-label" id="plannerDaysLabel">여행 일수</span>
+          <div class="planner-stepper" role="group" aria-labelledby="plannerDaysLabel">
+            <button type="button" data-step="-1" aria-label="하루 줄이기">−</button>
+            <input name="days" type="number" min="1" max="14" value="4" required inputmode="numeric" aria-labelledby="plannerDaysLabel">
+            <span class="planner-unit" aria-hidden="true">일</span>
+            <button type="button" data-step="1" aria-label="하루 늘리기">+</button>
+          </div>
+        </div>
+        <fieldset class="planner-field planner-pace">
+          <legend class="planner-label">여행 속도</legend>
+          <label><input type="radio" name="pace" value="relaxed"><span class="pace-name">여유롭게</span><small>쉬는 시간을 넉넉히</small></label>
+          <label><input type="radio" name="pace" value="balanced" checked><span class="pace-name">균형 있게</span><small>보고 쉬는 시간을 반반</small></label>
+          <label><input type="radio" name="pace" value="active"><span class="pace-name">알차게</span><small>하루를 가득 채워서</small></label>
+        </fieldset>
+        <button class="action-button planner-submit" type="submit">✦ AI 일정 작성</button>
+      </form>
+      <p class="planner-note">작성 버튼을 누르면 저장한 여행지 정보와 여행 일수·속도를 AI에 보내요. 항공·영업 시간과 이동편은 예약 전 확인해 주세요.</p>
+      <p id="plannerStatus" role="status" aria-live="polite"></p>
+    </div>
     <div id="plannerResult" hidden><h3>나의 AI 여행 일정</h3><p id="plannerSummary"></p><div id="plannerText"></div><button class="action-button" id="plannerCopy" type="button">일정 복사</button></div>
   </section>
+  <div class="notebook-grid-head" id="notebookGridHead" hidden>
+    <h2>저장한 여행지와 글</h2>
+    <p>여행지 카드의 <b>＋ 일정에 담기</b>를 누르면 위의 일정 만들기 칸으로 옮겨져요. 다시 누르면 빠져요.</p>
+  </div>
   <div id="notebookItems" class="browse-grid"></div>
   <div id="notebookEmpty" class="empty-state" hidden>
     <h2>아직 비어 있는 여행 노트</h2>

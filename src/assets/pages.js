@@ -33,6 +33,10 @@ let plannerBusy = false;
 const plannerKey = "vietnote.itinerary";
 let saved = readStore("vietnote.saved", []);
 if (!Array.isArray(saved)) saved = [];
+// Destinations the reader has put into the itinerary planner (a subset of saved).
+const pickKey = "vietnote.planPicked";
+let picked = readStore(pickKey, []);
+if (!Array.isArray(picked)) picked = [];
 function toast(message) {
   document.querySelector(".toast")?.remove();
   const el = document.createElement("div");
@@ -70,7 +74,7 @@ function card(x) {
     ? `<dl class="card-duration"><dt>추천 체류</dt><dd>${esc(x.duration)}</dd></dl>` : "") +
     (x.audience ? `<dl class="card-fit"><div><dt>추천 취향</dt><dd>${esc(x.audience)}</dd></div><div><dt>활동 정도</dt><dd>${esc(x.effort)}</dd></div></dl>` : "");
   return (
-    `<article class="browse-card">` +
+    `<article class="browse-card" data-id="${esc(x.id)}">` +
     `<div class="card-image"><a href="${x.url}" tabindex="-1" aria-hidden="true">${image}</a>${stamp}` +
     `<button class="save-button" data-save="${x.id}" aria-label="여행 노트에 저장">♡</button></div>` +
     `<div class="meta">${categoryNames[x.category]}${region}</div>` +
@@ -84,6 +88,17 @@ function renderNotebook() {
   const items = content.filter((x) => saved.includes(x.id));
   host.innerHTML = items.map(card).join("");
   document.getElementById("notebookEmpty").hidden = items.length > 0;
+  const head = document.getElementById("notebookGridHead");
+  if (head) head.hidden = !items.length;
+  const pool = new Set(plannerCandidates().map((x) => x.id));
+  host.querySelectorAll(".browse-card[data-id]").forEach((el) => {
+    if (!pool.has(el.dataset.id)) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pick-button";
+    button.dataset.pick = el.dataset.id;
+    el.append(button);
+  });
   syncSave();
   renderFeedback();
   syncPlanner();
@@ -1133,11 +1148,95 @@ setupHeroSlideshow();
 
 
 // Notebook planner shares the site's existing AI proxy; keys stay on the Worker.
-function plannerPlaces() {
+function plannerCandidates() {
   const selected = content.filter((x) => saved.includes(x.id) && x.category === "destinations");
   // A city may have an early article and a complete atlas guide; use the guide.
   const guides = selected.filter((x) => x.id.startsWith("place-"));
   return selected.filter((x) => x.id.startsWith("place-") || !guides.some((g) => g.id === "place-" + x.id));
+}
+function plannerPlaces() {
+  const pool = plannerCandidates();
+  return picked.map((id) => pool.find((x) => x.id === id)).filter(Boolean);
+}
+function setPicked(next) {
+  picked = next;
+  saveStore(pickKey, next);
+}
+function syncPicks() {
+  const on = new Set(plannerPlaces().map((x) => x.id));
+  document.querySelectorAll("[data-pick]").forEach((b) => {
+    const yes = on.has(b.dataset.pick);
+    const name = b.closest(".browse-card")?.querySelector("h2")?.textContent || "";
+    b.textContent = yes ? "✓ 일정에 담음" : "＋ 일정에 담기";
+    b.setAttribute("aria-pressed", String(yes));
+    b.setAttribute("aria-label", yes ? `${name} 일정에서 빼기` : `${name} 일정에 담기`);
+    b.closest(".browse-card")?.classList.toggle("is-picked", yes);
+  });
+}
+// The card's photo flies into the planner (or the floating bar when the planner is off screen).
+function flyToPlanner(cardEl, id) {
+  const chip = document.querySelector(`[data-chip="${CSS.escape(id)}"]`);
+  const zone = document.getElementById("plannerSelection");
+  const tray = document.getElementById("planTray");
+  const onScreen = (el) => {
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < innerHeight;
+  };
+  const target = chip && zone && onScreen(zone) ? chip : tray && !tray.hidden ? tray : null;
+  const land = () => {
+    if (chip) {
+      chip.style.visibility = "";
+      chip.classList.remove("is-new");
+      void chip.offsetWidth;
+      chip.classList.add("is-new");
+    }
+    if (tray && target === tray) {
+      tray.classList.remove("is-bump");
+      void tray.offsetWidth;
+      tray.classList.add("is-bump");
+    }
+  };
+  const img = cardEl?.querySelector(".card-image img");
+  if (!target || !img || matchMedia("(prefers-reduced-motion: reduce)").matches) return land();
+  if (chip && target === chip) chip.style.visibility = "hidden";
+  const zoom = parseFloat(document.documentElement.style.zoom) || 1; // desktop-site mode
+  const from = img.getBoundingClientRect(), to = target.getBoundingClientRect();
+  const ghost = document.createElement("div");
+  ghost.className = "fly-ghost";
+  ghost.setAttribute("aria-hidden", "true");
+  Object.assign(ghost.style, {
+    left: from.left / zoom + "px",
+    top: from.top / zoom + "px",
+    width: from.width / zoom + "px",
+    height: from.height / zoom + "px",
+    backgroundImage: `url("${(img.currentSrc || img.src).replace(/"/g, "%22")}")`,
+  });
+  document.body.append(ghost);
+  const dx = (to.left + to.width / 2 - (from.left + from.width / 2)) / zoom,
+    dy = (to.top + to.height / 2 - (from.top + from.height / 2)) / zoom,
+    scale = Math.min(0.3, Math.max(0.08, to.height / from.height));
+  const flight = ghost.animate(
+    [
+      { transform: "translate(0, 0) scale(1)", opacity: 1, borderRadius: "14px" },
+      { transform: `translate(${dx * 0.35}px, ${dy * 0.35 - 90}px) scale(${(1 + scale) / 2})`, opacity: 0.95, offset: 0.4 },
+      { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0.3, borderRadius: "999px" },
+    ],
+    { duration: 720, easing: "cubic-bezier(.45, 0, .25, 1)" },
+  );
+  flight.onfinish = flight.oncancel = () => {
+    ghost.remove();
+    land();
+  };
+}
+function togglePick(id, cardEl) {
+  if (plannerPlaces().some((x) => x.id === id)) {
+    setPicked(picked.filter((x) => x !== id));
+    syncPlanner();
+    return;
+  }
+  setPicked([...picked.filter((x) => x !== id), id]);
+  syncPlanner();
+  flyToPlanner(cardEl, id);
 }
 function plannerSignature(items) { return items.map((x) => x.id).sort().join("|"); }
 function syncPlanner() {
@@ -1145,9 +1244,52 @@ function syncPlanner() {
   if (!form) return;
   const items = plannerPlaces();
   const endpoint = document.querySelector('meta[name="vietnote-ai"]')?.content;
-  document.getElementById("plannerSelection").textContent = items.length
-    ? `${items.length}개 여행지: ${items.map((x) => x.vi || x.city || x.title).join(" · ")}`
-    : "여행지 카드의 ♡를 눌러 저장해 주세요. 음식·준비 글은 참고용이며 방문 장소에는 포함하지 않아요.";
+  const pool = plannerCandidates();
+  const selection = document.getElementById("plannerSelection");
+  selection.replaceChildren();
+  selection.classList.toggle("is-empty", !items.length);
+  if (items.length) {
+    const count = document.createElement("span");
+    count.className = "planner-count";
+    count.textContent = `${items.length}곳`;
+    selection.append(count);
+    for (const x of items) {
+      const name = x.vi || x.city || x.title;
+      const chip = document.createElement("span");
+      chip.className = "planner-chip";
+      chip.dataset.chip = x.id;
+      chip.append(name);
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.dataset.unpick = x.id;
+      remove.setAttribute("aria-label", `${name} 빼기`);
+      remove.textContent = "×";
+      chip.append(remove);
+      selection.append(chip);
+    }
+  } else {
+    const empty = document.createElement("span");
+    empty.className = "planner-empty";
+    empty.textContent = pool.length
+      ? "아래 저장한 여행지 카드에서 ＋ 일정에 담기를 눌러 이 칸으로 옮겨 주세요."
+      : "여행지 카드의 ♡를 눌러 저장해 주세요. 음식·준비 글은 참고용이며 방문 장소에는 포함하지 않아요.";
+    selection.append(empty);
+    if (pool.length) {
+      const all = document.createElement("button");
+      all.type = "button";
+      all.className = "planner-pick-all";
+      all.dataset.pickAll = "";
+      all.textContent = `저장한 ${pool.length}곳 모두 담기`;
+      selection.append(all);
+    }
+  }
+  syncPicks();
+  const tray = document.getElementById("planTray");
+  if (tray) {
+    tray.textContent = `✦ ${items.length}곳 담음 · 일정 만들기 ↑`;
+    tray.setAttribute("aria-label", `일정에 담은 여행지 ${items.length}곳. 일정 만들기로 이동`);
+    tray.hidden = !items.length || tray.dataset.plannerVisible === "true";
+  }
   form.querySelector('button[type="submit"]').disabled = plannerBusy || !items.length || !endpoint;
   if (!endpoint && !plannerBusy) document.getElementById("plannerStatus").textContent = "AI 연결 후 일정을 작성할 수 있어요.";
   const plan = readStore(plannerKey, null);
@@ -1161,7 +1303,46 @@ function syncPlanner() {
 function setupPlanner() {
   const form = document.getElementById("plannerForm");
   if (!form) return;
+  const tray = document.createElement("button");
+  tray.type = "button";
+  tray.id = "planTray";
+  tray.className = "plan-tray";
+  tray.hidden = true;
+  tray.onclick = () =>
+    document.querySelector(".planner-card").scrollIntoView({
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+  document.body.append(tray);
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([entry]) => {
+      tray.dataset.plannerVisible = String(entry.isIntersecting);
+      syncPlanner();
+    }).observe(document.querySelector(".planner-card"));
+  }
+  document.addEventListener("click", (e) => {
+    const pick = e.target.closest("[data-pick]");
+    if (pick) return togglePick(pick.dataset.pick, pick.closest(".browse-card"));
+    const unpick = e.target.closest("[data-unpick]");
+    if (unpick) return togglePick(unpick.dataset.unpick);
+    if (e.target.closest("[data-pick-all]")) {
+      const fresh = plannerCandidates().map((x) => x.id).filter((id) => !picked.includes(id));
+      setPicked([...picked, ...fresh]);
+      syncPlanner();
+      fresh.forEach((id, i) =>
+        setTimeout(() => flyToPlanner(document.querySelector(`.browse-card[data-id="${CSS.escape(id)}"]`), id), i * 110),
+      );
+    }
+  });
   syncPlanner();
+  // − / + buttons around the day count (the field still accepts typing).
+  form.querySelectorAll("[data-step]").forEach((button) => {
+    button.onclick = () => {
+      const input = form.elements.days;
+      const next = (Number(input.value) || 1) + Number(button.dataset.step);
+      input.value = Math.min(Number(input.max), Math.max(Number(input.min), next));
+    };
+  });
   document.getElementById("plannerCopy").onclick = async () => {
     try {
       await navigator.clipboard.writeText(document.getElementById("plannerText").textContent);
@@ -1175,7 +1356,7 @@ function setupPlanner() {
     const endpoint = document.querySelector('meta[name="vietnote-ai"]')?.content;
     if (!items.length || !endpoint) return;
     const days = Number(form.elements.days.value), pace = form.elements.pace.value;
-    const paceLabel = form.elements.pace.selectedOptions[0].textContent;
+    const paceLabel = form.querySelector('input[name="pace"]:checked').closest("label").querySelector(".pace-name").textContent;
     const status = document.getElementById("plannerStatus");
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 150000);
