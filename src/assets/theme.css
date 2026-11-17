@@ -2803,3 +2803,100 @@ body {
     animation: none;
   }
 }
+
+/* Notebook on phones: saved cards become compact rows so 5-6 fit on one screen.
+   The full description, fit notes and arrow are left to the guide page; the
+   whole row still opens it through the title link. */
+@media (max-width: 700px) {
+  #notebookItems {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  #notebookItems .browse-card {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "photo meta meta"
+      "photo title title"
+      "photo stay pick";
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 4px;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+  #notebookItems .browse-card:hover { transform: none; }
+  #notebookItems .card-image {
+    grid-area: photo;
+    align-self: stretch;
+    width: 96px;
+    height: auto;
+    min-height: 96px;
+    margin: 0;
+    border-radius: 12px;
+  }
+  #notebookItems .card-image > a,
+  #notebookItems .card-image img,
+  #notebookItems .card-image .guide-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #notebookItems .card-image .guide-art { display: grid; place-items: center; font-size: 26px; }
+  #notebookItems .save-button {
+    top: 4px;
+    right: 4px;
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+  #notebookItems .postcard-stamp,
+  #notebookItems .browse-card > p,
+  #notebookItems .card-fit,
+  #notebookItems .card-experiences,
+  #notebookItems .card-go { display: none; }
+  #notebookItems .meta {
+    grid-area: meta;
+    gap: 6px;
+    padding: 0;
+    font-size: 12px;
+  }
+  #notebookItems .meta .region-tag { padding: 1px 8px; font-size: 11px; }
+  #notebookItems .browse-card h2 {
+    grid-area: title;
+    padding: 0;
+    font-size: 17px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  #notebookItems .card-duration {
+    grid-area: stay;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    gap: 0 6px;
+  }
+  #notebookItems .card-duration dd { overflow-wrap: anywhere; }
+  #notebookItems .browse-card .pick-button {
+    grid-area: pick;
+    justify-self: end;
+    width: auto;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 14px;
+    border-width: 1.5px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  #notebookItems .pick-long { display: none; }
+  /* articles have no stay or pick button: let the title use the space */
+  #notebookItems .browse-card:not(:has(.pick-button)) { grid-template-areas: "photo meta meta" "photo title title" "photo title title"; }
+}

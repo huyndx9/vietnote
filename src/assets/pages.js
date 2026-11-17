@@ -1172,7 +1172,8 @@ function syncPicks() {
   document.querySelectorAll("[data-pick]").forEach((b) => {
     const yes = on.has(b.dataset.pick);
     const name = b.closest(".browse-card")?.querySelector("h2")?.textContent || "";
-    b.textContent = yes ? "✓ 일정에 담음" : "＋ 일정에 담기";
+    // "일정에" is dropped on narrow cards by CSS (.pick-long).
+    b.innerHTML = yes ? '✓ <span class="pick-long">일정에 </span>담음' : '＋ <span class="pick-long">일정에 </span>담기';
     b.setAttribute("aria-pressed", String(yes));
     b.setAttribute("aria-label", yes ? `${name} 일정에서 빼기` : `${name} 일정에 담기`);
     b.closest(".browse-card")?.classList.toggle("is-picked", yes);
