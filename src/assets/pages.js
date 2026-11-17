@@ -89,7 +89,12 @@ function renderNotebook() {
   host.innerHTML = items.map(card).join("");
   document.getElementById("notebookEmpty").hidden = items.length > 0;
   const head = document.getElementById("notebookGridHead");
-  if (head) head.hidden = !items.length;
+  if (head) {
+    head.hidden = !items.length;
+    const places = items.filter((x) => x.category === "destinations").length;
+    document.getElementById("savedHeading").textContent = places === items.length ? "저장한 여행지" : "저장한 여행지와 글";
+    document.getElementById("savedCount").textContent = items.length;
+  }
   const pool = new Set(plannerCandidates().map((x) => x.id));
   host.querySelectorAll(".browse-card[data-id]").forEach((el) => {
     if (!pool.has(el.dataset.id)) return;
@@ -1207,7 +1212,8 @@ function flyToPlanner(cardEl, id) {
   if (!target || !img || matchMedia("(prefers-reduced-motion: reduce)").matches) return land();
   if (chip && target === chip) chip.style.visibility = "hidden";
   const zoom = parseFloat(document.documentElement.style.zoom) || 1; // desktop-site mode
-  const from = img.getBoundingClientRect(), to = target.getBoundingClientRect();
+  const landing = target === chip ? chip.querySelector(".planner-place-photo") || chip : target;
+  const from = img.getBoundingClientRect(), to = landing.getBoundingClientRect();
   const ghost = document.createElement("div");
   ghost.className = "fly-ghost";
   ghost.setAttribute("aria-hidden", "true");
@@ -1221,12 +1227,14 @@ function flyToPlanner(cardEl, id) {
   document.body.append(ghost);
   const dx = (to.left + to.width / 2 - (from.left + from.width / 2)) / zoom,
     dy = (to.top + to.height / 2 - (from.top + from.height / 2)) / zoom,
-    scale = Math.min(0.3, Math.max(0.08, to.height / from.height));
+    scale = target === chip ? to.width / from.width : Math.min(0.3, Math.max(0.08, to.height / from.height)),
+    endRadius = target === chip ? "10px" : "999px",
+    endOpacity = target === chip ? 1 : 0.3;
   const flight = ghost.animate(
     [
       { transform: "translate(0, 0) scale(1)", opacity: 1, borderRadius: "14px" },
       { transform: `translate(${dx * 0.35}px, ${dy * 0.35 - 90}px) scale(${(1 + scale) / 2})`, opacity: 0.95, offset: 0.4 },
-      { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0.3, borderRadius: "999px" },
+      { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: endOpacity, borderRadius: endRadius },
     ],
     { duration: 720, easing: "cubic-bezier(.45, 0, .25, 1)" },
   );
@@ -1245,6 +1253,41 @@ function togglePick(id, cardEl) {
   syncPlanner();
   flyToPlanner(cardEl, id);
 }
+// Straight-line distance in km between two places (haversine). Used only to warn;
+// real travel time on Vietnam's roads is longer, which the advice says.
+function kmBetween(a, b) {
+  const rad = Math.PI / 180, dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(h));
+}
+function updatePlannerAdvice(items) {
+  const box = document.getElementById("plannerAdvice");
+  const form = document.getElementById("plannerForm");
+  if (!box || !form) return;
+  const days = Number(form.elements.days.value) || 0;
+  let far = null;
+  for (let i = 0; i < items.length; i++)
+    for (let j = i + 1; j < items.length; j++) {
+      if (items[i].lat == null || items[j].lat == null) continue;
+      const km = kmBetween(items[i], items[j]);
+      if (!far || km > far.km) far = { km, a: items[i], b: items[j] };
+    }
+  const short = (x) => (x.city || x.title).split(" · ")[0];
+  let title = "", text = "";
+  if (items.length && days && items.length > days) {
+    title = "일정에 비해 여행지가 많을 수 있어요.";
+    text = `${days}일에 ${items.length}곳이에요. AI가 무리한 곳은 빼고, 뺀 이유를 함께 알려 드려요.`;
+  } else if (far && far.km >= 250) {
+    title = "이동 거리가 긴 여행지가 포함되어 있어요.";
+    // Korean topic particle: 은 after a final consonant, 는 after a vowel.
+    const last = short(far.b).charCodeAt(short(far.b).length - 1) - 0xac00;
+    const topic = last >= 0 && last < 11172 && last % 28 ? "은" : "는";
+    text = `${short(far.a)}–${short(far.b)}${topic} 직선으로 약 ${Math.round(far.km / 10) * 10}km, 실제 이동은 더 길어요. AI가 일정에 맞는 동선과 대안을 제안해요.`;
+  }
+  box.hidden = !title;
+  box.querySelector("strong").textContent = title;
+  box.querySelector("div > span").textContent = text;
+}
 function plannerSignature(items) { return items.map((x) => x.id).sort().join("|"); }
 function syncPlanner() {
   const form = document.getElementById("plannerForm");
@@ -1255,41 +1298,65 @@ function syncPlanner() {
   const selection = document.getElementById("plannerSelection");
   selection.replaceChildren();
   selection.classList.toggle("is-empty", !items.length);
-  if (items.length) {
-    const count = document.createElement("span");
-    count.className = "planner-count";
-    count.textContent = `${items.length}곳`;
-    selection.append(count);
-    for (const x of items) {
-      const name = x.vi || x.city || x.title;
-      const chip = document.createElement("span");
-      chip.className = "planner-chip";
-      chip.dataset.chip = x.id;
-      chip.append(name);
-      const remove = document.createElement("button");
-      remove.type = "button";
-      remove.dataset.unpick = x.id;
-      remove.setAttribute("aria-label", `${name} 빼기`);
-      remove.textContent = "×";
-      chip.append(remove);
-      selection.append(chip);
+  for (const x of items) {
+    const name = (x.city || x.title).split(" · ")[0];
+    const row = document.createElement("div");
+    row.className = "planner-place";
+    row.dataset.chip = x.id;
+    const photo = document.createElement("span");
+    photo.className = "planner-place-photo";
+    if (x.photo) {
+      const img = document.createElement("img");
+      img.src = x.photo;
+      img.alt = "";
+      img.loading = "lazy";
+      photo.append(img);
     }
-  } else {
-    const empty = document.createElement("span");
+    const text = document.createElement("span");
+    text.className = "planner-place-name";
+    const ko = document.createElement("strong");
+    ko.textContent = name;
+    const vi = document.createElement("span");
+    vi.lang = "vi";
+    vi.textContent = x.vi || "";
+    text.append(ko, vi);
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.dataset.unpick = x.id;
+    remove.setAttribute("aria-label", `${name} 빼기`);
+    remove.textContent = "×";
+    row.append(photo, text, remove);
+    selection.append(row);
+  }
+  if (!items.length) {
+    const empty = document.createElement("div");
     empty.className = "planner-empty";
-    empty.textContent = pool.length
-      ? "아래 저장한 여행지 카드에서 ＋ 일정에 담기를 눌러 이 칸으로 옮겨 주세요."
-      : "여행지 카드의 ♡를 눌러 저장해 주세요. 음식·준비 글은 참고용이며 방문 장소에는 포함하지 않아요.";
-    selection.append(empty);
+    const note = document.createElement("p");
+    note.textContent = pool.length
+      ? "아래 저장한 여행지에서 ＋ 일정에 담기를 누르면 이곳에 담겨요."
+      : "여행지 카드의 ♡를 눌러 먼저 저장해 주세요. 음식·준비 글은 참고용이라 방문 장소에는 넣지 않아요.";
+    empty.append(note);
     if (pool.length) {
       const all = document.createElement("button");
       all.type = "button";
       all.className = "planner-pick-all";
       all.dataset.pickAll = "";
       all.textContent = `저장한 ${pool.length}곳 모두 담기`;
-      selection.append(all);
+      empty.append(all);
+    } else {
+      const go = document.createElement("a");
+      go.className = "planner-pick-all";
+      go.href = BASE + "destinations/";
+      go.textContent = "여행지 둘러보기 ↗";
+      empty.append(go);
     }
+    selection.append(empty);
   }
+  const total = document.getElementById("plannerTotal");
+  total.textContent = items.length ? `✓ ${items.length}곳 선택` : "선택 0곳";
+  total.classList.toggle("is-zero", !items.length);
+  document.getElementById("plannerAdd").href = pool.length ? "#notebookGridHead" : BASE + "destinations/";
+  updatePlannerAdvice(items);
   syncPicks();
   const tray = document.getElementById("planTray");
   if (tray) {
@@ -1348,8 +1415,10 @@ function setupPlanner() {
       const input = form.elements.days;
       const next = (Number(input.value) || 1) + Number(button.dataset.step);
       input.value = Math.min(Number(input.max), Math.max(Number(input.min), next));
+      updatePlannerAdvice(plannerPlaces());
     };
   });
+  form.elements.days.addEventListener("input", () => updatePlannerAdvice(plannerPlaces()));
   document.getElementById("plannerCopy").onclick = async () => {
     try {
       await navigator.clipboard.writeText(document.getElementById("plannerText").textContent);
